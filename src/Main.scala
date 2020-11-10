@@ -1,3 +1,3 @@
-class Main {
-
+object Main {
+    print("bruh")
 }

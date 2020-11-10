@@ -12,9 +12,6 @@ object Music{
   type Genre      = String
   type Album      = String
 
-  def  ():{
 
-
-  }
 
 }
