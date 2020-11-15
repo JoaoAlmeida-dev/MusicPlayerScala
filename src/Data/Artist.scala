@@ -28,4 +28,12 @@ object Artist{
     Artist(name, List(album), songs)
   }
 
+  def info(a:Artist): Option[(String,List[Albums],List[Song])] ={
+    Option(
+      a.name,
+      a.albums,
+      a.songs
+    )
+  }
+
 }
