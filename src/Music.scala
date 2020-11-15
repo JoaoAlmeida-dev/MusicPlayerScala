@@ -1,3 +1,4 @@
+
 case class Music (nome:String, duration:Double, artist:String, genre:String, album:String){
 
 
