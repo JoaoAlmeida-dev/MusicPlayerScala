@@ -1,9 +1,8 @@
 package Data
 
 case class Song ( filepath:String, name:String, duration:Double, artist:Artist, genre:String, album:Album, feats: List[Artist], listened:Int){
-  def info(): Option[(String,String,Double,Data.Artist,String,Data.Album,List[Data.Artist],Int)] ={
-    Song.info(this)
-  }
+
+  def info(): Option[(String,String,Double,Data.Artist,String,Data.Album,List[Data.Artist],Int)] ={ Song.info(this) }
 
 }
 object Song{

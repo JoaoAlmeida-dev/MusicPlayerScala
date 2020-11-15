@@ -1,6 +1,7 @@
 package Data
 
-case class Playlist(name:String,artist:Artist,songs:List[Song], theme:String) {
+case class Playlist(name:String, artist:Artist, songs:List[Song], theme:String) {
+
   def info(): Option[(String,Data.Artist,List[Song],String)] ={ Playlist.info(this) }
 
 }
