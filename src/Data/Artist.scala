@@ -1,8 +1,7 @@
 package Data
 
 case class Artist(name:String, albums: List[Album], songs:List[Song] ){
-
-
+  def info():Option[(String,List[Album],List[Song])]={ Artist.info(this) }
 
 }
 
@@ -11,6 +10,14 @@ object Artist{
   type Nome     = String
   type Albums   = List[Album]
   type Songs    = List[Song]
+
+  def info(a:Artist): Option[(String,List[Album],List[Song])] ={
+    Option(
+      a.name,
+      a.albums,
+      a.songs
+    )
+  }
 
   def apply(name:String): Artist ={
     Artist(name, Nil, Nil)
@@ -28,12 +35,6 @@ object Artist{
     Artist(name, List(album), songs)
   }
 
-  def info(a:Artist): Option[(String,List[Albums],List[Song])] ={
-    Option(
-      a.name,
-      a.albums,
-      a.songs
-    )
-  }
+
 
 }

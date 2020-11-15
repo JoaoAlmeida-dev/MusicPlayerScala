@@ -1,7 +1,7 @@
 package Data
 
-case class Album(name:String){
-
+case class Album(name:String, tracks:List[Song], artist:Data.Artist){
+  def info():Option[(String,List[Song],Artist)]= { Album.info(this) }
 
 }
 
