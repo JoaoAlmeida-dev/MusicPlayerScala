@@ -15,8 +15,17 @@ object Artist{
   def apply(name:String): Artist ={
     Artist(name, Nil, Nil)
   }
+
   def apply(name:String,albums: List[Album]): Artist ={
     Artist(name, albums, Nil)
+  }
+
+  def apply(name:String,album: Album): Artist ={
+    Artist(name, List(album), Nil)
+  }
+
+  def apply(name:String,album: Album, songs:List[Song]): Artist ={
+    Artist(name, List(album), songs)
   }
 
 }
