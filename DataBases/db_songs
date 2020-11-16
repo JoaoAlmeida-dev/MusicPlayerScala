@@ -1,0 +1,4 @@
+path;song1;120;artist1;genre1;album1;artist2;1;end;
+path;song2;100;artist3;genre1;album2;artist2 artist3;15;end;
+path;song3;140;artist1;genre2;album2;artist3;7;end;
+path;song4;240;artist1;genre2;album2;;7;end;
