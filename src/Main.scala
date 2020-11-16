@@ -19,6 +19,15 @@ object Main {
   def  main (args: Array[String]): Unit = {
     loadfiles()
     printLoaded()
+
+    /*
+    println("before:")
+    println(loadedSongs)
+    deletefromDB(loadedSongs(1),db_songs)
+    println("after:")
+    println(loadedSongs)
+    */
+
   }
 
   def showPropt(): Unit ={
@@ -29,15 +38,35 @@ object Main {
       readLine.trim.toUpperCase
   }
   def loadfiles(): Unit={
-    loadedSongs = new ListBuffer[Song]()
-    loadedArtists = new ListBuffer[Artist]()
-    loadedAlbums =  new ListBuffer[Album]()
+    loadedSongs     = new ListBuffer[Song]()
+    loadedArtists   = new ListBuffer[Artist]()
+    loadedAlbums    =  new ListBuffer[Album]()
     loadedPlaylists = new ListBuffer[Playlist]()
     readFile(loadSong,db_songs)
     readFile(loadArtist,db_artists)
     readFile(loadAlbum,db_albums)
     readFile(loadPlaylist,db_playlists)
   }
+
+  def unload[A](a:A):Unit= a match{
+    case a : Data.Song => {
+      println("unloaded "+ a.toString)
+      loadedSongs -= a.asInstanceOf[Data.Song]
+    }
+    case a : Data.Artist => {
+      println("unloaded " + a.toString)
+      loadedArtists -= a.asInstanceOf[Data.Artist]
+    }
+    case a : Data.Album => {
+      println("unloaded " + a.toString)
+      loadedAlbums -= a.asInstanceOf[Data.Album]
+    }
+    case a : Data.Playlist => {
+      println("unloaded " + a.toString)
+      loadedPlaylists -= a.asInstanceOf[Data.Playlist]
+    }
+  }
+
   def loadSong(line: String): Unit={
     val info=line.split(";").toList
     loadedSongs+=Song(info(0),info(1),info(2).toInt,info(3),info(4),info(5),info(6),info(7).toInt)
@@ -70,7 +99,7 @@ object Main {
     case a::t => load(a);readline(load,t)
   }
   def addtoDB[A](a: A, dbPath: String):Unit={
-    var file=new File(dbPath)
+    val file=new File(dbPath)
     val bw = new BufferedWriter(new FileWriter(file, true))
     bw.newLine()
     bw.write(a.toString())
@@ -84,6 +113,8 @@ object Main {
     val bw = new BufferedWriter(new FileWriter(file))
     writeFileAfterDelete(bw,lines)
     bw.close()
+
+    unload(a)
   }
   def writeFileAfterDelete(bw: BufferedWriter, lines: List[String]): Unit = lines match{
     case a::Nil => bw.write(a);bw.newLine();bw.close()
