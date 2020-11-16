@@ -4,6 +4,8 @@ case class Song ( filepath:String, name:String, duration:Double, artist:String, 
 
   def info(): Option[(String,String,Double,String,String,String,List[String],Int)] ={ Song.info(this) }
 
+  override def toString(): String ={ Song.toString(this) }
+
 }
 object Song{
 
@@ -29,4 +31,9 @@ object Song{
       s.listened
     )
   }
+
+  def toString(s:Song ): String ={
+    s.filepath + ";" + s.name + ";" + s.duration + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats + ";" + s.listened
+  }
+
 }
