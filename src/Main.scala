@@ -10,7 +10,7 @@ object Main {
         var s:Song = Song("path","songname",100,artist,"genre",album,Nil,10)
         println(s.info())
 
-        mainLoop()
+      //  mainLoop()
     }
 
     def showPropt(): Unit ={
@@ -21,7 +21,7 @@ object Main {
         readLine.trim.toUpperCase
     }
 
-    @tailrec
+/*    @tailrec
     def mainLoop(): Unit ={
         showPropt()
         val userInput:String = getUserInput()
@@ -29,5 +29,5 @@ object Main {
             case
 
         }
-    }
+    }*/
 }
