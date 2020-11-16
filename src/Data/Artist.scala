@@ -49,4 +49,5 @@ object Artist{
     Artist(a.name,album::a.albums, a.songs)
   }
 
+
 }
