@@ -71,48 +71,6 @@ object Main {
   }
 
 /*
-  def getSongfromBD(data:Data.Datatype.Value, id:String):List[Any]= {
-    def aux(data:Data.Datatype.Value,lines: List[String]): List[Any] = lines match {
-      case Nil => List()
-      case h :: t =>
-        val info = h.split(";").toList
-        if (info(0) == id) {
-          data match{
-            case Datatype.SONG      =>
-            {
-              val song: Song = Song(info(0), info(1), info(2).toInt, info(3), info(4), info(5), info(6), info(7).toInt)
-              List(song) ::: aux(data,t)
-            }
-            case Datatype.ALBUM     =>
-              {
-                val album:Album = Album(info(0),info(1),info(2))
-                List(album) ::: aux(data, t)
-              }
-
-            case Datatype.PLAYLIST  =>
-            {
-              val playlist:Playlist =Playlist(info(0),info(1),info(2))
-              List(palylist) ::: aux(data, t)
-            }
-            case Datatype.ARTIST    =>
-            {
-              val artist: Artist = Artist(info(0),info(1),info(2))
-              List(artist) ::: aux(data, t)
-            }
-
-          }
-        } else {
-          aux(data,t)
-        }
-    }
-
-    val bufferedFile = Source.fromFile(db_songs)
-    val lines = bufferedFile.getLines.toList
-    aux(data,lines)
-    }
-    */
-
-/*
   def update [A](a:A,field:Int, newv:String):A = a match{
     case a : Data.Song =>
       val song:Song = a.asInstanceOf[Data.Song]
@@ -135,33 +93,29 @@ object Main {
 
   }*/
 
-  def loadSong(line: String): Song={
+  def loadSong(line: String): Unit={
     val info=line.split(";").toList
-    val song:Song = Song(info(0),info(1),info(2).toInt,info(3),info(4),info(5),info(6),info(7).toInt,info(8).toInt)
+    val song:Song = Song(info(0).toInt,info(1),info(2),info(3).toInt,info(4),info(5),info(6),info(7),info(8).toInt,info(9).toInt)
     loadedSongs+= song
     println("Song loaded from DB")
-    song
   }
-  def loadArtist(line: String): Artist={
+  def loadArtist(line: String): Unit={
     val info=line.split(";").toList
-    val artist:Artist = Artist(info(0),info(1),info(2))
+    val artist:Artist = Artist(info(0).toInt,info(1),info(2),info(3))
     loadedArtists+= artist
     println("Artist loaded from DB")
-    artist
   }
-  def loadAlbum(line: String): Album={
+  def loadAlbum(line: String): Unit={
     val info=line.split(";").toList
-    val album:Album = Album(info(0),info(1),info(2))
+    val album:Album = Album(info(0).toInt,info(1),info(2),info(3))
     loadedAlbums+=album
     println("Album loaded from DB")
-    album
   }
-  def loadPlaylist(line: String): Playlist={
+  def loadPlaylist(line: String): Unit={
     val info=line.split(";").toList
-    val playlist:Playlist =Playlist(info(0),info(1),info(2))
+    val playlist:Playlist =Playlist(info(0).toInt,info(1),info(2),info(3))
     loadedPlaylists+=playlist
     println("Playlist loaded from DB")
-    playlist
   }
 
   def readFile(load: String=>Any, filename: String): Unit={
@@ -204,6 +158,12 @@ object Main {
     loadedArtists.foreach{println}
     loadedAlbums.foreach{println}
     loadedPlaylists.foreach{println}
+  }
+  def getlastid(filename:String): Int ={
+    val bufferedFile = Source.fromFile(filename)
+    val lines = bufferedFile.getLines.toList
+    bufferedFile.close()
+    lines.last.split(";").toList(0).toInt
   }
 
   /*
