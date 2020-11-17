@@ -70,11 +70,11 @@ object Main {
 
   }
 
-/*
-  def update [A](a:A,field:Int, newv:String):A = a match{
+
+  def update [A](a:A,field:Int, newv:String):Unit = a match{
     case a : Data.Song =>
       val song:Song = a.asInstanceOf[Data.Song]
-      val loadedSong:Song = loadedSongs.filter(_.name.equals(song.name))(1)
+      val loadedSong = loadedSongs.filter(_.id==song.id)(0)
 
       //val loadedSongUpdated:Song = Song(loadedSong.filepath,loadedSong.name,loadedSong.duration)
 
@@ -90,8 +90,7 @@ object Main {
 
       loadedPlaylists
 
-
-  }*/
+  }
 
   def loadSong(line: String): Unit={
     val info=line.split(";").toList
