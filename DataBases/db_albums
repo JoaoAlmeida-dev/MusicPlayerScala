@@ -1,3 +1,3 @@
-albums1;song1 song2;artist3;end;
-albums2;song1 song3 song4;artist4;end;
-albums3;song5;artist1;end;
+1;albums1;song1 song2;artist3;end;
+2;albums2;song1 song3 song4;artist4;end;
+3;albums3;song5;artist1;end;

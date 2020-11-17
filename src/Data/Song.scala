@@ -1,14 +1,14 @@
 package Data
 
-case class Song ( name:String,filepath:String,  duration:Int, artist:String, genre:String, album:String, feats: List[String], listened:Int, trackN:Int){
+case class Song (id: Int, name:String,filepath:String,  duration:Int, artist:String, genre:String, album:String, feats: List[String], listened:Int, trackN:Int){
 
-  def info(): Option[(String,String,Int,String,String,String,List[String],Int)] ={ Song.info(this) }
+  def info(): Option[(Int,String,String,Int,String,String,String,List[String],Int,Int)] ={ Song.info(this) }
 
   override def toString(): String ={ Song.toString(this) }
 
 }
 object Song{
-
+  type id         = Int
   type Name       = String
   type Filepath   = String
   type Duration   = Int
@@ -20,10 +20,11 @@ object Song{
   type TrackN   = Int
 
 
-  def info(s:Song): Option[(String,String,Int,String,String,String,List[String],Int,Int)] ={
+  def info(s:Song): Option[(Int,String,String,Int,String,String,String,List[String],Int,Int)] ={
     Option(
-      s.filepath,
+      s.id,
       s.name,
+      s.filepath,
       s.duration,
       s.artist,
       s.genre,
@@ -34,12 +35,12 @@ object Song{
     )
   }
 //---------  LOAD APPLY
-  def apply(filepath:String, name:String, duration:Int, artist:String, genre:String, album:String, feats: String, listened:Int,trackN: Int): Song = {
-    Song(name, filepath, duration, artist, genre, album, feats.split(" ").toList, listened, trackN)
+  def apply(id:Int,filepath:String, name:String, duration:Int, artist:String, genre:String, album:String, feats: String, listened:Int,trackN: Int): Song = {
+    Song(id,name, filepath, duration, artist, genre, album, feats.split(" ").toList, listened, trackN)
   }
 //----------
   def toString(s:Song ): String ={
-     s.name + ";"+ s.filepath + ";" + s.duration + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats.mkString(" ") + ";" + s.listened +";"+s.trackN+";end;"
+     s.id + ";" + s.name + ";"+ s.filepath + ";" + s.duration + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats.mkString(" ") + ";" + s.listened +";"+s.trackN+";end;"
   }
 
 
