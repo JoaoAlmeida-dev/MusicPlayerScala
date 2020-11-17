@@ -21,6 +21,8 @@ object Main {
     loadfiles()
     printLoaded()
 
+    //println(getSongfromBD(Datatype.SONG,"song1"))
+
     /*
     println("before:")
     println(loadedSongs)
@@ -68,13 +70,55 @@ object Main {
 
   }
 
+/*
+  def getSongfromBD(data:Data.Datatype.Value, id:String):List[Any]= {
+    def aux(data:Data.Datatype.Value,lines: List[String]): List[Any] = lines match {
+      case Nil => List()
+      case h :: t =>
+        val info = h.split(";").toList
+        if (info(0) == id) {
+          data match{
+            case Datatype.SONG      =>
+            {
+              val song: Song = Song(info(0), info(1), info(2).toInt, info(3), info(4), info(5), info(6), info(7).toInt)
+              List(song) ::: aux(data,t)
+            }
+            case Datatype.ALBUM     =>
+              {
+                val album:Album = Album(info(0),info(1),info(2))
+                List(album) ::: aux(data, t)
+              }
 
-  def update [A](a:A,field:String, newv:String):A = {
+            case Datatype.PLAYLIST  =>
+            {
+              val playlist:Playlist =Playlist(info(0),info(1),info(2))
+              List(palylist) ::: aux(data, t)
+            }
+            case Datatype.ARTIST    =>
+            {
+              val artist: Artist = Artist(info(0),info(1),info(2))
+              List(artist) ::: aux(data, t)
+            }
+
+          }
+        } else {
+          aux(data,t)
+        }
+    }
+
+    val bufferedFile = Source.fromFile(db_songs)
+    val lines = bufferedFile.getLines.toList
+    aux(data,lines)
+    }
+    */
+
+/*
+  def update [A](a:A,field:Int, newv:String):A = a match{
     case a : Data.Song =>
       val song:Song = a.asInstanceOf[Data.Song]
       val loadedSong:Song = loadedSongs.filter(_.name.equals(song.name))(1)
 
-      val loadedSongUpdated:Song = loadedSong.copy()
+      //val loadedSongUpdated:Song = Song(loadedSong.filepath,loadedSong.name,loadedSong.duration)
 
     case a : Data.Artist =>
 
@@ -89,29 +133,38 @@ object Main {
       loadedPlaylists
 
 
+  }*/
+
+  def loadSong(line: String): Song={
+    val info=line.split(";").toList
+    val song:Song = Song(info(0),info(1),info(2).toInt,info(3),info(4),info(5),info(6),info(7).toInt,info(8).toInt)
+    loadedSongs+= song
+    println("Song loaded from DB")
+    song
+  }
+  def loadArtist(line: String): Artist={
+    val info=line.split(";").toList
+    val artist:Artist = Artist(info(0),info(1),info(2))
+    loadedArtists+= artist
+    println("Artist loaded from DB")
+    artist
+  }
+  def loadAlbum(line: String): Album={
+    val info=line.split(";").toList
+    val album:Album = Album(info(0),info(1),info(2))
+    loadedAlbums+=album
+    println("Album loaded from DB")
+    album
+  }
+  def loadPlaylist(line: String): Playlist={
+    val info=line.split(";").toList
+    val playlist:Playlist =Playlist(info(0),info(1),info(2))
+    loadedPlaylists+=playlist
+    println("Playlist loaded from DB")
+    playlist
   }
 
-  def loadSong(line: String): Unit={
-    val info=line.split(";").toList
-    loadedSongs+=Song(info(0),info(1),info(2).toInt,info(3),info(4),info(5),info(6),info(7).toInt)
-    println("Song loaded from DB")
-  }
-  def loadArtist(line: String): Unit={
-    val info=line.split(";").toList
-    loadedArtists+=Artist(info(0),info(1),info(2))
-    println("Artist loaded from DB")
-  }
-  def loadAlbum(line: String): Unit={
-    val info=line.split(";").toList
-    loadedAlbums+=Album(info(0),info(1),info(2))
-    println("Album loaded from DB")
-  }
-  def loadPlaylist(line: String): Unit={
-    val info=line.split(";").toList
-    loadedPlaylists+=Playlist(info(0),info(1),info(2))
-    println("Playlist loaded from DB")
-  }
-  def readFile(load: String=>Unit, filename: String): Unit={
+  def readFile(load: String=>Any, filename: String): Unit={
     val bufferedFile = Source.fromFile(filename)
     val lines = bufferedFile.getLines.toList
     readline(load,lines)
@@ -119,7 +172,7 @@ object Main {
 
   }
   @tailrec
-  def readline(load: String=>Unit, lines: List[String]): Unit= lines match{
+  def readline(load: String=>Any, lines: List[String]): Unit= lines match{
     case a::Nil => load(a)
     case a::t => load(a);readline(load,t)
   }
