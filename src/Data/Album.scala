@@ -22,12 +22,12 @@ object Album {
     )
   }
 //------------------- LOAD APPLY
-  def apply(id: Int,name: String, tracks: String, artist:Int): Album = {
+  def apply(id: String,name: String, tracks: String, artist:String): Album = {
     val tracksList= tracks.split(" ").toList
     if(tracksList(0)==""){
-      Album(id,name,List(), artist)
+      Album(id.toInt,name,List(), artist.toInt)
     } else{
-      Album(id,name,tracksList.map(_.toInt), artist)
+      Album(id.toInt,name,tracksList.map(_.toInt), artist.toInt)
     }
   }
 //------------------

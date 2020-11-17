@@ -25,20 +25,20 @@ object Artist{
   }
 
 //------------------------ Load APPLY
-  def apply(id: Int,name: String, albums: String, songs: String): Artist = {
+  def apply(id: String,name: String, albums: String, songs: String): Artist = {
     val albumsList=albums.split(" ").toList
     val songsList=songs.split(" ").toList
     if(albumsList(0)=="" && songsList(0)==""){
-      Artist(id,name,List(),List())
+      Artist(id.toInt,name,List(),List())
     }
     else if(albumsList(0)==""){
-      Artist(id,name,List(),songsList.map(_.toInt))
+      Artist(id.toInt,name,List(),songsList.map(_.toInt))
     }
     else if(songsList(0)==""){
-      Artist(id,name,albumsList.map(_.toInt),List())
+      Artist(id.toInt,name,albumsList.map(_.toInt),List())
     }
     else{
-      Artist(id,name,albumsList.map(_.toInt),songsList.map(_.toInt))
+      Artist(id.toInt,name,albumsList.map(_.toInt),songsList.map(_.toInt))
     }
 
   }
