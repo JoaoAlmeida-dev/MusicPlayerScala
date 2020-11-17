@@ -20,7 +20,11 @@ object Main {
   def  main (args: Array[String]): Unit = {
     loadfiles()
     printLoaded()
-
+    println()
+    println("song:"+getlastid(db_songs))
+    println("album:"+getlastid(db_albums))
+    println("artist:"+getlastid(db_artists))
+    println("palylist:"+getlastid(db_playlists))
     //println(getSongfromBD(Datatype.SONG,"song1"))
 
     /*
@@ -116,6 +120,7 @@ object Main {
     val playlist:Playlist =Playlist(info(0).toInt,info(1),info(2),info(3))
     loadedPlaylists+=playlist
     println("Playlist loaded from DB")
+    playlist
   }
 
   def readFile(load: String=>Any, filename: String): Unit={

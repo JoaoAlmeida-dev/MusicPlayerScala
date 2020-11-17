@@ -1,9 +1,9 @@
 package Data
 
-case class Playlist(id:Int,name:String, songs:List[String], theme:String) {
-  def info(): Option[(Int,String,List[String],String)] ={ Playlist.info(this) }
-  def addSong(song: String): Playlist={ Playlist.addSong(this,song) }
-  def removeSong(song: String): Playlist={ Playlist.addSong(this,song) }
+case class Playlist(id:Int,name:String, songs:List[Int], theme:String) {
+  def info(): Option[(Int,String,List[Int],String)] ={ Playlist.info(this) }
+  def addSong(song: Int): Playlist={ Playlist.addSong(this,song) }
+  def removeSong(song: Int): Playlist={ Playlist.addSong(this,song) }
   override def toString(): String ={ Playlist.toString(this) }
 }
 
@@ -11,10 +11,10 @@ object Playlist{
 
   type id     = Int
   type Name   = String
-  type Songs  = List[String]
+  type Songs  = List[int]
   type Theme  = String
 
-  def info(p:Playlist): Option[(Int,String,List[String],String)] ={
+  def info(p:Playlist): Option[(Int,String,List[Int],String)] ={
     Option(
       p.id,
       p.name,
@@ -24,15 +24,20 @@ object Playlist{
   }
 //--------------------------- LOAD APPLY
   def apply(id: Int,name:String,songs:String, theme: String):Playlist={
-    Playlist(id,name,songs.split(" ").toList,theme)
+    val songslist = songs.split(" ").toList
+    if(songslist(0)==""){
+      Playlist(id, name,List() , theme)
+    }else{
+      Playlist(id, name, songslist.toList.map(_.toInt), theme)
+    }
   }
 //------------------------------------------
 
-  def addSong(p: Playlist, song: String): Playlist={
+  def addSong(p: Playlist, song: Int): Playlist={
     Playlist(p.id,p.name,song::p.songs,p.theme)
   }
 
-  def removeSong(p: Playlist, song: String): Playlist={
+  def removeSong(p: Playlist, song: Int): Playlist={
     val songs=p.songs.filter( _ != song)
     Playlist(p.id,p.name,songs,p.theme)
   }
