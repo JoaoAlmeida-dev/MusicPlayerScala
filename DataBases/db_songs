@@ -1,4 +1,4 @@
-1;song1;path;120;artist1;genre1;album1;2;1;4;end;
-2;song2;path;100;artist3;genre1;album2;2 3;15;3;end;
-3;song3;path;140;artist1;genre2;album2;3;7;2;end;
-4;song4;path;240;artist1;genre2;album2;;7;1;end;
+1;song1;path;120;1;genre1;1;2;1;4;end;
+2;song2;path;100;3;genre1;2;2 3;15;3;end;
+3;song3;path;140;1;genre2;2;3;7;2;end;
+4;song4;path;240;1;genre2;2;;7;1;end;
