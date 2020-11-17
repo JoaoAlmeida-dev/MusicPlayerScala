@@ -17,7 +17,7 @@ object Song{
   type Album      = Int
   type Feats      = List[Int]
   type Listened   = Int
-  type TrackN     = Int
+  type TrackN   = Int
 
 
   def info(s:Song): Option[(Int,String,String,Int,Int,String,Int,List[Int],Int,Int)] ={
@@ -35,12 +35,12 @@ object Song{
     )
   }
 //---------  LOAD APPLY
-  def apply(id:Int,filepath:String, name:String, duration:Int, artist:Int, genre:String, album:Int, feats: String, listened:Int,trackN: Int): Song = {
+  def apply(id:String, name:String, filepath:String, duration:String, artist:String, genre:String, album:String, feats: String, listened:String,trackN: String): Song = {
     val featsList=feats.split(" ").toList
     if(featsList(0)==""){
-      Song(id,name, filepath, duration, artist, genre, album, List(), listened, trackN)
+      Song(id.toInt,name, filepath, duration.toInt, artist.toInt, genre, album.toInt, List(), listened.toInt, trackN.toInt)
     } else{
-      Song(id,name, filepath, duration, artist, genre, album, featsList.map(_.toInt), listened, trackN)
+      Song(id.toInt,name, filepath, duration.toInt, artist.toInt, genre, album.toInt, featsList.map(_.toInt), listened.toInt, trackN.toInt)
     }
   }
 //----------

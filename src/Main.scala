@@ -74,11 +74,11 @@ object Main {
 
   }
 
-/*
-  def update [A](a:A,field:Int, newv:String):A = a match{
+
+  def update [A](a:A,field:Int, newv:String):Unit = a match{
     case a : Data.Song =>
       val song:Song = a.asInstanceOf[Data.Song]
-      val loadedSong:Song = loadedSongs.filter(_.name.equals(song.name))(1)
+      val loadedSong = loadedSongs.filter(_.id==song.id)(0)
 
       //val loadedSongUpdated:Song = Song(loadedSong.filepath,loadedSong.name,loadedSong.duration)
 
@@ -94,30 +94,29 @@ object Main {
 
       loadedPlaylists
 
-
-  }*/
+  }
 
   def loadSong(line: String): Unit={
     val info=line.split(";").toList
-    val song:Song = Song(info(0).toInt,info(1),info(2),info(3).toInt,info(4),info(5),info(6),info(7),info(8).toInt,info(9).toInt)
+    val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
     loadedSongs+= song
     println("Song loaded from DB")
   }
   def loadArtist(line: String): Unit={
     val info=line.split(";").toList
-    val artist:Artist = Artist(info(0).toInt,info(1),info(2),info(3))
+    val artist:Artist = Artist(info(0),info(1),info(2),info(3))
     loadedArtists+= artist
     println("Artist loaded from DB")
   }
   def loadAlbum(line: String): Unit={
     val info=line.split(";").toList
-    val album:Album = Album(info(0).toInt,info(1),info(2),info(3))
+    val album:Album = Album(info(0),info(1),info(2),info(3))
     loadedAlbums+=album
     println("Album loaded from DB")
   }
   def loadPlaylist(line: String): Unit={
     val info=line.split(";").toList
-    val playlist:Playlist =Playlist(info(0).toInt,info(1),info(2),info(3))
+    val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
     loadedPlaylists+=playlist
     println("Playlist loaded from DB")
     playlist

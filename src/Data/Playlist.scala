@@ -11,7 +11,7 @@ object Playlist{
 
   type id     = Int
   type Name   = String
-  type Songs  = List[int]
+  type Songs  = List[Int]
   type Theme  = String
 
   def info(p:Playlist): Option[(Int,String,List[Int],String)] ={
@@ -23,12 +23,12 @@ object Playlist{
     )
   }
 //--------------------------- LOAD APPLY
-  def apply(id: Int,name:String,songs:String, theme: String):Playlist={
-    val songslist = songs.split(" ").toList
-    if(songslist(0)==""){
-      Playlist(id, name,List() , theme)
-    }else{
-      Playlist(id, name, songslist.toList.map(_.toInt), theme)
+  def apply(id: String,name:String,songs:String, theme: String):Playlist={
+    val songsList=songs.split(" ").toList
+    if(songsList(0)==""){
+      Playlist(id.toInt,name,List(),theme)
+    } else{
+      Playlist(id.toInt,name,songsList.map(_.toInt),theme)
     }
   }
 //------------------------------------------

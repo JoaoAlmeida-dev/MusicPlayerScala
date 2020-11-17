@@ -2,20 +2,20 @@ package Data
 
 import Data.Artist.addAlbum
 
-case class Artist(id:Int,name:String, albums: List[String], songs:List[String] ){
-  def info():Option[(Int,String,List[String],List[String])]={ Artist.info(this) }
-  def addSong(song: String): Artist={ Artist.addSong(this, song) }
-  def addAlbum(album: String): Artist={ Artist.addAlbum(this, album) }
+case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ){
+  def info():Option[(Int,String,List[Int],List[Int])]={ Artist.info(this) }
+  def addSong(song: Int): Artist={ Artist.addSong(this, song) }
+  def addAlbum(album: Int): Artist={ Artist.addAlbum(this, album) }
   override def toString(): String ={ Artist.toString(this) }
 }
 
 object Artist{
   type id       = Int
   type Name     = String
-  type Albums   = List[String]
-  type Songs    = List[String]
+  type Albums   = List[Int]
+  type Songs    = List[Int]
 
-  def info(a:Artist): Option[(Int,String,List[String],List[String])] ={
+  def info(a:Artist): Option[(Int,String,List[Int],List[Int])] ={
     Option(
       a.id,
       a.name,
@@ -25,16 +25,30 @@ object Artist{
   }
 
 //------------------------ Load APPLY
-  def apply(id: Int,name: String, albums: String, songs: String): Artist = {
-    Artist(id,name, albums.split(" ").toList, songs.split(" ").toList)
+  def apply(id: String,name: String, albums: String, songs: String): Artist = {
+    val albumsList=albums.split(" ").toList
+    val songsList=songs.split(" ").toList
+    if(albumsList(0)=="" && songsList(0)==""){
+      Artist(id.toInt,name,List(),List())
+    }
+    else if(albumsList(0)==""){
+      Artist(id.toInt,name,List(),songsList.map(_.toInt))
+    }
+    else if(songsList(0)==""){
+      Artist(id.toInt,name,albumsList.map(_.toInt),List())
+    }
+    else{
+      Artist(id.toInt,name,albumsList.map(_.toInt),songsList.map(_.toInt))
+    }
+
   }
 //----------------
 
-  def addSong(a: Data.Artist, song: String): Artist ={
+  def addSong(a: Data.Artist, song: Int): Artist ={
     Artist(a.id,a.name,a.albums, song::a.songs)
   }
 
-  def addAlbum(a: Data.Artist, album:String): Artist ={
+  def addAlbum(a: Data.Artist, album:Int): Artist ={
     Artist(a.id,a.name,album::a.albums, a.songs)
   }
 
