@@ -2,6 +2,7 @@ import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
 
 import Data._
 
+import scala.annotation.tailrec
 import scala.io.StdIn.readLine
 import scala.io.Source
 import scala.collection.mutable.ListBuffer
@@ -49,22 +50,45 @@ object Main {
   }
 
   def unload[A](a:A):Unit= a match{
-    case a : Data.Song => {
+    case a : Data.Song =>
       println("unloaded "+ a.toString)
       loadedSongs -= a.asInstanceOf[Data.Song]
-    }
-    case a : Data.Artist => {
+
+    case a : Data.Artist =>
       println("unloaded " + a.toString)
       loadedArtists -= a.asInstanceOf[Data.Artist]
-    }
-    case a : Data.Album => {
+
+    case a : Data.Album =>
       println("unloaded " + a.toString)
       loadedAlbums -= a.asInstanceOf[Data.Album]
-    }
-    case a : Data.Playlist => {
+
+    case a : Data.Playlist =>
       println("unloaded " + a.toString)
       loadedPlaylists -= a.asInstanceOf[Data.Playlist]
-    }
+
+  }
+
+
+  def update [A](a:A,field:String, newv:String):A = {
+    case a : Data.Song =>
+      val song:Song = a.asInstanceOf[Data.Song]
+      val loadedSong:Song = loadedSongs.filter(_.name.equals(song.name))(1)
+
+      val loadedSongUpdated:Song = loadedSong.copy()
+
+    case a : Data.Artist =>
+
+      loadedArtists
+
+    case a : Data.Album =>
+
+      loadedAlbums
+
+    case a : Data.Playlist =>
+
+      loadedPlaylists
+
+
   }
 
   def loadSong(line: String): Unit={
@@ -94,6 +118,7 @@ object Main {
     bufferedFile.close()
 
   }
+  @tailrec
   def readline(load: String=>Unit, lines: List[String]): Unit= lines match{
     case a::Nil => load(a)
     case a::t => load(a);readline(load,t)
@@ -102,7 +127,7 @@ object Main {
     val file=new File(dbPath)
     val bw = new BufferedWriter(new FileWriter(file, true))
     bw.newLine()
-    bw.write(a.toString())
+    bw.write(a.toString)
     bw.close()
   }
   def deletefromDB[A](a: A, dbPath: String):Unit={
@@ -116,6 +141,7 @@ object Main {
 
     unload(a)
   }
+  @tailrec
   def writeFileAfterDelete(bw: BufferedWriter, lines: List[String]): Unit = lines match{
     case a::Nil => bw.write(a);bw.newLine();bw.close()
     case a::t => bw.write(a);bw.newLine();writeFileAfterDelete(bw,t)
