@@ -1,8 +1,8 @@
 package Data
 
-case class Song (id: Int, name:String,filepath:String,  duration:Int, artist:String, genre:String, album:String, feats: List[String], listened:Int, trackN:Int){
+case class Song (id: Int, name:String,filepath:String,  duration:Int, artist:String, genre:String, album:String, feats: List[Int], listened:Int, trackN:Int){
 
-  def info(): Option[(Int,String,String,Int,String,String,String,List[String],Int,Int)] ={ Song.info(this) }
+  def info(): Option[(Int,String,String,Int,String,String,String,List[Int],Int,Int)] ={ Song.info(this) }
 
   override def toString(): String ={ Song.toString(this) }
 
@@ -15,12 +15,12 @@ object Song{
   type Artist     = String
   type Genre      = String
   type Album      = String
-  type Feats      = List[String]
+  type Feats      = List[Int]
   type Listened   = Int
   type TrackN   = Int
 
 
-  def info(s:Song): Option[(Int,String,String,Int,String,String,String,List[String],Int,Int)] ={
+  def info(s:Song): Option[(Int,String,String,Int,String,String,String,List[Int],Int,Int)] ={
     Option(
       s.id,
       s.name,
@@ -36,7 +36,12 @@ object Song{
   }
 //---------  LOAD APPLY
   def apply(id:Int,filepath:String, name:String, duration:Int, artist:String, genre:String, album:String, feats: String, listened:Int,trackN: Int): Song = {
-    Song(id,name, filepath, duration, artist, genre, album, feats.split(" ").toList, listened, trackN)
+    val featsList=feats.split(" ").toList
+    if(featsList(0)==""){
+      Song(id,name, filepath, duration, artist, genre, album, List(), listened, trackN)
+    } else{
+      Song(id,name, filepath, duration, artist, genre, album, featsList.map(_.toInt), listened, trackN)
+    }
   }
 //----------
   def toString(s:Song ): String ={
