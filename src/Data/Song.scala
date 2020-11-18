@@ -17,7 +17,7 @@ object Song{
   type Album      = Int
   type Feats      = List[Int]
   type Listened   = Int
-  type TrackN   = Int
+  type TrackN     = Int
 
 
   def info(s:Song): Option[(Int,String,String,Int,Int,String,Int,List[Int],Int,Int)] ={

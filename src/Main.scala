@@ -19,31 +19,17 @@ object Main {
 
   def  main (args: Array[String]): Unit = {
     loadfiles()
-    printLoaded()
+    //printLoaded()
     println()
-    println("song:"+getlastid(db_songs))
-    println("album:"+getlastid(db_albums))
-    println("artist:"+getlastid(db_artists))
-    println("palylist:"+getlastid(db_playlists))
+    println(loadedAlbums(0))
+    val artist1 = loadedArtists(0)
+    update(artist1,2,"1")
+    addtoDB(loadedArtists(0),db_artists)
+    update(artist1,2,"1 2 3 4")
+    addtoDB(loadedArtists(0),db_artists)
     //println(getSongfromBD(Datatype.SONG,"song1"))
-
-    /*
-    println("before:")
-    println(loadedSongs)
-    deletefromDB(loadedSongs(1),db_songs)
-    println("after:")
-    println(loadedSongs)
-    */
-
   }
 
-  def showPropt(): Unit ={
-      print()
-  }
-
-  def getUserInput(): String ={
-      readLine.trim.toUpperCase
-  }
   def loadfiles(): Unit={
     loadedSongs     = new ListBuffer[Song]()
     loadedArtists   = new ListBuffer[Artist]()
@@ -57,69 +43,93 @@ object Main {
 
   def unload[A](a:A):Unit= a match{
     case a : Data.Song =>
-      println("unloaded "+ a.toString)
+      println("Unloaded "+ a.toString)
       loadedSongs -= a.asInstanceOf[Data.Song]
-
     case a : Data.Artist =>
-      println("unloaded " + a.toString)
+      println("Unloaded " + a.toString)
       loadedArtists -= a.asInstanceOf[Data.Artist]
-
     case a : Data.Album =>
-      println("unloaded " + a.toString)
+      println("Unloaded " + a.toString)
       loadedAlbums -= a.asInstanceOf[Data.Album]
-
     case a : Data.Playlist =>
-      println("unloaded " + a.toString)
+      println("Unloaded " + a.toString)
       loadedPlaylists -= a.asInstanceOf[Data.Playlist]
-
   }
 
+  def update [A](a:A,field:Int, newv:String):Unit = {
+    if(field ==0){
+      println("UpdateError:Cant change id")
+    }else{
+      a match {
+        case a: Data.Song =>
+          val objectOld: Song = a.asInstanceOf[Data.Song]
+          val loadedObject: Song = loadedSongs.filter(_.id == objectOld.id)(0)
+          val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
+          val objectNew: Song = Song(info(0), info(1), info(2), info(3), info(4), info(5), info(6), info(7), info(8), info(9))
 
-  def update [A](a:A,field:Int, newv:String):Unit = a match{
-    case a : Data.Song =>
-      val song:Song = a.asInstanceOf[Data.Song]
-      val loadedSong = loadedSongs.filter(_.id==song.id)(0)
+          deletefromDB(loadedObject, db_songs)
+          addtoDB(objectNew, db_songs)
+          loadSong(info.mkString(";"))
 
-      //val loadedSongUpdated:Song = Song(loadedSong.filepath,loadedSong.name,loadedSong.duration)
+        case a: Data.Artist =>
+          val objectOld: Artist = a.asInstanceOf[Data.Artist]
+          val loadedObject: Artist = loadedArtists.filter(_.id == objectOld.id)(0)
+          val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
+          val objectNew: Artist = Artist(info(0),info(1),info(2),info(3))
 
-    case a : Data.Artist =>
+          deletefromDB(loadedObject, db_artists)
+          addtoDB(objectNew, db_artists)
+          loadArtist(info.mkString(";"))
 
-      loadedArtists
+        case a: Data.Album =>
+          val objectOld: Album = a.asInstanceOf[Data.Album]
+          val loadedObject: Album = loadedAlbums.filter(_.id == objectOld.id)(0)
+          val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
+          val objectNew: Album = Album(info(0),info(1),info(2),info(3))
 
-    case a : Data.Album =>
+          deletefromDB(loadedObject, db_albums)
+          addtoDB(objectNew, db_albums)
+          loadAlbum(info.mkString(";"))
 
-      loadedAlbums
+        case a: Data.Playlist =>
+          val objectOld: Playlist = a.asInstanceOf[Data.Playlist]
+          val loadedObject: Playlist = loadedPlaylists.filter(_.id == objectOld.id)(0)
+          val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
+          val objectNew: Playlist = Playlist(info(0),info(1),info(2),info(3))
 
-    case a : Data.Playlist =>
+          deletefromDB(loadedObject, db_playlists)
+          addtoDB(objectNew, db_playlists)
+          loadPlaylist(info.mkString(";"))
 
-      loadedPlaylists
-
+      }
+    }
   }
 
   def loadSong(line: String): Unit={
     val info=line.split(";").toList
     val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
     loadedSongs+= song
-    println("Song loaded from DB")
+    println("Loaded " + line)
+
   }
   def loadArtist(line: String): Unit={
     val info=line.split(";").toList
     val artist:Artist = Artist(info(0),info(1),info(2),info(3))
     loadedArtists+= artist
-    println("Artist loaded from DB")
+    println("Loaded " + line)
+
   }
   def loadAlbum(line: String): Unit={
     val info=line.split(";").toList
     val album:Album = Album(info(0),info(1),info(2),info(3))
     loadedAlbums+=album
-    println("Album loaded from DB")
+    println("Loaded " + line)
   }
   def loadPlaylist(line: String): Unit={
     val info=line.split(";").toList
     val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
     loadedPlaylists+=playlist
-    println("Playlist loaded from DB")
-    playlist
+    println("Loaded " + line)
   }
 
   def readFile(load: String=>Any, filename: String): Unit={
@@ -137,8 +147,8 @@ object Main {
   def addtoDB[A](a: A, dbPath: String):Unit={
     val file=new File(dbPath)
     val bw = new BufferedWriter(new FileWriter(file, true))
-    bw.newLine()
     bw.write(a.toString)
+    bw.newLine()
     bw.close()
   }
   def deletefromDB[A](a: A, dbPath: String):Unit={
@@ -177,6 +187,12 @@ object Main {
   */
 
   /*
+  def showPropt(): Unit ={
+      print()
+  }
+  def getUserInput(): String ={
+      readLine.trim.toUpperCase
+  }
   @tailrec
   def mainLoop(): Unit ={
     showPropt()
@@ -186,5 +202,13 @@ object Main {
 
       }
   }
+
+
+  -----------------------------TASKS----------------------------------------------
+  ler ficheiros mp3
+  dar play a ficheiros mp3
+
+  fazer o menu da cmd
+
   */
 }
