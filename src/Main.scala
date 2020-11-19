@@ -14,14 +14,25 @@ object Main {
     DatabaseFunc.loadfiles()
     //printLoaded()
     println()
+    /*
     println(DatabaseFunc.loadedAlbums(0))
     val artist1 = DatabaseFunc.loadedArtists(0)
     DatabaseFunc.update(artist1,2,"1")
     DatabaseFunc.addtoDB(DatabaseFunc.loadedArtists(0),DatabaseFunc.db_artists)
     DatabaseFunc.update(artist1,2,"1 2 3 4")
     DatabaseFunc.addtoDB(DatabaseFunc.loadedArtists(0),DatabaseFunc.db_artists)
+    */
+    println("------------SONG------------")
+      println(Song.)
+    println("------------ARTIST------------")
+      println(DatabaseFunc.get(Object[Artist]))
+    println("------------ALBUM------------")
+      println(DatabaseFunc.get(Object[Album]))
+    println("------------PLAYLIST------------")
+      println(DatabaseFunc.get(Object[Playlist]))
     //println(getSongfromBD(Datatype.SONG,"song1"))
   }
+
 
 
 

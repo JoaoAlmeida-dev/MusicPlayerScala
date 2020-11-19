@@ -1,10 +1,17 @@
 package Data
+import scala.collection.mutable.ListBuffer
 
-case class Playlist(id:Int,name:String, songs:List[Int], theme:String) {
+case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends Object[Playlist] {
   def info(): Option[(Int,String,List[Int],String)] ={ Playlist.info(this) }
   def addSong(song: Int): Playlist={ Playlist.addSong(this,song) }
   def removeSong(song: Int): Playlist={ Playlist.addSong(this,song) }
+
   override def toString(): String ={ Playlist.toString(this) }
+  override val db: String = Playlist.db
+  override var loaded: ListBuffer[Playlist] = Playlist.loaded
+  override def load(line: String): Unit = Playlist.load(line)
+
+  override val constructN: Int = 4
 }
 
 object Playlist{
@@ -13,6 +20,16 @@ object Playlist{
   type Name   = String
   type Songs  = List[Int]
   type Theme  = String
+
+  val db: String = "DataBases/db_playlists"
+  var loaded: ListBuffer[Playlist] = new ListBuffer[Playlist]
+
+  def load(line: String): Unit={
+    val info=line.split(";").toList
+    val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
+    loaded+=playlist
+    println("Loaded " + line)
+  }
 
   def info(p:Playlist): Option[(Int,String,List[Int],String)] ={
     Option(
