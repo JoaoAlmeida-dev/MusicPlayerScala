@@ -1,11 +1,3 @@
-import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
-
-import Data._
-
-import scala.annotation.tailrec
-import scala.io.StdIn.readLine
-import scala.io.Source
-import scala.collection.mutable.ListBuffer
 
 object Main {
 
