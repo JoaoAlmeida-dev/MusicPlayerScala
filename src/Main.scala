@@ -23,13 +23,14 @@ object Main {
     DatabaseFunc.addtoDB(DatabaseFunc.loadedArtists(0),DatabaseFunc.db_artists)
     */
     println("------------SONG------------")
-      println(Song.)
+      println(Song.loaded)
+    /*
     println("------------ARTIST------------")
       println(DatabaseFunc.get(Object[Artist]))
     println("------------ALBUM------------")
       println(DatabaseFunc.get(Object[Album]))
     println("------------PLAYLIST------------")
-      println(DatabaseFunc.get(Object[Playlist]))
+      println(DatabaseFunc.get(Object[Playlist]))*/
     //println(getSongfromBD(Datatype.SONG,"song1"))
   }
 

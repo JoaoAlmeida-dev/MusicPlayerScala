@@ -77,8 +77,6 @@ object DatabaseFunc {
       loadedPlaylists -= a.asInstanceOf[Data.Playlist]
       */
 
-
-
   def update [A](a:Object[A],field:Int, newv:String):Unit = {
     if(field ==0){
       println("UpdateError:Cant change id")
