@@ -41,13 +41,14 @@ object Main {
     import music from file system
     list MusicObjects sorted by field
     menus para navegar pela db (cmd style)
+    ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
 
   */
 
   def showPropt(): Unit ={
 
     println("-----------------------MusicPlayer in SCALA-----------------------")
-    println("Options:")
+    println("Menu, type the specified line below to choose:")
     println("    Display")
     println("    Option 2")
     println("    Option 3")
@@ -70,6 +71,8 @@ object Main {
     val userInput:String = getUserInput()
     userInput match{
       case "DISPLAY" => display() ;mainLoop()
+      case "OPTION 2" => println("Work in progress, try again later") ;mainLoop()
+      case "OPTION 3" => println("Work in progress, try again later") ;mainLoop()
       case _ =>println("\n Nenhuma das opcoes foi selecionada, tente novamente")    ;mainLoop()
 
       }
