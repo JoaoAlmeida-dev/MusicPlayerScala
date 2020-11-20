@@ -16,6 +16,7 @@ case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ) exten
   override val constructN: Int = 4
 
   override def apply(info:List[String]):Artist=Artist.apply(info)
+  override def getLoaded[Artist](): List[String] = Artist.getLoaded[Artist]()
 }
 
 object Artist{
@@ -26,6 +27,9 @@ object Artist{
 
   val db: String = "DataBases/db_artists"
   val loaded: ListBuffer[Artist] = new ListBuffer[Artist]
+  def getLoaded[Artist](): List[String] = {
+    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+  }
 
   def load(line: String): Unit={
     val info=line.split(";").toList

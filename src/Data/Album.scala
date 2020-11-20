@@ -14,6 +14,7 @@ case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends Musi
 
   override def apply(info:List[String]):Album=Album.apply(info)
 
+  override def getLoaded[Album](): List[String] = Album.getLoaded[Album]()
 }
 
 object Album {
@@ -24,6 +25,10 @@ object Album {
 
   val db: String = "DataBases/db_albums"
   var loaded: ListBuffer[Album] = new ListBuffer[Album]
+
+  def getLoaded[Album](): List[String] = {
+    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+  }
 
   def load(line: String): Unit={
     val info=line.split(";").toList

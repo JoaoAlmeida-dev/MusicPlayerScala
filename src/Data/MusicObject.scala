@@ -14,9 +14,7 @@ trait MusicObject[A]{
 
   def apply(args:List[String]):A
 
-  def getLoaded[A]():List[String] = {
-    this.loaded.toList.map(_.toString.split(";").drop(1).dropRight(1).toString)
-  }
+  def getLoaded[A]():List[String]
 }
 /*
 case object ALBUM     extends Objects[Album]   ("Album","DataBases/db_albums",new ListBuffer[Album])

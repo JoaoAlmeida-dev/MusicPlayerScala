@@ -13,7 +13,7 @@ case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends M
   override val constructN: Int = 4
 
   override def apply(info:List[String]):Playlist=Playlist.apply(info)
-
+  override def getLoaded[Playlist](): List[String] = Playlist.getLoaded[Playlist]()
 }
 
 object Playlist{
@@ -25,6 +25,9 @@ object Playlist{
 
   val db: String = "DataBases/db_playlists"
   var loaded: ListBuffer[Playlist] = new ListBuffer[Playlist]
+  def getLoaded[Playlist](): List[String] = {
+    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+  }
 
   def load(line: String): Unit={
     val info=line.split(";").toList

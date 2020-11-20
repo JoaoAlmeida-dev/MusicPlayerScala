@@ -172,10 +172,14 @@ object DatabaseFunc {
   }
 
   def printLoaded(): Unit={
-    Song.loaded.foreach{println}
-    Artist.loaded.foreach{println}
-    Album.loaded.foreach{println}
-    Playlist.loaded.foreach{println}
+    println("Songs:")
+    Song.loaded.sortWith((x1,x2)=>x1.id<x2.id)      .map(x => println("    " + x))
+    println("Artists:")
+    Artist.loaded.sortWith((x1,x2)=>x1.id<x2.id)    .map(x => println("    " + x))
+    println("Albums:")
+    Album.loaded.sortWith((x1,x2)=>x1.id<x2.id)     .map(x => println("    " + x))
+    println("Playlists:")
+    Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
   }
 
   def getlastid(filename:String): Int ={

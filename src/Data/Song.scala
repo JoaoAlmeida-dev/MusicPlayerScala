@@ -14,6 +14,8 @@ case class Song (id: Int, name:String,filepath:String,  duration:Int, artist:Int
 
   override def apply(info:List[String]):Song=Song.apply(info)
 
+  override def getLoaded[Song](): List[String] = Song.getLoaded()
+
 }
 object Song{
   type id         = Int
@@ -31,6 +33,10 @@ object Song{
   val db: String = "DataBases/db_songs"
   var loaded: ListBuffer[Song] = new ListBuffer[Song]()
 
+  def getLoaded[Song](): List[String] ={
+    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+  }
+
   def load(line: String): Unit={
     val info=line.split(";").toList
     //val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
@@ -38,6 +44,8 @@ object Song{
     loaded+= song
     println("Loaded " + line)
   }
+
+
 
   def info(s:Song): Option[(Int,String,String,Int,Int,String,Int,List[Int],Int,Int)] ={
     Option(
