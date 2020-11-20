@@ -42,6 +42,7 @@ object Main {
     list MusicObjects sorted by field
     menus para navegar pela db (cmd style)
     ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
+    funcoes das paylists (criar uma nova playlist, adicionar musica, remover musica )
 
   */
 
