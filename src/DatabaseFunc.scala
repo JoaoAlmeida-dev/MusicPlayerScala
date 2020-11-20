@@ -1,13 +1,14 @@
 import java.io.{BufferedWriter, File, FileWriter}
 
-import Data.{Album, Artist, Playlist, Song}
+import Data.{Album, Artist, MusicObject, Playlist, Song}
+import com.sun.prism.PixelFormat.{BYTE_ALPHA, DataType}
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
 
 object DatabaseFunc {
-
+/*
   var loadedSongs = new ListBuffer[Song]()
   var loadedArtists = new ListBuffer[Artist]()
   var loadedAlbums =  new ListBuffer[Album]()
@@ -16,39 +17,81 @@ object DatabaseFunc {
   val db_artists="DataBases/db_artists"
   val db_albums="DataBases/db_albums"
   val db_playlists="DataBases/db_playlists"
-
+*/
   def loadfiles(): Unit={
+    /*
     loadedSongs     = new ListBuffer[Song]()
     loadedArtists   = new ListBuffer[Artist]()
     loadedAlbums    =  new ListBuffer[Album]()
     loadedPlaylists = new ListBuffer[Playlist]()
-    readFile(loadSong,db_songs)
-    readFile(loadArtist,db_artists)
-    readFile(loadAlbum,db_albums)
-    readFile(loadPlaylist,db_playlists)
+    */
+    readFile(Song.load,Song.db)
+    readFile(Album.load,Album.db)
+    readFile(Artist.load,Artist.db)
+    readFile(Playlist.load,Playlist.db)
   }
-
+/*
+  def loadSong(line: String): Unit={
+    val info=line.split(";").toList
+    val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
+    loaded+= song
+    println("Loaded " + line)
+  }
+  def loadArtist(line: String): Unit={
+    val info=line.split(";").toList
+    val artist:Artist = Artist(info(0),info(1),info(2),info(3))
+    loadedArtists+= artist
+    println("Loaded " + line)
+  }
+  def loadAlbum(line: String): Unit={
+    val info=line.split(";").toList
+    val album:Album = Album(info(0),info(1),info(2),info(3))
+    loadedAlbums+=album
+    println("Loaded " + line)
+  }
+  def loadPlaylist(line: String): Unit={
+    val info=line.split(";").toList
+    val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
+    loadedPlaylists+=playlist
+    println("Loaded " + line)
+  }
+*/
   def unload[A](a:A):Unit= a match{
+    case a: Data.MusicObject[A] => {
+      println("Unloaded" + a.toString)
+      a.loaded -= a.asInstanceOf[A]
+    }
+  }
+  /*
     case a : Data.Song =>
       println("Unloaded "+ a.toString)
       loadedSongs -= a.asInstanceOf[Data.Song]
     case a : Data.Artist =>
       println("Unloaded " + a.toString)
-      loadedArtists -= a.asInstanceOf[Data.Artist]
+      loadedArtists-= a.asInstanceOf[Data.Artist]
     case a : Data.Album =>
       println("Unloaded " + a.toString)
       loadedAlbums -= a.asInstanceOf[Data.Album]
     case a : Data.Playlist =>
       println("Unloaded " + a.toString)
       loadedPlaylists -= a.asInstanceOf[Data.Playlist]
-  }
+      */
 
-  def update [A](a:A,field:Int, newv:String):Unit = {
+  def update [A](a:MusicObject[A], field:Int, newv:String):Unit = {
     if(field ==0){
       println("UpdateError:Cant change id")
     }else{
-      a match {
-        case a: Data.Song =>
+        val objectold:MusicObject[A] = a.asInstanceOf[MusicObject[A]]
+        val loadedObject:A =objectold.loaded.filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0)
+        val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
+        //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
+        val objectNew:A = a.apply(info)
+
+        deletefromDB(loadedObject, a.db)
+        addtoDB(objectNew, a.db)
+        a.load(info.mkString(";"))
+
+        /*case a: Data.Song =>
           val objectOld: Song = a.asInstanceOf[Data.Song]
           val loadedObject: Song = loadedSongs.filter(_.id == objectOld.id)(0)
           val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
@@ -88,35 +131,8 @@ object DatabaseFunc {
           addtoDB(objectNew, db_playlists)
           loadPlaylist(info.mkString(";"))
 
-      }
+      }*/
     }
-  }
-
-  def loadSong(line: String): Unit={
-    val info=line.split(";").toList
-    val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
-    loadedSongs+= song
-    println("Loaded " + line)
-
-  }
-  def loadArtist(line: String): Unit={
-    val info=line.split(";").toList
-    val artist:Artist = Artist(info(0),info(1),info(2),info(3))
-    loadedArtists+= artist
-    println("Loaded " + line)
-
-  }
-  def loadAlbum(line: String): Unit={
-    val info=line.split(";").toList
-    val album:Album = Album(info(0),info(1),info(2),info(3))
-    loadedAlbums+=album
-    println("Loaded " + line)
-  }
-  def loadPlaylist(line: String): Unit={
-    val info=line.split(";").toList
-    val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
-    loadedPlaylists+=playlist
-    println("Loaded " + line)
   }
 
   def readFile(load: String=>Any, filename: String): Unit={
@@ -154,12 +170,18 @@ object DatabaseFunc {
     case a::Nil => bw.write(a);bw.newLine();bw.close()
     case a::t => bw.write(a);bw.newLine();writeFileAfterDelete(bw,t)
   }
+
   def printLoaded(): Unit={
-    loadedSongs.foreach{println}
-    loadedArtists.foreach{println}
-    loadedAlbums.foreach{println}
-    loadedPlaylists.foreach{println}
+    println("Songs:")
+    Song.loaded.sortWith((x1,x2)=>x1.id<x2.id)      .map(x => println("    " + x))
+    println("Artists:")
+    Artist.loaded.sortWith((x1,x2)=>x1.id<x2.id)    .map(x => println("    " + x))
+    println("Albums:")
+    Album.loaded.sortWith((x1,x2)=>x1.id<x2.id)     .map(x => println("    " + x))
+    println("Playlists:")
+    Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
   }
+
   def getlastid(filename:String): Int ={
     val bufferedFile = Source.fromFile(filename)
     val lines = bufferedFile.getLines.toList
