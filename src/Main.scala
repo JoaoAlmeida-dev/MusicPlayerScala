@@ -1,6 +1,7 @@
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
 
 import Data._
+import com.sun.xml.internal.bind.v2.TODO
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -22,19 +23,21 @@ object Main {
     DatabaseFunc.update(artist1,2,"1 2 3 4")
     DatabaseFunc.addtoDB(DatabaseFunc.loadedArtists(0),DatabaseFunc.db_artists)
     */
-    println("------------SONG------------")
-      println(Song.loaded)
-    /*
-    println("------------ARTIST------------")
-      println(DatabaseFunc.get(Object[Artist]))
-    println("------------ALBUM------------")
-      println(DatabaseFunc.get(Object[Album]))
-    println("------------PLAYLIST------------")
-      println(DatabaseFunc.get(Object[Playlist]))*/
-    //println(getSongfromBD(Datatype.SONG,"song1"))
+
+    DatabaseFunc.update(Song.loaded(0),1,"song1test")
+
+
   }
 
+  //TODO
+  /*
+    play music files
+    import music from file system
+    list MusicObjects sorted by field
 
+     menus para navegar pela db (cmd style)
+
+   */
 
 
   /*

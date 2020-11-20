@@ -2,7 +2,7 @@ package Data
 
 import scala.collection.mutable.ListBuffer
 
-trait Object[A]{
+trait MusicObject[A]{
 
   val id:Int
   val db:String
@@ -11,6 +11,8 @@ trait Object[A]{
 
   def toString:String
   def load(line: String):Unit
+
+  def apply(args:List[String]):A
 
   def getLoaded[A]():List[String] = {
     this.loaded.toList.map(_.toString.split(";").drop(1).dropRight(1).toString)

@@ -1,7 +1,7 @@
 package Data
 import scala.collection.mutable.ListBuffer
 
-case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends Object[Album]{
+case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends MusicObject[Album]{
   def info():Option[(Int,String,List[Int],Int)]= { Album.info(this) }
   def setArtist(artist: Int): Album= { Album.setArtist(this,artist) }
   def addSong(song: Int): Album= { Album.addSong(this,song) }
@@ -10,8 +10,10 @@ case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends Obje
   override val db: String = Album.db
   override var loaded: ListBuffer[Album] = Album.loaded
   override def load(line: String): Unit = Album.load(line)
-
   override val constructN: Int = 4
+
+  override def apply(info:List[String]):Album=Album.apply(info)
+
 }
 
 object Album {
@@ -25,7 +27,8 @@ object Album {
 
   def load(line: String): Unit={
     val info=line.split(";").toList
-    val album:Album = Album(info(0),info(1),info(2),info(3))
+    //val album:Album = Album(info(0),info(1),info(2),info(3))
+    val album:Album = Album(info)
     loaded+=album
     println("Loaded " + line)
   }
@@ -39,12 +42,13 @@ object Album {
     )
   }
 //------------------- LOAD APPLY
-  def apply(id: String,name: String, tracks: String, artist:String): Album = {
-    val tracksList= tracks.split(" ").toList
+  //def apply(id: String,name: String, tracks: String, artist:String): Album = {
+  def apply(info:List[String]): Album = {
+    val tracksList= info(2).split(" ").toList
     if(tracksList(0)==""){
-      Album(id.toInt,name,List(), artist.toInt)
+      Album(info(0).toInt,info(1),List(), info(3).toInt)
     } else{
-      Album(id.toInt,name,tracksList.map(_.toInt), artist.toInt)
+      Album(info(0).toInt,info(1),tracksList.map(_.toInt), info(3).toInt)
     }
   }
 //------------------

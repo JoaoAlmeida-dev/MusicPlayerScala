@@ -1,6 +1,6 @@
 import java.io.{BufferedWriter, File, FileWriter}
 
-import Data.{Album, Artist, Object, Playlist, Song}
+import Data.{Album, Artist, MusicObject, Playlist, Song}
 import com.sun.prism.PixelFormat.{BYTE_ALPHA, DataType}
 
 import scala.annotation.tailrec
@@ -57,7 +57,7 @@ object DatabaseFunc {
   }
 */
   def unload[A](a:A):Unit= a match{
-    case a: Data.Object[A] => {
+    case a: Data.MusicObject[A] => {
       println("Unloaded" + a.toString)
       a.loaded -= a.asInstanceOf[A]
     }
@@ -77,21 +77,20 @@ object DatabaseFunc {
       loadedPlaylists -= a.asInstanceOf[Data.Playlist]
       */
 
-  def update [A](a:Object[A],field:Int, newv:String):Unit = {
+  def update [A](a:MusicObject[A], field:Int, newv:String):Unit = {
     if(field ==0){
       println("UpdateError:Cant change id")
     }else{
-      a match {
-        case a:Data.Object[A]=>
-          val objectold:Object[A] = a.asInstanceOf[Object[A]]
-          val loadedObject:A =objectold.loaded.filter(_.asInstanceOf[Object[A]].id == objectold.id)(0)
-          val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
-          val objectNew:A = a.getClass.getConstructor(classOf[Object[A]]).newInstance(info).asInstanceOf[A]
+        val objectold:MusicObject[A] = a.asInstanceOf[MusicObject[A]]
+        val loadedObject:A =objectold.loaded.filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0)
+        val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
+        //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
+        val objectNew:A = a.apply(info)
 
-          deletefromDB(loadedObject, a.db)
-          addtoDB(objectNew, a.db)
-          a.load(info.mkString(";"))
-      }
+        deletefromDB(loadedObject, a.db)
+        addtoDB(objectNew, a.db)
+        a.load(info.mkString(";"))
+
         /*case a: Data.Song =>
           val objectOld: Song = a.asInstanceOf[Data.Song]
           val loadedObject: Song = loadedSongs.filter(_.id == objectOld.id)(0)
