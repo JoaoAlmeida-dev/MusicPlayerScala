@@ -70,5 +70,6 @@ object Playlist{
   def toString(p: Playlist): String={
     p.id+";"+p.name+";"+p.songs.mkString(" ")+";"+p.theme+";end;"
   }
-  //Falta Remover
+
+
 }

@@ -45,8 +45,6 @@ object Song{
     println("Loaded " + line)
   }
 
-
-
   def info(s:Song): Option[(Int,String,String,Int,Int,String,Int,List[Int],Int,Int)] ={
     Option(
       s.id,
@@ -72,16 +70,7 @@ object Song{
       Song(info(0).toInt, info(1), info(2), info(3).toInt, info(4).toInt, info(5), info(6).toInt, featsList.map(_.toInt), info(8).toInt, info(9).toInt)
     }
   }
-  /*
-  def apply(id:String, name:String, filepath:String, duration:String, artist:String, genre:String, album:String, feats: String, listened:String,trackN: String): Song = {
-    val featsList=feats.split(" ").toList
-    if(featsList(0)==""){
-      Song(id.toInt,name, filepath, duration.toInt, artist.toInt, genre, album.toInt, List(), listened.toInt, trackN.toInt)
-    } else{
-      Song(id.toInt,name, filepath, duration.toInt, artist.toInt, genre, album.toInt, featsList.map(_.toInt), listened.toInt, trackN.toInt)
-    }
-  }
-  */
+
 //----------
   def toString(s:Song ): String ={
      s.id + ";" + s.name + ";"+ s.filepath + ";" + s.duration + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats.mkString(" ") + ";" + s.listened +";"+s.trackN+";end;"
