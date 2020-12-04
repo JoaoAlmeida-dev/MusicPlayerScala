@@ -1,5 +1,4 @@
 
-import Data.Song
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.MapChangeListener
 import javafx.fxml.FXML
@@ -46,12 +45,8 @@ class Controller {
           println("key: "+ change.getKey().toString+ "value: "+change.getValueAdded.toString)
           println(info)
         }
-
-      }
-
+       }
     })
-
-
     musicNameLabel.setText(selectedFile.getName)
 
     player.currentTimeProperty().addListener(new ChangeListener[Duration] {
@@ -74,8 +69,6 @@ class Controller {
     //minDurationLabel.setText(math.round(seektime).toString)
     val maxtimeString: String = math.round(pick.getDuration.toMinutes).toString + ":" + math.round(pick.getDuration.toSeconds - math.round(pick.getDuration.toMinutes*60)).toString
     maxDurationLabel.setText(maxtimeString)
-    println("PERCENTAGE " + durationSlider.getValue)
-    println("maxtimeString " + maxtimeString)
   }
 
   def currentTimeLabelSet(time: String): Unit = {
@@ -102,12 +95,16 @@ class Controller {
   }
 
   def dragDuration(): Unit = {
-    val seektime: Double = ((durationSlider.getValue * pick.getDuration.toMillis) / 100)
-    player.seek(new Duration(seektime))
-    println("seektimeraw " + durationSlider.getValue)
-    println("seektime " + seektime)
-    println("total dur " + pick.getDuration.toSeconds)
-    println("----------------------------")
+    this.synchronized{
+      val seektime: Double = ((durationSlider.getValue * pick.getDuration.toMillis) / 100)
+      player.seek(new Duration(seektime))
+      /*
+      println("seektimeraw " + durationSlider.getValue)
+      println("seektime " + seektime)
+      println("total dur " + pick.getDuration.toSeconds)
+      println("----------------------------")
+      */
+    }
 
   }
 

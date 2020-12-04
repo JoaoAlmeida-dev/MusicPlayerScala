@@ -12,7 +12,7 @@
       <ToggleButton fx:id="togglePlayPause" layoutX="231.0" layoutY="117.0" mnemonicParsing="false" onAction="#playpause" text="Play" />
       <Label fx:id="minDurationLabel" layoutX="88.0" layoutY="338.0" text="Label" />
       <Label fx:id="maxDurationLabel" layoutX="349.0" layoutY="338.0" text="Label" />
-      <Slider fx:id="durationSlider" layoutX="140.0" layoutY="339.0" onMouseDragged="#dragDuration" prefHeight="14.0" prefWidth="198.0" />
+      <Slider fx:id="durationSlider" layoutX="140.0" layoutY="339.0" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" prefHeight="14.0" prefWidth="198.0" />
       <Label layoutX="447.0" layoutY="338.0" text="vol:" />
       <Label fx:id="volumeLabel" layoutX="466.0" layoutY="338.0" prefHeight="17.0" prefWidth="38.0" />
    </children>
