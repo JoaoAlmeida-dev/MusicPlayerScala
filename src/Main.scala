@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.{Group, Parent, Scene}
 import javafx.scene.media.{Media, MediaPlayer, MediaView}
 import javafx.stage.{FileChooser, Stage}
+import javafx.util.Duration
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -15,12 +16,13 @@ object Main {
   def main(args: Array[String])
   {
     Application.launch(classOf[Main], args: _*)
-    /*
-    DatabaseFunc.loadfiles()
-    DatabaseFunc.printLoaded()
-    mainLoop()
-     */
+
+    //DatabaseFunc.loadfiles()
+    //DatabaseFunc.printLoaded()
+    //mainLoop()
   }
+
+
 }
 
 class Main extends Application{

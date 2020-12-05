@@ -3,7 +3,7 @@ import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.MapChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, Slider, ToggleButton}
-import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.{AnchorPane, FlowPane, GridPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.stage.{FileChooser, Stage}
 import javafx.util.Duration
@@ -18,7 +18,8 @@ class Controller {
   var pick: Media = _
   var player: MediaPlayer = _
 
-  @FXML private var anchorPane: AnchorPane = _
+  @FXML private var centerGrid: GridPane = _
+  @FXML private var bottomGrid: GridPane = _
   @FXML private var togglePlayPause: ToggleButton = _
   @FXML private var chooseFileButton: Button = _
   @FXML private var musicNameLabel: Label = _
@@ -28,10 +29,12 @@ class Controller {
   @FXML private var minDurationLabel: Label = _
   @FXML private var maxDurationLabel: Label = _
   @FXML private var volumeLabel: Label = _
+  @FXML private var musicListFlowPane: FlowPane = _
+  @FXML private var loadBDButton: Button = _
 
 
   def chooseFile(): Unit = {
-    val stage: Stage = (anchorPane.getScene.getWindow).asInstanceOf[Stage]
+    val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
     val fileChooser = new FileChooser
     selectedFile = fileChooser.showOpenDialog(stage)
     pick = new Media(selectedFile.toURI.toString)
@@ -42,8 +45,8 @@ class Controller {
       override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit ={
         if(change.wasAdded()){
           info.addOne((change.getKey() , change.getValueAdded))
-          println("key: "+ change.getKey().toString+ "value: "+change.getValueAdded.toString)
-          println(info)
+          //println("key: "+ change.getKey().toString+ "value: "+change.getValueAdded.toString)
+          //println(info)
         }
        }
     })
@@ -51,8 +54,15 @@ class Controller {
 
     player.currentTimeProperty().addListener(new ChangeListener[Duration] {
       override def changed(observable: ObservableValue[_ <: Duration], oldValue: Duration, newValue: Duration): Unit = {
+        /*
+        val timems:Double = newValue.toMillis
+        val timemin:Int   = math.floor(timems/3600).toInt
+        //currentTimeLabelSet(math.round(newValue.toMinutes).toString + ":" + math.round(newValue.toSeconds - math.round(newValue.toMinutes*60)).toString)
+        currentTimeLabelSet( timemin + ":" + ((timems - timemin*3600 )/60).toInt )
+        */
 
-        currentTimeLabelSet(math.round(newValue.toMinutes).toString + ":" + math.round(newValue.toSeconds - math.round(newValue.toMinutes*60)).toString)
+        val time:(Int,Int,Int)= msToMinSec(newValue)
+        currentTimeLabelSet(time._2+":"+time._3)
 
         setDurationSlider((newValue.toSeconds * 100) / pick.getDuration.toSeconds)
       }
@@ -67,8 +77,8 @@ class Controller {
 
   def setSeekSlider(): Unit = {
     //minDurationLabel.setText(math.round(seektime).toString)
-    val maxtimeString: String = math.round(pick.getDuration.toMinutes).toString + ":" + math.round(pick.getDuration.toSeconds - math.round(pick.getDuration.toMinutes*60)).toString
-    maxDurationLabel.setText(maxtimeString)
+    val time:(Int,Int,Int)= msToMinSec(pick.getDuration)
+    maxDurationLabel.setText(time._2+":"+time._3)
   }
 
   def currentTimeLabelSet(time: String): Unit = {
@@ -98,12 +108,7 @@ class Controller {
     this.synchronized{
       val seektime: Double = ((durationSlider.getValue * pick.getDuration.toMillis) / 100)
       player.seek(new Duration(seektime))
-      /*
-      println("seektimeraw " + durationSlider.getValue)
-      println("seektime " + seektime)
-      println("total dur " + pick.getDuration.toSeconds)
-      println("----------------------------")
-      */
+
     }
 
   }
@@ -113,6 +118,18 @@ class Controller {
     player.setVolume(volume / 100)
     volumeLabel.setText(volume.toInt.toString + "%")
 
+  }
+
+  private def msToMinSec(duration: Duration):(Int,Int,Int)={
+    val hours:Int   = math.floor(duration.toHours).toInt
+    val minutes:Int = math.floor(duration.toMinutes).toInt-(hours*60)
+    val sec:Int     = math.floor(duration.toSeconds).toInt-(hours*60*60)-(minutes*60)
+
+    (hours,minutes,sec)
+  }
+
+  def loadDB():Unit={
+    DatabaseFunc.loadfiles()
   }
 
 }
