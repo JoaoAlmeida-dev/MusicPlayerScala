@@ -12,6 +12,7 @@ import java.io.File
 import scala.collection.mutable.ListBuffer
 
 
+
 class Controller {
 
   var selectedFile: File = _
@@ -30,7 +31,6 @@ class Controller {
   @FXML private var maxDurationLabel: Label = _
   @FXML private var volumeLabel: Label = _
   @FXML private var musicListFlowPane: FlowPane = _
-  @FXML private var loadBDButton: Button = _
 
 
   def chooseFile(): Unit = {
@@ -38,32 +38,24 @@ class Controller {
     val fileChooser = new FileChooser
     selectedFile = fileChooser.showOpenDialog(stage)
     pick = new Media(selectedFile.toURI.toString)
+    //val mc=MediaController(selectedFile.getAbsolutePath)
     player = new MediaPlayer(pick)
 
     val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
+    musicNameLabel.setText(selectedFile.getName)
+
     pick.getMetadata().addListener(new MapChangeListener[String , AnyRef]{
       override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit ={
         if(change.wasAdded()){
           info.addOne((change.getKey() , change.getValueAdded))
-          //println("key: "+ change.getKey().toString+ "value: "+change.getValueAdded.toString)
-          //println(info)
         }
        }
     })
-    musicNameLabel.setText(selectedFile.getName)
 
     player.currentTimeProperty().addListener(new ChangeListener[Duration] {
       override def changed(observable: ObservableValue[_ <: Duration], oldValue: Duration, newValue: Duration): Unit = {
-        /*
-        val timems:Double = newValue.toMillis
-        val timemin:Int   = math.floor(timems/3600).toInt
-        //currentTimeLabelSet(math.round(newValue.toMinutes).toString + ":" + math.round(newValue.toSeconds - math.round(newValue.toMinutes*60)).toString)
-        currentTimeLabelSet( timemin + ":" + ((timems - timemin*3600 )/60).toInt )
-        */
-
         val time:(Int,Int,Int)= msToMinSec(newValue)
         currentTimeLabelSet(time._2+":"+time._3)
-
         setDurationSlider((newValue.toSeconds * 100) / pick.getDuration.toSeconds)
       }
     })
@@ -94,6 +86,7 @@ class Controller {
   }
 
   def playpause(): Unit = {
+
     if (!player.getStatus.equals(MediaPlayer.Status.PLAYING)) {
       togglePlayPause.setText("Pause")
       player.play()
@@ -108,9 +101,7 @@ class Controller {
     this.synchronized{
       val seektime: Double = ((durationSlider.getValue * pick.getDuration.toMillis) / 100)
       player.seek(new Duration(seektime))
-
     }
-
   }
 
   def setVolume(): Unit = {
@@ -126,10 +117,6 @@ class Controller {
     val sec:Int     = math.floor(duration.toSeconds).toInt-(hours*60*60)-(minutes*60)
 
     (hours,minutes,sec)
-  }
-
-  def loadDB():Unit={
-    DatabaseFunc.loadfiles()
   }
 
 }

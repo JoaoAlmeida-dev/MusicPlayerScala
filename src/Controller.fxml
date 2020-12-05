@@ -23,7 +23,6 @@
                   <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseFile" text="chooseFile" />
                   <Button fx:id="seekButton" mnemonicParsing="false" onAction="#seek" text="seek +5" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                   <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.rowIndex="2" />
-                  <Button fx:id="loadBDButton" mnemonicParsing="false" onAction="#loadDB" text="Load DB" GridPane.columnIndex="2" />
                </children>
             </GridPane>
          </center>
