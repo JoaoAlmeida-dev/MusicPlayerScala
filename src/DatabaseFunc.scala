@@ -99,6 +99,26 @@ object DatabaseFunc {
     println("Playlists:")
     Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
   }
+  def GetIDArtistOrCreate(artist: String): String={
+    val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
 
-
+    val artistid:Int={
+      if (artistcheck.isEmpty) {
+        val newid:Int=DatabaseFunc.getlastid(Artist.db)+1
+        Artist.loaded+=Artist( List(newid.toString,artist,"","")  )
+        newid
+      } else {
+        artistcheck(0).id
+      }
+    }
+    artistid.toString
+  }
+  def writeDB[A](loaded: ListBuffer[A],dbPath: String): Unit={
+    val file=new File(dbPath)
+    val bw = new BufferedWriter(new FileWriter(file))
+    loaded.map(x=>{
+      bw.write(x.toString+"\n")}
+    )
+    bw.close()
+  }
 }

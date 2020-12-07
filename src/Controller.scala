@@ -78,17 +78,16 @@ class Controller {
         println(info)
 
         val album:String = info.filter( x=>x._1.equals("album") ) (0)._2.toString
-        val artist:String = info.filter( x=>x._1.equals("album artist") )(0).toString()
-
-        val songid:String = DatabaseFunc.getlastid(Song.db).toString
-
+        val artist:String = info.filter( x=>x._1.equals("album artist") )(0)._2.toString
+        val songid = DatabaseFunc.getlastid(Song.db)+1
 //artist exists? if not creating it
         val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
+
         val artistid:Int={
           if (artistcheck.isEmpty) {
-            val lastid:Int=DatabaseFunc.getlastid(Artist.db)
-            Artist.loaded+=Artist( List(DatabaseFunc.getlastid(Album.db).toString,artist,"","")  )
-            lastid
+            val newid:Int=DatabaseFunc.getlastid(Artist.db)+1
+            Artist.loaded+=Artist( List(newid.toString,artist,"","")  )
+            newid
           } else {
             artistcheck(0).id
           }
@@ -96,34 +95,35 @@ class Controller {
 
 //album exists? if not creating it
         val albumcheck:ListBuffer[Album]=Album.loaded.filter(x=>x.name.equals(album))
+
         val albumid:Int = {
           if (albumcheck.isEmpty) {
-            val lastid:Int=DatabaseFunc.getlastid(Album.db)
-            Album.loaded+=Album( List(DatabaseFunc.getlastid(Album.db).toString,album,songid,artistid.toString) )
-            lastid
+            val newid:Int=DatabaseFunc.getlastid(Album.db)+1
+            Album.loaded+=Album( List(newid.toString,album,songid.toString,artistid.toString) )
+            newid
           } else {
             albumcheck(0).id
           }
         }
-        val nomeFeats = info.filter( x=>x._1.equals("artist") ).map(_._2).remove(0).toString.split(", ")
+        val nomeFeats = info.filter( x=>x._1.equals("artist") ).map(_._2).remove(0).toString.split(", ").tail.toList
+        nomeFeats.map(println)
+        val idFeats=nomeFeats.map(x=>DatabaseFunc.GetIDArtistOrCreate(x))
 
-        //split(",").tail.tail.map(println(_))
         val song:Song = Song(List[String](
-          songid,//0
+          songid.toString,//0
           info.filter( x=>x._1.equals("title") )(0)._2.toString,//1
           selectedFile.getAbsolutePath,//2
-          info.filter( x=>x._1.equals("duration") ) (0)._2.toString.split("")(0),//3
+          120.toString,//3 Tempo resokver se claahr não é preciso
           artistid.toString,//4
           info.filter( x=>x._1.equals("genre") ) (0)._2.toString,//5
           albumid.toString,//6
-          info.filter( x=>x._1.equals("artist") ).tail.toString(),//7
+          idFeats.mkString(" "),//7 feats
           0.toString,//8
-          info.filter( x=>x._1.equals("track count") ) (0)._2.toString,//9
+          1.toString,//9 trackcount resolver
           )
         )
-
+        println(song)
         Song.loaded+=song
-
       }
     })
 
