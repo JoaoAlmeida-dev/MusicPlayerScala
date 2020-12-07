@@ -16,10 +16,12 @@ object Main {
   def main(args: Array[String])
   {
     Application.launch(classOf[Main], args: _*)
+    /*
     DatabaseFunc.writeDB(Artist.loaded, Artist.db)
     DatabaseFunc.writeDB(Album.loaded, Album.db)
     DatabaseFunc.writeDB(Song.loaded, Song.db)
     DatabaseFunc.writeDB(Playlist.loaded, Playlist.db)
+    */
     //DatabaseFunc.printLoaded()
     //mainLoop()
   }
@@ -45,8 +47,11 @@ class Main extends Application{
    TODO
     play music files
     import music from file system
-      create song from file
-        create/check artist/album on db and if fail create and add them
+    play a music from loaded
+      play music from  listView
+        change music being played inside the mediaControl
+    change Listbuffer to ObservableList
+
     menus para navegar pela db (cmd style)
     ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
     funcoes das paylists (criar uma nova playlist, adicionar musica, remover musica )

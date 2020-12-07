@@ -1,7 +1,7 @@
 
 import Data.{Album, Artist, Song}
 import javafx.beans.value.{ChangeListener, ObservableValue}
-import javafx.collections.MapChangeListener
+import javafx.collections.{FXCollections, MapChangeListener, ObservableList}
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, ListView, Slider, ToggleButton}
 import javafx.scene.layout.{AnchorPane, FlowPane, GridPane}
@@ -36,12 +36,11 @@ class Controller {
   @FXML private var leftPane: AnchorPane = _
   @FXML private var songList: ListView[Song] = new ListView[Song]()
 
-  var mediaControl: MediaController=_
+  var mediaControl: MediaController = MediaController()
 
   def initialize(): Unit ={
     DatabaseFunc.loadfiles()
     Song.loaded.map(songList.getItems.add)
-
 
   }
 
@@ -56,7 +55,7 @@ class Controller {
 
     musicNameLabel.setText(selectedFile.getName)
 
-    mediaControl.player.currentTimeProperty().addListener(new ChangeListener[Duration] {
+    mediaControl.mediaPlayer.get.currentTimeProperty().addListener(new ChangeListener[Duration] {
       override def changed(observable: ObservableValue[_ <: Duration], oldValue: Duration, newValue: Duration): Unit = {
         val time:(Int,Int,Int)= msToMinSec(newValue)
         currentTimeLabelSet(time._2+":"+time._3)
@@ -64,7 +63,7 @@ class Controller {
       }
     })
 
-    mediaControl.pick.getMetadata().addListener(new MapChangeListener[String , AnyRef]{
+    mediaControl.media.get.getMetadata().addListener(new MapChangeListener[String , AnyRef]{
       override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit ={
         if(change.wasAdded()){
           info.addOne((change.getKey() , change.getValueAdded))
@@ -72,20 +71,20 @@ class Controller {
        }
     })
 
-    mediaControl.player.setOnReady(new Runnable {
+    mediaControl.mediaPlayer.get.setOnReady(new Runnable {
       override def run(): Unit = {
         setSeekSlider()
         println(info)
 
         val album:String = info.filter( x=>x._1.equals("album") ) (0)._2.toString
         val artist:String = info.filter( x=>x._1.equals("album artist") )(0)._2.toString
-        val songid = DatabaseFunc.getlastid(Song.db)+1
+        val songid = DatabaseFunc.getlastid(Song.loaded.toList)+1
 //artist exists? if not creating it
         val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
 
         val artistid:Int={
           if (artistcheck.isEmpty) {
-            val newid:Int=DatabaseFunc.getlastid(Artist.db)+1
+            val newid:Int=DatabaseFunc.getlastid(Artist.loaded.toList)+1
             Artist.loaded+=Artist( List(newid.toString,artist,"","")  )
             newid
           } else {
@@ -98,7 +97,7 @@ class Controller {
 
         val albumid:Int = {
           if (albumcheck.isEmpty) {
-            val newid:Int=DatabaseFunc.getlastid(Album.db)+1
+            val newid:Int=DatabaseFunc.getlastid(Album.loaded.toList)+1
             Album.loaded+=Album( List(newid.toString,album,songid.toString,artistid.toString) )
             newid
           } else {
@@ -111,22 +110,21 @@ class Controller {
 
         val song:Song = Song(List[String](
           songid.toString,//0
-          info.filter( x=>x._1.equals("title") )(0)._2.toString,//1
-          selectedFile.getAbsolutePath,//2
-          120.toString,//3 Tempo resokver se claahr não é preciso
-          artistid.toString,//4
-          info.filter( x=>x._1.equals("genre") ) (0)._2.toString,//5
-          albumid.toString,//6
+          info.filter( x=>x._1.equals("title") )(0)._2.toString.trim,//1
+          selectedFile.getAbsolutePath,//2 filepath
+          artistid.toString,//4 artist
+          info.filter( x=>x._1.equals("genre") ) (0)._2.toString,//5 genre
+          albumid.toString,//6 album
           idFeats.mkString(" "),//7 feats
           0.toString,//8
-          1.toString,//9 trackcount resolver
+          trackN.toString,//9 TrackNumber resolver
           )
         )
         println(song)
         Song.loaded+=song
+        //songList.getItems.add(song)
       }
     })
-
 
   }
 
@@ -147,7 +145,7 @@ class Controller {
 
   def playpause(): Unit = {
     mediaControl.playpause()
-    if (mediaControl.player.getStatus.equals(MediaPlayer.Status.PLAYING)) {
+    if (mediaControl.mediaPlayer.get.getStatus.equals(MediaPlayer.Status.PLAYING)) {
       togglePlayPause.setText("Play")
     } else {
       togglePlayPause.setText("Pause")
@@ -166,7 +164,32 @@ class Controller {
     val volume: Double = volumeSlider.getValue
     mediaControl.setVolume(volume / 100)
     volumeLabel.setText(volume.toInt.toString + "%")
+  }
 
+  def selectFromList(): Unit ={
+    val song:Song = songList.getSelectionModel.getSelectedItems.get(0)
+    if(mediaControl.path == ""){
+    mediaControl.mediaPlayer.get.dispose()
+    }
+
+    mediaControl = MediaController(song.filepath)
+    musicNameLabel.setText(song.name)
+    val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
+    mediaControl.mediaPlayer.get.currentTimeProperty().addListener(new ChangeListener[Duration] {
+      override def changed(observable: ObservableValue[_ <: Duration], oldValue: Duration, newValue: Duration): Unit = {
+        val time:(Int,Int,Int)= msToMinSec(newValue)
+        currentTimeLabelSet(time._2+":"+time._3)
+        setDurationSlider((newValue.toSeconds * 100) / mediaControl.getMaxDuration().toSeconds)
+      }
+    })
+
+    mediaControl.media.get.getMetadata().addListener(new MapChangeListener[String , AnyRef]{
+      override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit ={
+        if(change.wasAdded()){
+          info.addOne((change.getKey() , change.getValueAdded))
+        }
+      }
+    })
   }
 
   private def msToMinSec(duration: Duration):(Int,Int,Int)={
@@ -176,5 +199,6 @@ class Controller {
 
     (hours,minutes,sec)
   }
+
 
 }
