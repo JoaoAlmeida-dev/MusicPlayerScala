@@ -8,7 +8,7 @@
    <left>
       <AnchorPane fx:id="leftPane" BorderPane.alignment="CENTER">
          <children>
-            <ListView fx:id="songList" />
+            <ListView fx:id="songList" onMouseClicked="#selectFromList" />
          </children></AnchorPane>
    </left>
    <center>
@@ -30,7 +30,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseFile" text="chooseFile" />
+                              <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseFile" text="ImportMusic" />
                               <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>

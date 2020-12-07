@@ -2,9 +2,9 @@ package Data
 
 import scala.collection.mutable.ListBuffer
 
-case class Song (id: Int, name:String,filepath:String,  duration:Int, artist:Int, genre:String, album:Int, feats: List[Int], listened:Int, trackN:Int) extends MusicObject[Song] {
+case class Song (id: Int, name:String,filepath:String, artist:Int, genre:String, album:Int, feats: List[Int], listened:Int, trackN:Int) extends MusicObject[Song] {
 
-  def info(): Option[(Int,String,String,Int,Int,String,Int,List[Int],Int,Int)] ={ Song.info(this) }
+  def info(): Option[(Int,String,String,Int,String,Int,List[Int],Int,Int)] ={ Song.info(this) }
 
   override def toString(): String ={ Song.toString(this) }
   override val db: String = Song.db
@@ -17,11 +17,16 @@ case class Song (id: Int, name:String,filepath:String,  duration:Int, artist:Int
   override def getLoaded[Song](): List[String] = Song.getLoaded()
 
 }
+/*
+tiramos o duration
+ */
+
+
 object Song{
   type id         = Int
   type Name       = String
   type Filepath   = String
-  type Duration   = Int
+  //type Duration   = Int
   type Artist     = Int
   type Genre      = String
   type Album      = Int
@@ -30,7 +35,7 @@ object Song{
   type TrackN     = Int
 
 
-  val db: String = "DataBases/db_songs"
+  val db: String = "DataBases/db_songs.txt"
   var loaded: ListBuffer[Song] = new ListBuffer[Song]()
 
   def getLoaded[Song](): List[String] ={
@@ -45,12 +50,11 @@ object Song{
     println("Loaded " + line)
   }
 
-  def info(s:Song): Option[(Int,String,String,Int,Int,String,Int,List[Int],Int,Int)] ={
+  def info(s:Song): Option[(Int,String,String,Int,String,Int,List[Int],Int,Int)] ={
     Option(
       s.id,
       s.name,
       s.filepath,
-      s.duration,
       s.artist,
       s.genre,
       s.album,
@@ -63,27 +67,27 @@ object Song{
 
 
   def apply(info:List[String]): Song = {
-    val featsList = info(7).split(" ").toList
+    val featsList = info(6).split(" ").toList
     if (featsList(0) == "") {
-      Song(info(0).toInt, info(1), info(2), info(3).toInt, info(4).toInt, info(5), info(6).toInt, List(), info(8).toInt, info(9).toInt)
+      Song(info(0).toInt, info(1), info(2), info(3).toInt, info(4), info(5).toInt, List(), info(7).toInt, info(8).toInt)
     } else {
       Song(
         info(0).toInt,
         info(1), //id
         info(2), //name
         info(3).toInt, //filepath
-        info(4).toInt, //duration
-        info(5), //artist
-        info(6).toInt, //genre
-        featsList.map(_.toInt), //album
-        info(8).toInt, //feats
-        info(9).toInt) //trackN
+        //info(4).toInt, //duration
+        info(4), //artist
+        info(5).toInt, //genre
+        featsList.map(_.toInt), //feats
+        info(7).toInt, //listened
+        info(8).toInt) //trackN
     }
   }
 
 //----------
   def toString(s:Song ): String ={
-     s.id + ";" + s.name + ";"+ s.filepath + ";" + s.duration + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats.mkString(" ") + ";" + s.listened +";"+s.trackN+";end;"
+     s.id + ";" + s.name + ";"+ s.filepath + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats.mkString(" ") + ";" + s.listened +";"+s.trackN+";end;"
   }
 
 

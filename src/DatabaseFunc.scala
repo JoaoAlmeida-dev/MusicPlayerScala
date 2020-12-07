@@ -34,8 +34,8 @@ object DatabaseFunc {
         //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
         val objectNew:A = a.apply(info)
 
-        deletefromDB(loadedObject, a.db)
-        addtoDB(objectNew, a.db)
+        //deletefromDB(loadedObject, a.db)
+        //addtoDB(objectNew, a.db)
         a.load(info.mkString(";"))
     }
   }
@@ -52,31 +52,7 @@ object DatabaseFunc {
     case a::Nil => load(a)
     case a::t => load(a);readline(load,t)
   }
-
-  private def addtoDB[A](a: A, dbPath: String):Unit={
-    val file=new File(dbPath)
-    val bw = new BufferedWriter(new FileWriter(file, true))
-    bw.write(a.toString)
-    bw.newLine()
-    bw.close()
-  }
-  private def deletefromDB[A](a: A, dbPath: String):Unit={
-    val bufferedFile = Source.fromFile(dbPath)
-    val lines = bufferedFile.getLines.toList.filter(_ != a.toString)
-    bufferedFile.close()
-    var file=new File(dbPath)
-    val bw = new BufferedWriter(new FileWriter(file))
-    writeFileAfterDelete(bw,lines)
-    bw.close()
-
-    unload(a)
-  }
-  @tailrec
-  def writeFileAfterDelete(bw: BufferedWriter, lines: List[String]): Unit = lines match{
-    case a::Nil => bw.write(a);bw.newLine();bw.close()
-    case a::t => bw.write(a);bw.newLine();writeFileAfterDelete(bw,t)
-  }
-
+  /*
   def getlastid(filename:String): Int ={
     def aux( max:Int,list:List[String] ): Int = list match {
       case h::t => aux(scala.math.max( max , h.split(";")(0).toInt ) ,t)
@@ -88,6 +64,7 @@ object DatabaseFunc {
     bufferedFile.close()
     aux(0,lines)
   }
+  */
 
   def printLoaded(): Unit={
     println("Songs:")
@@ -104,7 +81,7 @@ object DatabaseFunc {
 
     val artistid:Int={
       if (artistcheck.isEmpty) {
-        val newid:Int=DatabaseFunc.getlastid(Artist.db)+1
+        val newid:Int=DatabaseFunc.getlastid(Artist.loaded.toList)+1
         Artist.loaded+=Artist( List(newid.toString,artist,"","")  )
         newid
       } else {
@@ -113,6 +90,7 @@ object DatabaseFunc {
     }
     artistid.toString
   }
+
   def writeDB[A](loaded: ListBuffer[A],dbPath: String): Unit={
     val file=new File(dbPath)
     val bw = new BufferedWriter(new FileWriter(file))
@@ -120,5 +98,15 @@ object DatabaseFunc {
       bw.write(x.toString+"\n")}
     )
     bw.close()
+  }
+  def printLoaded(): Unit={
+    println("Songs:")
+    Song.loaded.sortWith((x1,x2)=>x1.id<x2.id)      .map(x => println("    " + x))
+    println("Artists:")
+    Artist.loaded.sortWith((x1,x2)=>x1.id<x2.id)    .map(x => println("    " + x))
+    println("Albums:")
+    Album.loaded.sortWith((x1,x2)=>x1.id<x2.id)     .map(x => println("    " + x))
+    println("Playlists:")
+    Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
   }
 }
