@@ -67,7 +67,17 @@ object Song{
     if (featsList(0) == "") {
       Song(info(0).toInt, info(1), info(2), info(3).toInt, info(4).toInt, info(5), info(6).toInt, List(), info(8).toInt, info(9).toInt)
     } else {
-      Song(info(0).toInt, info(1), info(2), info(3).toInt, info(4).toInt, info(5), info(6).toInt, featsList.map(_.toInt), info(8).toInt, info(9).toInt)
+      Song(
+        info(0).toInt,
+        info(1), //id
+        info(2), //name
+        info(3).toInt, //filepath
+        info(4).toInt, //duration
+        info(5), //artist
+        info(6).toInt, //genre
+        featsList.map(_.toInt), //album
+        info(8).toInt, //feats
+        info(9).toInt) //trackN
     }
   }
 

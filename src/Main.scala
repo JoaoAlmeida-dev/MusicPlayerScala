@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.{Group, Parent, Scene}
 import javafx.scene.media.{Media, MediaPlayer, MediaView}
 import javafx.stage.{FileChooser, Stage}
+import javafx.util.Duration
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -15,12 +16,15 @@ object Main {
   def main(args: Array[String])
   {
     Application.launch(classOf[Main], args: _*)
-    /*
-    DatabaseFunc.loadfiles()
-    DatabaseFunc.printLoaded()
-    mainLoop()
-     */
+    DatabaseFunc.writeDB(Artist.loaded, Artist.db)
+    DatabaseFunc.writeDB(Album.loaded, Album.db)
+    DatabaseFunc.writeDB(Song.loaded, Song.db)
+    DatabaseFunc.writeDB(Playlist.loaded, Playlist.db)
+    //DatabaseFunc.printLoaded()
+    //mainLoop()
   }
+
+
 }
 
 class Main extends Application{
@@ -28,19 +32,6 @@ class Main extends Application{
   override def start(primaryStage: Stage): Unit = {
 
     primaryStage.setTitle("MP3")
-    /*
-    val file:File = new File("C:/Joao/Music/Arctic Monkeys/AM (Album)/test.mp3")
-    val fileChooser = new FileChooser
-    val selectedFile:File = fileChooser.showOpenDialog(primaryStage)
-
-    //val resource = getClass.getClassLoader.getResource("C:/Joao/Music/doiwannaknow.mp3")
-    println(selectedFile.getAbsoluteFile)
-    val resource = getClass.getClassLoader.getResource(selectedFile.getAbsolutePath)
-    //val pick: Media = new Media(resource.toString)
-    val pick: Media = new Media(selectedFile.toURI.toString)
-    val player: MediaPlayer = new MediaPlayer(pick)
-    val m: MediaView = new MediaView(player)
-    */
 
     val fxmlLoader = new FXMLLoader(getClass.getResource("Controller.fxml"))
 
@@ -54,9 +45,9 @@ class Main extends Application{
    TODO
     play music files
     import music from file system
-    list MusicObjects sorted by field
+      create song from file
+        create/check artist/album on db and if fail create and add them
     menus para navegar pela db (cmd style)
-    display com filtros
     ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
     funcoes das paylists (criar uma nova playlist, adicionar musica, remover musica )
   */

@@ -1,19 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
-   <children>
-      <Button fx:id="chooseFileButton" layoutX="88.0" layoutY="117.0" mnemonicParsing="false" onAction="#chooseFile" text="chooseFile" />
-      <Label fx:id="musicNameLabel" layoutX="219.0" layoutY="14.0" text="musicname" />
-      <Button fx:id="seekButton" layoutX="377.0" layoutY="117.0" mnemonicParsing="false" onAction="#seek" text="seek +5" />
-      <Slider fx:id="volumeSlider" layoutX="498.0" layoutY="339.0" onMouseDragged="#setVolume" prefHeight="33.0" prefWidth="61.0" showTickLabels="true" value="100.0" />
-      <ToggleButton fx:id="togglePlayPause" layoutX="231.0" layoutY="117.0" mnemonicParsing="false" onAction="#playpause" text="Play" />
-      <Label fx:id="minDurationLabel" layoutX="88.0" layoutY="338.0" text="Label" />
-      <Label fx:id="maxDurationLabel" layoutX="349.0" layoutY="338.0" text="Label" />
-      <Slider fx:id="durationSlider" layoutX="140.0" layoutY="339.0" onMouseDragged="#dragDuration" prefHeight="14.0" prefWidth="198.0" />
-      <Label layoutX="447.0" layoutY="338.0" text="vol:" />
-      <Label fx:id="volumeLabel" layoutX="466.0" layoutY="338.0" prefHeight="17.0" prefWidth="38.0" />
-   </children>
-</AnchorPane>
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <left>
+      <AnchorPane fx:id="leftPane" BorderPane.alignment="CENTER">
+         <children>
+            <ListView fx:id="songList" />
+         </children></AnchorPane>
+   </left>
+   <center>
+      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Play">
+               <content>
+                  <BorderPane>
+                     <center>
+                        <GridPane fx:id="centerGrid" alignment="CENTER">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseFile" text="chooseFile" />
+                              <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </center>
+                     <bottom>
+                        <GridPane fx:id="bottomGrid" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="48.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="434.0" minWidth="10.0" prefWidth="423.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="61.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="39.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="46.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="79.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="5" />
+                              <Label text="vol:" GridPane.columnIndex="3" />
+                              <Label fx:id="minDurationLabel" text="Min dur" />
+                              <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="2" />
+                              <Slider fx:id="durationSlider" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="1" />
+                              <Label fx:id="volumeLabel" prefHeight="17.0" prefWidth="38.0" text="100%" GridPane.columnIndex="4" />
+                           </children>
+                           <BorderPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </BorderPane.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </GridPane>
+                     </bottom>
+                     <top>
+                        <Label fx:id="musicNameLabel" text="musicname" BorderPane.alignment="CENTER" />
+                     </top>
+                  </BorderPane>
+               </content></Tab>
+          <Tab text="Songs" />
+        </tabs>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </TabPane>
+   </center>
+</BorderPane>

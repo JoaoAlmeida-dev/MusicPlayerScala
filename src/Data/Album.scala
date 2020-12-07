@@ -51,6 +51,7 @@ object Album {
   def apply(info:List[String]): Album = {
     val tracksList= info(2).split(" ").toList
     if(tracksList(0)==""){
+      //no traks
       Album(info(0).toInt,info(1),List(), info(3).toInt)
     } else{
       Album(info(0).toInt,info(1),tracksList.map(_.toInt), info(3).toInt)

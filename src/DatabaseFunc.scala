@@ -53,14 +53,14 @@ object DatabaseFunc {
     case a::t => load(a);readline(load,t)
   }
 
-  def addtoDB[A](a: A, dbPath: String):Unit={
+  private def addtoDB[A](a: A, dbPath: String):Unit={
     val file=new File(dbPath)
     val bw = new BufferedWriter(new FileWriter(file, true))
     bw.write(a.toString)
     bw.newLine()
     bw.close()
   }
-  def deletefromDB[A](a: A, dbPath: String):Unit={
+  private def deletefromDB[A](a: A, dbPath: String):Unit={
     val bufferedFile = Source.fromFile(dbPath)
     val lines = bufferedFile.getLines.toList.filter(_ != a.toString)
     bufferedFile.close()
@@ -77,6 +77,18 @@ object DatabaseFunc {
     case a::t => bw.write(a);bw.newLine();writeFileAfterDelete(bw,t)
   }
 
+  def getlastid(filename:String): Int ={
+    def aux( max:Int,list:List[String] ): Int = list match {
+      case h::t => aux(scala.math.max( max , h.split(";")(0).toInt ) ,t)
+      case Nil => max
+    }
+
+    val bufferedFile = Source.fromFile(filename)
+    val lines = bufferedFile.getLines.toList
+    bufferedFile.close()
+    aux(0,lines)
+  }
+
   def printLoaded(): Unit={
     println("Songs:")
     Song.loaded.sortWith((x1,x2)=>x1.id<x2.id)      .map(x => println("    " + x))
@@ -87,14 +99,26 @@ object DatabaseFunc {
     println("Playlists:")
     Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
   }
+  def GetIDArtistOrCreate(artist: String): String={
+    val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
 
-  def getlastid(filename:String): Int ={
-    val bufferedFile = Source.fromFile(filename)
-    val lines = bufferedFile.getLines.toList
-    bufferedFile.close()
-    lines.last.split(";").toList(0).toInt
+    val artistid:Int={
+      if (artistcheck.isEmpty) {
+        val newid:Int=DatabaseFunc.getlastid(Artist.db)+1
+        Artist.loaded+=Artist( List(newid.toString,artist,"","")  )
+        newid
+      } else {
+        artistcheck(0).id
+      }
+    }
+    artistid.toString
   }
-
-
-
+  def writeDB[A](loaded: ListBuffer[A],dbPath: String): Unit={
+    val file=new File(dbPath)
+    val bw = new BufferedWriter(new FileWriter(file))
+    loaded.map(x=>{
+      bw.write(x.toString+"\n")}
+    )
+    bw.close()
+  }
 }
