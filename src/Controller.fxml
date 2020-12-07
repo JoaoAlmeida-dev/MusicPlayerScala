@@ -30,7 +30,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseFile" text="ImportMusic" />
+                              <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
                               <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
@@ -51,7 +51,7 @@
                            <children>
                               <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="5" />
                               <Label text="vol:" GridPane.columnIndex="3" />
-                              <Label fx:id="minDurationLabel" text="Min dur" />
+                              <Label fx:id="minDurationLabel" text="0:0" />
                               <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="2" />
                               <Slider fx:id="durationSlider" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="1" />
                               <Label fx:id="volumeLabel" prefHeight="17.0" prefWidth="38.0" text="100%" GridPane.columnIndex="4" />
