@@ -16,7 +16,6 @@ object Main {
   def main(args: Array[String])
   {
     Application.launch(classOf[Main], args: _*)
-
     //DatabaseFunc.loadfiles()
     //DatabaseFunc.printLoaded()
     //mainLoop()
@@ -56,9 +55,9 @@ class Main extends Application{
    TODO
     play music files
     import music from file system
-    list MusicObjects sorted by field
+      create song from file
+        create/check artist/album on db and if fail create and add them
     menus para navegar pela db (cmd style)
-    display com filtros
     ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
     funcoes das paylists (criar uma nova playlist, adicionar musica, remover musica )
   */
