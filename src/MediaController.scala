@@ -3,7 +3,7 @@ import javafx.scene.media.{Media, MediaPlayer}
 import javafx.util.Duration
 
 import scala.reflect.io.File
-import scala.util.{Failure, Success, Try}
+
 
 case class MediaController (path:String,media:Option[Media], mediaPlayer: Option[MediaPlayer]){
 
@@ -13,6 +13,8 @@ case class MediaController (path:String,media:Option[Media], mediaPlayer: Option
 
   def getMaxDuration():Duration={MediaController.getMaxDuration(this)}
   def getCurrentTime():Duration={MediaController.getCurrentTime(this)}
+
+
 
 }
 //Classe para encapsular a troca de media e trocar a musica que dá play
@@ -46,7 +48,7 @@ type mediaPlayer =Option[MediaPlayer]
     mc.mediaPlayer.get.getCurrentTime()
   }
 
-  private def changePlayer(mc:MediaController,filepath:String): Unit ={
+  private def changePlayer(filepath:String,mc:MediaController): Unit ={
     mc.mediaPlayer.get.dispose()
 
   }

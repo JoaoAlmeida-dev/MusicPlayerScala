@@ -35,7 +35,7 @@ object Song{
   type TrackN     = Int
 
 
-  val db: String = "DataBases/db_songs.txt"
+  val db: String = "DataBases/db_songs"
   var loaded: ListBuffer[Song] = new ListBuffer[Song]()
 
   def getLoaded[Song](): List[String] ={
