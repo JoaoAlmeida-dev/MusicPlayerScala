@@ -8,7 +8,7 @@
    <left>
       <AnchorPane fx:id="leftPane" BorderPane.alignment="CENTER">
          <children>
-            <ListView fx:id="listSongs" layoutX="-1.0" layoutY="-2.0" onMouseClicked="#selectFromListSongs" />
+            <ListView fx:id="listSongs" layoutX="-1.0" layoutY="-2.0" onKeyPressed="#selectFromListSongs" onMouseClicked="#selectFromListSongs" />
          </children></AnchorPane>
    </left>
    <center>
@@ -93,7 +93,7 @@
             <Label text="vol:" GridPane.columnIndex="6" />
             <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="3" />
             <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="5" />
-            <Slider fx:id="durationSlider" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="4" />
+            <Slider fx:id="durationSlider" onKeyPressed="#dragDuration" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="4" />
             <Label fx:id="volumeLabel" prefHeight="17.0" prefWidth="38.0" text="100%" GridPane.columnIndex="7" />
             <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" />
             <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="1" />

@@ -11,7 +11,6 @@ import javafx.util.Duration
 
 import java.io.File
 import scala.collection.mutable.ListBuffer
-import scala.reflect.io.Directory
 import scala.util.{Failure, Success, Try}
 
 
@@ -48,6 +47,7 @@ class Controller {
     //mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
   }
 
+  //Imports
   def importMusic(): Unit = {
     val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
     val fileChooser = new FileChooser
@@ -58,13 +58,12 @@ class Controller {
     }
 
   }
-
   def importFolder():Unit={
 
     def aux(file:File): Unit ={
       if(file.exists()&&file.isDirectory){
-        file.listFiles().filter(_.getName.endsWith(".mp3")).map(aux)
-        file.listFiles().filter(_.isDirectory).map(aux)
+        file.listFiles().filter(_.getName.endsWith(".mp3")).foreach(aux)
+        file.listFiles().filter(_.isDirectory).foreach(aux)
       }else if(file.exists() && file.isFile){
         if(file.getName.endsWith(".mp3")){
           uploadSong(file)
@@ -80,58 +79,21 @@ class Controller {
 
   }
 
+  //Setters
   def setSeekSlider(): Unit = {
     //minDurationLabel.setText(math.round(seektime).toString)
-    val time:(Int,Int,Int)= msToMinSec(mediaPlayer.getTotalDuration())
-    maxDurationLabel.setText(time._2+":"+time._3)
+    val time:(Int,Int,Int)= msToMinSec(mediaPlayer.getTotalDuration)
+    val sec:String={if(time._3-10<0){"0"+time._3.toString}else{time._3.toString}}
+    maxDurationLabel.setText(time._2+":"+sec)
     minDurationLabel.setText("0:0")
   }
-
   def currentTimeLabelSet(time: String): Unit = {
     minDurationLabel.setText(time)
   }
-
   def setDurationSlider(value: Double): Unit = {
     durationSlider.setValue(value)
   }
-
-
-
-  def dragDuration(): Unit = {
-    this.synchronized{
-      val seektime: Double = ((durationSlider.getValue * mediaPlayer.getTotalDuration().toMillis) / 100)
-      mediaPlayer.seek(new Duration(seektime))
-    }
-  }
-
-  def setVolume(): Unit = {
-    val volume: Double = volumeSlider.getValue
-    mediaPlayer.setVolume(volume / 100)
-    volumeLabel.setText(volume.toInt.toString + "%")
-  }
-
-
-
-  private def msToMinSec(duration: Duration):(Int,Int,Int)={
-    val hours:Int   = math.floor(duration.toHours).toInt
-    val minutes:Int = math.floor(duration.toMinutes).toInt-(hours*60)
-    val sec:Int     = math.floor(duration.toSeconds).toInt-(hours*60*60)-(minutes*60)
-
-    (hours,minutes,sec)
-  }
-
-  //MediaPlayer Functions
-  def playpause(): Unit = {
-    if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
-      togglePlayPause.setText("Pause")
-      mediaPlayer.play()
-    } else {
-      togglePlayPause.setText("Play")
-      mediaPlayer.pause()
-    }
-
-  }
-
+  //Listeners
   def setListeners(): Unit ={
     //progress Slider updater
     mediaPlayer.currentTimeProperty().addListener(new ChangeListener[Duration] {
@@ -146,33 +108,52 @@ class Controller {
     })
 
     //onEndoFMedia
-    mediaPlayer.setOnEndOfMedia(new Runnable {
-      override def run(): Unit = {
-        next()
-      }
+    mediaPlayer.setOnEndOfMedia(() => {
+      next()
     })
 
     }
+  def setLoadedListners(): Unit ={
+    Song.loaded.addListener( new ListChangeListener[Song]{
+      override def onChanged(change: ListChangeListener.Change[_ <: Song]): Unit ={
+        while(change.next()){
+          if(change.wasAdded()) {
+            println("Uma nova música foi adicionada")
+            updateListSongs()
+          }
+        }
+      }
+    } )
 
+    Artist.loaded.addListener( new ListChangeListener[Artist]{
+      override def onChanged(change: ListChangeListener.Change[_ <: Artist]): Unit ={
+        while(change.next()){
+          if(change.wasAdded()) {
+            println("Um novo artista foi adicionado")
+            updateListArtists()
+          }
+        }
+      }
+    } )
 
-
-  def selectFromListSongs(): Unit ={
-    val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
-    mediaChange(song.filepath)
-    musicNameLabel.setText(song.name)
+    Album.loaded.addListener( new ListChangeListener[Album]{
+      override def onChanged(change: ListChangeListener.Change[_ <: Album]): Unit ={
+        while(change.next()){
+          if(change.wasAdded()) {
+            println("Uma novo album foi adicionado")
+            updateListAlbums()
+          }
+        }
+      }
+    } )
 
   }
-
-  def resetPlayButton(): Unit ={
-    togglePlayPause.setSelected(false)
-    togglePlayPause.setText("Play")
-  }
-
+  //Liseners End
   def mediaChange(filepath:String): Unit ={
 
     val media :Try[Media]= Try(new Media(new File(filepath).toURI.toString))
     media match{
-      case Success(v) => {
+      case Success(v) =>
         if(!mediaPlayer.isInstanceOf[MediaPlayer]){
           //mediaPlayer has not been instanciated
           mediaPlayer = new MediaPlayer(v)
@@ -181,15 +162,19 @@ class Controller {
           mediaPlayer.dispose()
           mediaPlayer = new MediaPlayer(v)
           mediaPlayer.setVolume(volume)
-
         }
         setListeners()
         resetPlayButton()
-      }
-      case Failure(e) => {
+        mediaPlayer.statusProperty().addListener(new ChangeListener[MediaPlayer.Status] {
+          override def changed(observable: ObservableValue[_ <: MediaPlayer.Status], oldValue: MediaPlayer.Status, newValue: MediaPlayer.Status): Unit = {
+            if(newValue.equals(MediaPlayer.Status.READY)){
+              setSeekSlider()
+            }
+          }
+        })
+      case Failure(e) =>
         print("Erro a criar media")
         throw e
-      }
 
     }
 
@@ -199,18 +184,19 @@ class Controller {
     val metadataMediaPlayer = new MediaPlayer(media)
     val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
 
-    media.getMetadata().addListener(new MapChangeListener[String , AnyRef]{
+    media.getMetadata.addListener(new MapChangeListener[String , AnyRef]{
       override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit ={
         if(change.wasAdded()){
-          info.addOne((change.getKey() , change.getValueAdded))
+          info.addOne((change.getKey , change.getValueAdded))
         }
       }
     })
 
     val runner = new Runnable {
       override def run(): Unit= {
+
         println(info)
-        val album:String = info.filter( x=>x._1.equals("album") ) (0)._2.toString.trim
+        val album:String = info.filter(x => x._1.equals("album")).head._2.toString.trim
         val artist:String = info.filter( x=>x._1.equals("artist") ).map(_._2).remove(0).toString.split(",").head.trim
         val songid = DatabaseFunc.getlastidSongs(Song.loaded)+1
 
@@ -264,14 +250,14 @@ class Controller {
         val idFeats=nomeFeats.map(x=>DatabaseFunc.GetIDArtistOrCreateFeats(x.trim,songid.toString))
 
         val trackNaux:ListBuffer[(String,AnyRef)]=info.filter(x => x._1.equals("track number"))
-        val trackN = if(trackNaux.isEmpty){0}else{trackNaux(0)._2.toString.trim}
+        val trackN = if(trackNaux.isEmpty){0}else{trackNaux.head._2.toString.trim}
 
         val song:Song = Song(List[String](
           songid.toString,//0
-          info.filter( x=>x._1.equals("title") )(0)._2.toString.trim,//1
+          info.filter(x => x._1.equals("title")).head._2.toString.trim,//1
           selectedFile.getAbsolutePath,//2 filepath
           artistid.toString,//4 artist
-          info.filter( x=>x._1.equals("genre") ) (0)._2.toString,//5 genre
+          info.filter(x => x._1.equals("genre")).head._2.toString,//5 genre
           albumid.toString,//6 album
           idFeats.mkString(" "),//7 feats
           0.toString,//8
@@ -281,45 +267,12 @@ class Controller {
         Song.loaded.add(song)
 
       }
-      }
+    }
     metadataMediaPlayer.setOnReady(runner)
 
   }
-  def setLoadedListners(): Unit ={
-    Song.loaded.addListener( new ListChangeListener[Song]{
-      override def onChanged(change: ListChangeListener.Change[_ <: Song]): Unit ={
-        while(change.next()){
-          if(change.wasAdded()) {
-            println("Uma nova música foi adicionada")
-            updateListSongs()
-          }
-        }
-      }
-    } )
 
-    Artist.loaded.addListener( new ListChangeListener[Artist]{
-      override def onChanged(change: ListChangeListener.Change[_ <: Artist]): Unit ={
-        while(change.next()){
-          if(change.wasAdded()) {
-            println("Um novo artista foi adicionado")
-            updateListArtists()
-          }
-        }
-      }
-    } )
-
-    Album.loaded.addListener( new ListChangeListener[Album]{
-      override def onChanged(change: ListChangeListener.Change[_ <: Album]): Unit ={
-        while(change.next()){
-          if(change.wasAdded()) {
-            println("Uma novo album foi adicionado")
-            updateListAlbums()
-          }
-        }
-      }
-    } )
-
-  }
+  //UpdateLists
   def updateListSongs(): Unit ={
     listSongs.getItems.clear()
     Song.loaded.forEach(x=>listSongs.getItems.add(x))
@@ -337,6 +290,18 @@ class Controller {
     Artist.loaded.forEach(x=>listArtists.getItems.add(x))
     println("------------- número de items "+  listArtists.getItems.size)
     listArtists.getItems.forEach(println)
+  }
+
+  //MediaControl
+  def playpause(): Unit = {
+    if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
+      togglePlayPause.setText("Pause")
+      mediaPlayer.play()
+    } else {
+      togglePlayPause.setText("Play")
+      mediaPlayer.pause()
+    }
+
   }
   def before(): Unit ={
     val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
@@ -378,20 +343,12 @@ class Controller {
       }
     }
   }
-  private def gotoSong(pos: Int): Unit ={
-    val newSong=listSongs.getItems.get(pos)
-    listSongs.getSelectionModel.select(pos)
-    mediaChange(newSong.filepath)
-    musicNameLabel.setText(newSong.name)
-    mediaPlayer.play()
-  }
   def random(): Unit ={
     if(repeatButton.isSelected){
       repeatButton.setSelected(false)
       mediaPlayer.setCycleCount(1)
     }
   }
-
   def repeat(): Unit ={
     if(randomButton.isSelected){
       randomButton.setSelected(false)
@@ -401,5 +358,42 @@ class Controller {
     }else{
       mediaPlayer.setCycleCount(1)
     }
+  }
+  def dragDuration(): Unit = {
+    this.synchronized{
+      val seektime: Double = (durationSlider.getValue * mediaPlayer.getTotalDuration.toMillis) / 100
+      mediaPlayer.seek(new Duration(seektime))
+    }
+  }
+  def setVolume(): Unit = {
+    val volume: Double = volumeSlider.getValue
+    mediaPlayer.setVolume(volume / 100)
+    volumeLabel.setText(volume.toInt.toString + "%")
+  }
+  def selectFromListSongs(): Unit ={
+    val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
+    mediaChange(song.filepath)
+    musicNameLabel.setText(song.name)
+
+  }
+
+  //Auxiliaries
+  private def gotoSong(pos: Int): Unit ={
+    val newSong=listSongs.getItems.get(pos)
+    listSongs.getSelectionModel.select(pos)
+    mediaChange(newSong.filepath)
+    musicNameLabel.setText(newSong.name)
+    mediaPlayer.play()
+  }
+  private def msToMinSec(duration: Duration):(Int,Int,Int)={
+    val hours:Int   = math.floor(duration.toHours).toInt
+    val minutes:Int = math.floor(duration.toMinutes).toInt-(hours*60)
+    val sec:Int     = math.floor(duration.toSeconds).toInt-(hours*60*60)-(minutes*60)
+
+    (hours,minutes,sec)
+  }
+  private def resetPlayButton(): Unit ={
+    togglePlayPause.setSelected(false)
+    togglePlayPause.setText("Play")
   }
 }
