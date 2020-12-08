@@ -1,6 +1,7 @@
 package Data
 
 import Data.Artist.addAlbum
+import javafx.collections.{FXCollections, ObservableList}
 
 import scala.collection.mutable.ListBuffer
 
@@ -11,7 +12,7 @@ case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ) exten
 
   override def toString(): String ={ Artist.toString(this) }
   override val db: String =Artist.db
-  override var loaded: ListBuffer[Artist] = Artist.loaded
+  override var loaded: ObservableList[Artist] = Artist.loaded
   override def load(line: String): Unit = Artist.load(line)
   override val constructN: Int = 4
 
@@ -26,16 +27,16 @@ object Artist{
   type Songs    = List[Int]
 
   val db: String = "DataBases/db_artists"
-  val loaded: ListBuffer[Artist] = new ListBuffer[Artist]
+  val loaded: ObservableList[Artist] =  FXCollections.observableArrayList[Artist]()
   def getLoaded[Artist](): List[String] = {
-    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+    this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
   }
 
   def load(line: String): Unit={
     val info=line.split(";").toList
     //val artist:Artist = Artist(info(0),info(1),info(2),info(3))
     val artist:Artist = Artist(info)
-    loaded+= artist
+    loaded.add( artist)
     println("Loaded " + line)
 
   }
@@ -78,7 +79,11 @@ object Artist{
   }
 
   def addAlbum(a: Data.Artist, album:Int): Artist ={
-    Artist(a.id,a.name,album::a.albums, a.songs)
+    if(a.albums.filter(x=>x==album).isEmpty){
+      Artist(a.id,a.name,album::a.albums, a.songs)
+    }else{
+      Artist(a.id,a.name,a.albums, a.songs)
+    }
   }
 
   def toString(a: Data.Artist): String={
