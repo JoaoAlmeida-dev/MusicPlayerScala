@@ -24,7 +24,7 @@ object Album {
   type Artist = Int
 
   val db: String = "DataBases/db_albums"
-  var loaded: ListBuffer[Album] = new ListBuffer[Album]
+  var loaded: ObservableList[Album] = new ListBuffer[Album]
 
   def getLoaded[Album](): List[String] = {
     this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))

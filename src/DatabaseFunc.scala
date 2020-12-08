@@ -1,11 +1,10 @@
-import java.io.{BufferedWriter, File, FileWriter}
-
+import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
 import Data.{Album, Artist, MusicObject, Playlist, Song}
-import com.sun.prism.PixelFormat.{BYTE_ALPHA, DataType}
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
+import scala.util.{Failure, Success, Try}
 
 object DatabaseFunc {
 
@@ -29,25 +28,37 @@ object DatabaseFunc {
       println("UpdateError:Cant change id")
     }else{
         val objectold:MusicObject[A] = a.asInstanceOf[MusicObject[A]]
-        val loadedObject:A =objectold.loaded.filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0)
+        val loadedObject:A =objectold.loaded.toArray().filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0).asInstanceOf[A]
         val info: List[String] = loadedObject.toString().split(";").toList.updated(field,newv)
         //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
         val objectNew:A = a.apply(info)
-
+        //TODO deletar dos loaded e inserir o updated
         //deletefromDB(loadedObject, a.db)
         //addtoDB(objectNew, a.db)
         a.load(info.mkString(";"))
     }
   }
-
+//currying right here
   def readFile(load: String=>Any, filename: String): Unit={
-    val bufferedFile = Source.fromFile(filename)
-    val lines = bufferedFile.getLines.toList
-    if(lines.isEmpty){
-      bufferedFile.close()
-    }else{
-      readline(load,lines)
-      bufferedFile.close()
+    val bufferedFile:Try[BufferedSource] = Try(Source.fromFile(filename))
+    bufferedFile match{
+      case Success(v) =>
+      {
+        val lines = v.getLines.toList
+        if (lines.isEmpty) {
+          v.close ()
+        } else {
+          readline (load, lines)
+          v.close ()
+        }
+      }
+      case Failure(e)=>{
+        val f:File=new File(filename)
+        val writer = new PrintWriter(f)
+        writer.write("")
+        writer.close()
+        println("Ficheiro de BD não existe"+e.getMessage)
+      }
     }
   }
 
@@ -66,12 +77,12 @@ object DatabaseFunc {
   }
 
   def GetIDArtistOrCreate(artist: String): String={
-    val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
+    val artistcheck:ListBuffer[Artist]=Artist.loaded.toArray().filter(x=>x.asInstanceOf[Artist].name.equals(artist))
 
     val artistid:Int={
       if (artistcheck.isEmpty) {
-        val newid:Int=DatabaseFunc.getlastid(Artist.loaded.toList)+1
-        Artist.loaded+=Artist( List(newid.toString,artist,"","")  )
+        val newid:Int=DatabaseFunc.getlastid(Artist.loaded.toArray.)+1
+        Artist.loaded.add(Artist( List(newid.toString,artist,"","")  ))
         newid
       } else {
         artistcheck(0).id

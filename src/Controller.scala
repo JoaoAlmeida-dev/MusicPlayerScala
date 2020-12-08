@@ -1,5 +1,5 @@
 
-import Data.{Album, Artist, Song}
+import Data.{Album, Artist, MusicObject, Song}
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.{FXCollections, MapChangeListener, ObservableList}
 import javafx.fxml.FXML
@@ -41,7 +41,8 @@ class Controller {
   def initialize(): Unit ={
 
     DatabaseFunc.loadfiles()
-    Song.loaded.map(songList.getItems.add)
+    Song.loaded.toArray.map(x=>songList.getItems.add(x.asInstanceOf[Song]))
+
     //val firstSongPath:String=Song.loaded(0).filepath
     //mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
   }
@@ -51,8 +52,6 @@ class Controller {
     val fileChooser = new FileChooser
     val selectedFile:File = fileChooser.showOpenDialog(stage)
     uploadSong(selectedFile)
-    songList.getItems.clear()
-    Song.loaded.map(songList.getItems.add)
   }
 
   def setSeekSlider(): Unit = {
@@ -159,28 +158,23 @@ class Controller {
 
 
 
-
-
-
-
-
   private def uploadSong(selectedFile: File):Unit={
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
     val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
+
     media.getMetadata().addListener(new MapChangeListener[String , AnyRef]{
       override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit ={
         if(change.wasAdded()){
           info.addOne((change.getKey() , change.getValueAdded))
-        }
-      }
-    })
-    metadataMediaPlayer.setOnReady(new Runnable {
-      override def run(): Unit = {
+        }}})
 
+    val runner = new Runnable {
+      override def run(): Unit= {
+        println(info)
         val album:String = info.filter( x=>x._1.equals("album") ) (0)._2.toString
-        val artist:String = info.filter( x=>x._1.equals("album artist") )(0)._2.toString
-        val songid = DatabaseFunc.getlastid(Song.loaded.toList)+1
+        val artist:String = info.filter( x=>x._1.equals("artist") ).map(_._2).remove(0).toString.split(",").head
+        val songid = DatabaseFunc.getlastid(Song.loaded.toArray().toList.asInstanceOf[List[MusicObject[Song]]])+1
         //artist exists? if not creating it
         val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
 
@@ -206,16 +200,14 @@ class Controller {
             albumcheck(0).id
           }
         }
+
         val nomeFeats = info.filter( x=>x._1.equals("artist") ).map(_._2).remove(0).toString.split(", ").tail.toList
         nomeFeats.map(println)
         val idFeats=nomeFeats.map(x=>DatabaseFunc.GetIDArtistOrCreate(x))
 
         val trackNaux:ListBuffer[(String,AnyRef)]=info.filter(x => x._1.equals("track number"))
-        val trackN = if(trackNaux.isEmpty){
-          0
-        }else{
-          trackNaux(0)._2.toString.trim
-        }
+        val trackN = if(trackNaux.isEmpty){0}else{trackNaux(0)._2.toString.trim}
+
         val song:Song = Song(List[String](
           songid.toString,//0
           info.filter( x=>x._1.equals("title") )(0)._2.toString.trim,//1
@@ -228,11 +220,11 @@ class Controller {
           trackN.toString,//9 TrackNumber resolver
         )
         )
-
         Song.loaded+=song
         //songList.getItems.add(song)
       }
-    })
+      }
+    metadataMediaPlayer.setOnReady(runner)
 
   }
 

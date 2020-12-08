@@ -1,5 +1,7 @@
 package Data
 
+import javafx.collections.{FXCollections, ObservableList, ObservableListBase}
+
 import scala.collection.mutable.ListBuffer
 
 case class Song (id: Int, name:String,filepath:String, artist:Int, genre:String, album:Int, feats: List[Int], listened:Int, trackN:Int) extends MusicObject[Song] {
@@ -8,7 +10,7 @@ case class Song (id: Int, name:String,filepath:String, artist:Int, genre:String,
 
   override def toString(): String ={ Song.toString(this) }
   override val db: String = Song.db
-  override var loaded: ListBuffer[Song] = Song.loaded
+  override var loaded: ObservableList[Song] = Song.loaded
   override def load(line: String): Unit = Song.load(line)
   override val constructN: Int = 10
 
@@ -36,17 +38,18 @@ object Song{
 
 
   val db: String = "DataBases/db_songs"
-  var loaded: ListBuffer[Song] = new ListBuffer[Song]()
+  var loaded: ObservableList[Song] = ObservableList[Song]
+
 
   def getLoaded[Song](): List[String] ={
-    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+    this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
   }
 
   def load(line: String): Unit={
     val info=line.split(";").toList
     //val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
     val song:Song = Song(info)
-    loaded+= song
+    loaded.add( song)
     println("Loaded " + line)
   }
 

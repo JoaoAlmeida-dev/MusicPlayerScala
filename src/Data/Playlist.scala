@@ -1,4 +1,6 @@
 package Data
+import javafx.collections.{FXCollections, ObservableList}
+
 import scala.collection.mutable.ListBuffer
 
 case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends MusicObject[Playlist] {
@@ -8,7 +10,7 @@ case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends M
 
   override def toString(): String ={ Playlist.toString(this) }
   override val db: String = Playlist.db
-  override var loaded: ListBuffer[Playlist] = Playlist.loaded
+  override var loaded: ObservableList[Playlist] = Playlist.loaded
   override def load(line: String): Unit = Playlist.load(line)
   override val constructN: Int = 4
 
@@ -24,16 +26,16 @@ object Playlist{
   type Theme  = String
 
   val db: String = "DataBases/db_playlists"
-  var loaded: ListBuffer[Playlist] = new ListBuffer[Playlist]
+  var loaded: ObservableList[Playlist] =FXCollections.observableArrayList[Playlist]()
   def getLoaded[Playlist](): List[String] = {
-    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+    this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
   }
 
   def load(line: String): Unit={
     val info=line.split(";").toList
     //val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
     val playlist:Playlist =Playlist(info)
-    loaded+=playlist
+    loaded.add(playlist)
     println("Loaded " + line)
   }
 

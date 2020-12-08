@@ -21,7 +21,6 @@ object Main {
     DatabaseFunc.writeDB(Album.loaded, Album.db)
     DatabaseFunc.writeDB(Song.loaded, Song.db)
     DatabaseFunc.writeDB(Playlist.loaded, Playlist.db)
-
     //DatabaseFunc.printLoaded()
     //mainLoop()
   }
