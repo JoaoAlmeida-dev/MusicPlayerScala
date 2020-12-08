@@ -10,9 +10,11 @@ import javafx.stage.{FileChooser, Stage}
 import javafx.util.Duration
 
 import java.io.File
+import java.util.concurrent.FutureTask
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
-
 
 
 class Controller {
@@ -158,7 +160,7 @@ class Controller {
 
 
 
-  private def uploadSong(selectedFile: File):Unit={
+  private def uploadSong(selectedFile: File): Unit={
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
     val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
@@ -221,7 +223,7 @@ class Controller {
         )
         )
         Song.loaded+=song
-        //songList.getItems.add(song)
+
       }
       }
     metadataMediaPlayer.setOnReady(runner)
