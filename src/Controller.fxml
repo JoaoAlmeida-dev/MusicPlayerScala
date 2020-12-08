@@ -4,11 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<BorderPane fx:id="BaseBorderPane" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <left>
       <AnchorPane fx:id="leftPane" BorderPane.alignment="CENTER">
          <children>
-            <ListView fx:id="listSongs" layoutX="-1.0" layoutY="-2.0" onMouseClicked="#selectFromListSongs" />
+            <ListView fx:id="listSongs" layoutX="-1.0" layoutY="-2.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#selectFromListSongs" onMouseClicked="#selectFromListSongs" />
          </children></AnchorPane>
    </left>
    <center>
@@ -34,6 +34,10 @@
                               <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="2" />
                               <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="1" />
                               <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.rowIndex="1" />
+                              <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" text="ResetForward" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" text="FastForward" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" text="SlowForward" GridPane.rowIndex="2" />
+                              <Label fx:id="rateLabel" text="Rate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                      </center>
@@ -61,7 +65,22 @@
                 </content>
             </Tab>
             <Tab text="Playlists">
-
+                <content>
+                    <BorderPane>
+                        <center>
+                            <ListView fx:id="listPlaylist" />
+                        </center>
+                     <bottom>
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <buttons>
+                            <Button mnemonicParsing="false" text="New" />
+                              <Button mnemonicParsing="false" text="Remove" />
+                              <Button mnemonicParsing="false" text="Edit" />
+                          </buttons>
+                        </ButtonBar>
+                     </bottom>
+                    </BorderPane>
+                </content>
             </Tab>
         </tabs>
          <BorderPane.margin>
@@ -79,22 +98,20 @@
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="48.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="434.0" minWidth="10.0" prefWidth="320.6000000000001" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="57.39999999999998" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="29.200000000000045" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="46.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="434.0" minWidth="10.0" prefWidth="306.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="58.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="61.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="79.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="8" />
-            <Label text="vol:" GridPane.columnIndex="6" />
+            <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="7" />
             <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="3" />
             <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="5" />
-            <Slider fx:id="durationSlider" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="4" />
-            <Label fx:id="volumeLabel" prefHeight="17.0" prefWidth="38.0" text="100%" GridPane.columnIndex="7" />
+            <Slider fx:id="durationSlider" onKeyPressed="#dragDuration" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="4" />
+            <Label fx:id="volumeLabel" text="vol:100%" GridPane.columnIndex="6" />
             <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" />
             <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="1" />
             <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="2" />

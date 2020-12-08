@@ -1,11 +1,9 @@
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
-import java.util.Observable
 
 import Data.{Album, Artist, MusicObject, Playlist, Song}
 import javafx.collections.ObservableList
 
 import scala.annotation.tailrec
-import scala.collection.mutable.ListBuffer
 import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Try}
 
