@@ -16,16 +16,15 @@ object Main {
   def main(args: Array[String])
   {
     Application.launch(classOf[Main], args: _*)
-    /*
+
     DatabaseFunc.writeDB(Artist.loaded, Artist.db)
     DatabaseFunc.writeDB(Album.loaded, Album.db)
     DatabaseFunc.writeDB(Song.loaded, Song.db)
     DatabaseFunc.writeDB(Playlist.loaded, Playlist.db)
-    */
+
     //DatabaseFunc.printLoaded()
     //mainLoop()
   }
-
 
 }
 
@@ -42,12 +41,25 @@ class Main extends Application{
     primaryStage.setScene(scene)
     primaryStage.show()
 
+
+    Main.pStage = primaryStage
+
+  }
+
+  def getPrimaryStage():Stage= {
+    Main.pStage
   }
   /*
    TODO
     ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
     menus para navegar pela db (cmd style)
-    
+    Playlists
+      create
+      add
+      remove
+      addSong
+      removeSong
+      ChangeOrder
   */
 
   def showPropt(): Unit ={

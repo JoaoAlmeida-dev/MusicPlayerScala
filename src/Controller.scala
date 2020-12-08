@@ -1,21 +1,23 @@
 
-import Data.{Album, Artist, MusicObject, Song}
+import Data.{Album, Artist, MusicObject, Playlist, Song}
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.{FXCollections, ListChangeListener, MapChangeListener, ObservableList}
 import javafx.fxml.FXML
+import javafx.scene.Scene
 import javafx.scene.control.{Button, Label, ListView, MultipleSelectionModel, Slider, ToggleButton}
-import javafx.scene.layout.{AnchorPane, FlowPane, GridPane}
+import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
-import javafx.stage.{DirectoryChooser, FileChooser, Stage}
+import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
 import javafx.util.Duration
 
 import java.io.File
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
-
-
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 class Controller {
 
+  @FXML private var BaseBorderPane: BorderPane = _
   @FXML private var centerGrid: GridPane = _
   @FXML private var bottomGrid: GridPane = _
   @FXML private var togglePlayPause: ToggleButton = _
@@ -31,21 +33,76 @@ class Controller {
   @FXML private var listSongs: ListView[Song] = new ListView()
   @FXML private var listAlbums: ListView[Album] = new ListView()
   @FXML private var listArtists: ListView[Artist] = new ListView()
+  @FXML private var listPlaylist: ListView[Playlist] = new ListView()
   @FXML private var randomButton: ToggleButton = _
   @FXML private var repeatButton: ToggleButton = _
+
+  @FXML private var editPlaylistButton: Button = _
+  @FXML private var addPlaylistButton: Button = _
+  @FXML private var removePlaylistButton: Button = _
+
+  @FXML private var FastForwardButton: Button = _
+  @FXML private var ResetForwardButton: Button = _
+  @FXML private var SlowForwardButton: Button = _
+  @FXML private var rateLabel: Label = _
+
 
 
   var mediaPlayer: MediaPlayer = _
 
   def initialize(): Unit ={
     DatabaseFunc.loadfiles()
-    setLoadedListners()
+    setLoadedListeners()
     updateListSongs()
     updateListAlbums()
     updateListArtists()
     //val firstSongPath:String=Song.loaded(0).filepath
     //mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
   }
+
+  def fastForward(): Unit ={
+    //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
+
+    if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+      showMediaNullDialogWarning()
+    }else{
+      val rate:Double = if(mediaPlayer.getRate>1){
+        math.min(mediaPlayer.getRate + 1, 8)
+      }else{
+        math.min(mediaPlayer.getRate*2, 8)
+      }
+
+      mediaPlayer.setRate(rate)
+      rateLabel.setText("rate:"+rate+"x")
+    }
+  }
+  def resetForward(): Unit ={
+    //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
+
+    if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+      showMediaNullDialogWarning()
+    }else{
+      mediaPlayer.setRate(1)
+      rateLabel.setText("rate:"+1+"x")
+    }
+  }
+  def slowForward(): Unit ={
+    //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
+
+    if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+      showMediaNullDialogWarning()
+    }else{
+      val rate:Double = if(mediaPlayer.getRate>1) {
+        mediaPlayer.getRate - 1
+      }else {
+        math.max(mediaPlayer.getRate/2,0.125)
+      }
+
+      mediaPlayer.setRate(rate)
+      rateLabel.setText("rate:"+rate+"x")
+    }
+  }
+
 
   //Imports
   def importMusic(): Unit = {
@@ -83,8 +140,13 @@ class Controller {
   def setSeekSlider(): Unit = {
     //minDurationLabel.setText(math.round(seektime).toString)
     val time:(Int,Int,Int)= msToMinSec(mediaPlayer.getTotalDuration)
+    val hours:String = if(time._1 !=0){
+        time._1.toString+":"
+    }else{
+        ""
+    }
     val sec:String={if(time._3-10<0){"0"+time._3.toString}else{time._3.toString}}
-    maxDurationLabel.setText(time._2+":"+sec)
+    maxDurationLabel.setText(hours + time._2+":"+sec)
     minDurationLabel.setText("0:0")
   }
   def currentTimeLabelSet(time: String): Unit = {
@@ -99,8 +161,12 @@ class Controller {
     mediaPlayer.currentTimeProperty().addListener(new ChangeListener[Duration] {
       override def changed(observable: ObservableValue[_ <: Duration], oldValue: Duration, newValue: Duration): Unit = {
         val currtime:(Int,Int,Int)= msToMinSec(newValue)
-
-        currentTimeLabelSet(currtime._2+":"+currtime._3)
+        val hours:String = if(currtime._1 !=0){
+          currtime._1.toString+":"
+        }else{
+          ""
+        }
+        currentTimeLabelSet(hours + currtime._2+":"+currtime._3)
 
         setDurationSlider((newValue.toSeconds * 100) / mediaPlayer.getTotalDuration.toSeconds)
 
@@ -113,7 +179,7 @@ class Controller {
     })
 
     }
-  def setLoadedListners(): Unit ={
+  def setLoadedListeners(): Unit ={
     Song.loaded.addListener( new ListChangeListener[Song]{
       override def onChanged(change: ListChangeListener.Change[_ <: Song]): Unit ={
         while(change.next()){
@@ -291,84 +357,102 @@ class Controller {
     println("------------- número de items "+  listArtists.getItems.size)
     listArtists.getItems.forEach(println)
   }
+  def updateListPlaylists(): Unit ={
+    listPlaylist.getItems.clear()
+    Playlist.loaded.forEach(x=>listPlaylist.getItems.add(x))
+    println("------------- número de items "+  listPlaylist.getItems.size)
+    listPlaylist.getItems.forEach(println)
+  }
 
   //MediaControl
   def playpause(): Unit = {
-    if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
-      togglePlayPause.setText("Pause")
-      mediaPlayer.play()
-    } else {
-      togglePlayPause.setText("Play")
-      mediaPlayer.pause()
+    if(showMediaNullDialogWarning()){
+      if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
+        togglePlayPause.setText("Pause")
+        mediaPlayer.play()
+      } else {
+        togglePlayPause.setText("Play")
+        mediaPlayer.pause()
+      }
     }
 
   }
   def before(): Unit ={
-    val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
-    if(mediaPlayer.getCurrentTime.toSeconds>3){
-      mediaPlayer.seek(new Duration(0))
-    }else{
-      if(repeatButton.isSelected){
+    if(showMediaNullDialogWarning()){
+      val song: Song = listSongs.getSelectionModel.getSelectedItems.get(0)
+      if (mediaPlayer.getCurrentTime.toSeconds > 3) {
         mediaPlayer.seek(new Duration(0))
-      }
-      else if(randomButton.isSelected){
-        val r = scala.util.Random
-        val pos = r.nextInt(listSongs.getItems.size())
-        gotoSong(pos)
-      }else{
-        val pos=listSongs.getItems.lastIndexOf(song)-1
-        if(pos<0){
-          gotoSong(listSongs.getItems.size-1)
-        }else{
+      } else {
+        if (repeatButton.isSelected) {
+          mediaPlayer.seek(new Duration(0))
+        }
+        else if (randomButton.isSelected) {
+          val r = scala.util.Random
+          val pos = r.nextInt(listSongs.getItems.size())
           gotoSong(pos)
+        } else {
+          val pos = listSongs.getItems.lastIndexOf(song) - 1
+          if (pos < 0) {
+            gotoSong(listSongs.getItems.size - 1)
+          } else {
+            gotoSong(pos)
+          }
         }
       }
     }
   }
   def next(): Unit ={
-    val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
-    if(repeatButton.isSelected){
-      mediaPlayer.seek(new Duration(0))
-    }
-    else if(randomButton.isSelected){
-      val r = scala.util.Random
-      val pos = r.nextInt(listSongs.getItems.size())
-      gotoSong(pos)
-    }else{
-      val pos=listSongs.getItems.lastIndexOf(song)+1
-      if(pos>listSongs.getItems.size-1){
-        gotoSong(0)
-      }else{
+    if(showMediaNullDialogWarning()){
+      val song: Song = listSongs.getSelectionModel.getSelectedItems.get(0)
+      if (repeatButton.isSelected) {
+        mediaPlayer.seek(new Duration(0))
+      }
+      else if (randomButton.isSelected) {
+        val r = scala.util.Random
+        val pos = r.nextInt(listSongs.getItems.size())
         gotoSong(pos)
+      } else {
+        val pos = listSongs.getItems.lastIndexOf(song) + 1
+        if (pos > listSongs.getItems.size - 1) {
+          gotoSong(0)
+        } else {
+          gotoSong(pos)
+        }
       }
     }
   }
   def random(): Unit ={
-    if(repeatButton.isSelected){
-      repeatButton.setSelected(false)
-      mediaPlayer.setCycleCount(1)
+    if(showMediaNullDialogWarning()){
+      if (repeatButton.isSelected) {
+        repeatButton.setSelected(false)
+        mediaPlayer.setCycleCount(1)
+      }
     }
   }
   def repeat(): Unit ={
-    if(randomButton.isSelected){
-      randomButton.setSelected(false)
-    }
-    if(repeatButton.isSelected){
-      mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE)
-    }else{
-      mediaPlayer.setCycleCount(1)
+    if(showMediaNullDialogWarning()){
+      if (randomButton.isSelected) {
+        randomButton.setSelected(false)
+      }
+      if (repeatButton.isSelected) {
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE)
+      } else {
+        mediaPlayer.setCycleCount(1)
+      }
     }
   }
   def dragDuration(): Unit = {
-    this.synchronized{
-      val seektime: Double = (durationSlider.getValue * mediaPlayer.getTotalDuration.toMillis) / 100
-      mediaPlayer.seek(new Duration(seektime))
+    if(showMediaNullDialogWarning()){
+      this.synchronized {
+        val seektime: Double = (durationSlider.getValue * mediaPlayer.getTotalDuration.toMillis) / 100
+        mediaPlayer.seek(new Duration(seektime))
+      }
     }
   }
   def setVolume(): Unit = {
     val volume: Double = volumeSlider.getValue
     mediaPlayer.setVolume(volume / 100)
-    volumeLabel.setText(volume.toInt.toString + "%")
+    volumeLabel.setText("vol:"+volume.toInt.toString + "%")
   }
   def selectFromListSongs(): Unit ={
     val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
@@ -395,5 +479,17 @@ class Controller {
   private def resetPlayButton(): Unit ={
     togglePlayPause.setSelected(false)
     togglePlayPause.setText("Play")
+  }
+
+  private def showMediaNullDialogWarning(): Boolean ={
+    val title:String = "You should select a Song to play first"
+    if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+      val alert = new Alert(AlertType.WARNING)
+      alert.setTitle("Warning Dialog")
+      alert.setHeaderText(title)
+
+      alert.showAndWait()
+    }
+    mediaPlayer.isInstanceOf[MediaPlayer]
   }
 }
