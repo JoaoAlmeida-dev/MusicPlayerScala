@@ -1,5 +1,7 @@
 package Data
 import scala.collection.mutable.ListBuffer
+import javafx.collections.{FXCollections, ModifiableObservableListBase, ObservableList, ObservableListBase}
+
 
 case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends MusicObject[Album]{
   def info():Option[(Int,String,List[Int],Int)]= { Album.info(this) }
@@ -8,7 +10,7 @@ case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends Musi
 
   override def toString(): String ={ Album.toString(this) }
   override val db: String = Album.db
-  override var loaded: ListBuffer[Album] = Album.loaded
+  override var loaded: ObservableList[Album] = Album.loaded
   override def load(line: String): Unit = Album.load(line)
   override val constructN: Int = 4
 
