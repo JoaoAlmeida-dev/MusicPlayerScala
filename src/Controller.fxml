@@ -31,9 +31,6 @@
                            </rowConstraints>
                            <children>
                               <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
-                              <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" GridPane.rowIndex="2" />
-                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="2" />
                               <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="1" />
                            </children>
@@ -42,10 +39,13 @@
                      <bottom>
                         <GridPane fx:id="bottomGrid" BorderPane.alignment="CENTER">
                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="48.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="434.0" minWidth="10.0" prefWidth="423.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="61.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="39.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="434.0" minWidth="10.0" prefWidth="320.6000000000001" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="57.39999999999998" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="29.200000000000045" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="46.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="79.0" />
                           </columnConstraints>
@@ -53,12 +53,15 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="5" />
-                              <Label text="vol:" GridPane.columnIndex="3" />
-                              <Label fx:id="minDurationLabel" text="0:0" />
-                              <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="2" />
-                              <Slider fx:id="durationSlider" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="1" />
-                              <Label fx:id="volumeLabel" prefHeight="17.0" prefWidth="38.0" text="100%" GridPane.columnIndex="4" />
+                              <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="8" />
+                              <Label text="vol:" GridPane.columnIndex="6" />
+                              <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="3" />
+                              <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="5" />
+                              <Slider fx:id="durationSlider" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="4" />
+                              <Label fx:id="volumeLabel" prefHeight="17.0" prefWidth="38.0" text="100%" GridPane.columnIndex="7" />
+                              <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" />
+                              <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="1" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="2" />
                            </children>
                            <BorderPane.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -73,25 +76,25 @@
                      </top>
                   </BorderPane>
                </content></Tab>
-            <Tab text="Albums" >
+            <Tab text="Albums">
                 <content>
                     <BorderPane>
                         <center>
-                            <ListView fx:id="listAlbums"/>
+                            <ListView fx:id="listAlbums" />
                         </center>
                     </BorderPane>
                 </content>
             </Tab>
-            <Tab text="Artists" >
+            <Tab text="Artists">
                 <content>
                     <BorderPane>
                         <center>
-                            <ListView fx:id="listArtists"/>
+                            <ListView fx:id="listArtists" />
                         </center>
                     </BorderPane>
                 </content>
             </Tab>
-            <Tab text="Playlists" >
+            <Tab text="Playlists">
 
             </Tab>
         </tabs>

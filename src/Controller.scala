@@ -109,17 +109,31 @@ class Controller {
     //progress Slider updater
     mediaPlayer.currentTimeProperty().addListener(new ChangeListener[Duration] {
       override def changed(observable: ObservableValue[_ <: Duration], oldValue: Duration, newValue: Duration): Unit = {
-        val time:(Int,Int,Int)= msToMinSec(newValue)
-        currentTimeLabelSet(time._2+":"+time._3)
+        val currtime:(Int,Int,Int)= msToMinSec(newValue)
+
+        currentTimeLabelSet(currtime._2+":"+currtime._3)
+
         setDurationSlider((newValue.toSeconds * 100) / mediaPlayer.getTotalDuration.toSeconds)
+
       }
     })
-  }
+
+    //onEndoFMedia
+    mediaPlayer.setOnEndOfMedia(new Runnable {
+      override def run(): Unit = {
+        next()
+      }
+    })
+
+    }
+
+
 
   def selectFromListSongs(): Unit ={
     val song:Song = listSongs.getSelectionModel.getSelectedItems.get(0)
     mediaChange(song.filepath)
     musicNameLabel.setText(song.name)
+
   }
 
   def resetPlayButton(): Unit ={
@@ -220,7 +234,7 @@ class Controller {
 
         val nomeFeats = info.filter( x=>x._1.equals("artist") ).map(_._2).remove(0).toString.split(", ").tail.toList
 
-        val idFeats=nomeFeats.map(x=>DatabaseFunc.GetIDArtistOrCreateFeats(x,songid.toString))
+        val idFeats=nomeFeats.map(x=>DatabaseFunc.GetIDArtistOrCreateFeats(x.trim,songid.toString))
 
         val trackNaux:ListBuffer[(String,AnyRef)]=info.filter(x => x._1.equals("track number"))
         val trackN = if(trackNaux.isEmpty){0}else{trackNaux(0)._2.toString.trim}
@@ -277,6 +291,7 @@ class Controller {
         }
       }
     } )
+
   }
   def updateListSongs(): Unit ={
     listSongs.getItems.clear()
@@ -346,11 +361,18 @@ class Controller {
   def random(): Unit ={
     if(repeatButton.isSelected){
       repeatButton.setSelected(false)
+      mediaPlayer.setCycleCount(1)
     }
   }
+
   def repeat(): Unit ={
     if(randomButton.isSelected){
       randomButton.setSelected(false)
+    }
+    if(repeatButton.isSelected){
+      mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE)
+    }else{
+      mediaPlayer.setCycleCount(1)
     }
   }
 }
