@@ -51,8 +51,8 @@ class Controller {
     val fileChooser = new FileChooser
     val selectedFile:File = fileChooser.showOpenDialog(stage)
     uploadSong(selectedFile)
-
-
+    songList.getItems.clear()
+    Song.loaded.map(songList.getItems.add)
   }
 
   def setSeekSlider(): Unit = {
@@ -164,7 +164,7 @@ class Controller {
 
 
 
-  private def uploadSong(selectedFile: File): Unit={
+  private def uploadSong(selectedFile: File):Unit={
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
     val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
@@ -235,4 +235,5 @@ class Controller {
     })
 
   }
+
 }
