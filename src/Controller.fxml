@@ -8,11 +8,11 @@
    <left>
       <AnchorPane fx:id="leftPane" BorderPane.alignment="CENTER">
          <children>
-            <ListView fx:id="songList" onMouseClicked="#selectFromList" />
+            <ListView fx:id="listSongs" onMouseClicked="#selectFromListSongs" prefHeight="400.0" prefWidth="200.0" />
          </children></AnchorPane>
    </left>
    <center>
-      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="400.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="Play">
                <content>
@@ -31,7 +31,11 @@
                            </rowConstraints>
                            <children>
                               <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
-                              <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.rowIndex="2" />
+                              <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" GridPane.rowIndex="2" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="2" />
+                              <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </center>
@@ -69,7 +73,27 @@
                      </top>
                   </BorderPane>
                </content></Tab>
-          <Tab text="Songs" />
+            <Tab text="Albums" >
+                <content>
+                    <BorderPane>
+                        <center>
+                            <ListView fx:id="listAlbums"/>
+                        </center>
+                    </BorderPane>
+                </content>
+            </Tab>
+            <Tab text="Artists" >
+                <content>
+                    <BorderPane>
+                        <center>
+                            <ListView fx:id="listArtists"/>
+                        </center>
+                    </BorderPane>
+                </content>
+            </Tab>
+            <Tab text="Playlists" >
+
+            </Tab>
         </tabs>
          <BorderPane.margin>
             <Insets />

@@ -1,5 +1,8 @@
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
+import java.util.Observable
+
 import Data.{Album, Artist, MusicObject, Playlist, Song}
+import javafx.collections.ObservableList
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
@@ -19,7 +22,7 @@ object DatabaseFunc {
   def unload[A](a:A):Unit= a match{
     case a: Data.MusicObject[A] => {
       println("Unloaded" + a.toString)
-      a.loaded -= a.asInstanceOf[A]
+      a.loaded.remove(a.asInstanceOf[A])
     }
   }
 
@@ -68,45 +71,51 @@ object DatabaseFunc {
     case a::t => load(a);readline(load,t)
   }
 
-  def getlastid[A](loaded: List[MusicObject[A]]): Int = {
-    def aux(max: Int, lst: List[MusicObject[A]]): Int = lst match {
-      case h :: t => aux(scala.math.max(h.id, max), t)
-      case Nil => max
-    }
-    aux(0, loaded)
+  def getlastidSongs(loaded: ObservableList[Song]): Int = {
+    var max=0
+    loaded.forEach(x=>{
+      if(x.id>max) max=x.id
+    })
+    max
   }
-
-  def GetIDArtistOrCreate(artist: String): String={
-    val artistcheck:ListBuffer[Artist]=Artist.loaded.toArray().filter(x=>x.asInstanceOf[Artist].name.equals(artist))
+  def getlastidAlbums(loaded: ObservableList[Album]): Int = {
+    var max=0
+    loaded.forEach(x=>{
+      if(x.id>max) max=x.id
+    })
+    max
+  }
+  def getlastidArtists(loaded: ObservableList[Artist]): Int = {
+    var max=0
+    loaded.forEach(x=>{
+      if(x.id>max) max=x.id
+    })
+    max
+  }
+  def GetIDArtistOrCreateFeats(artist: String, songid: String): String={
+    val artistcheck=Artist.loaded.filtered(x=>x.name.equals(artist))
 
     val artistid:Int={
       if (artistcheck.isEmpty) {
-        val newid:Int=DatabaseFunc.getlastid(Artist.loaded.toArray.)+1
-        Artist.loaded.add(Artist( List(newid.toString,artist,"","")  ))
+        val newid:Int=DatabaseFunc.getlastidArtists(Artist.loaded)+1
+        Artist.loaded.add(Artist( List(newid.toString,artist,"",songid)  ))
         newid
       } else {
-        artistcheck(0).id
+        val artist_temp=artistcheck.get(0).addSong(songid.toInt)
+        Artist.loaded.remove(artistcheck.get(0))
+        Artist.loaded.add(artist_temp)
+        artistcheck.get(0).id
       }
     }
     artistid.toString
   }
 
-  def writeDB[A](loaded: ListBuffer[A],dbPath: String): Unit={
+  def writeDB[A](loaded: ObservableList[A], dbPath: String): Unit={
     val file=new File(dbPath)
     val bw = new BufferedWriter(new FileWriter(file))
-    loaded.map(x=>{
+    loaded.forEach(x=>{
       bw.write(x.toString+"\n")}
     )
     bw.close()
-  }
-  def printLoaded(): Unit={
-    println("Songs:")
-    Song.loaded.sortWith((x1,x2)=>x1.id<x2.id)      .map(x => println("    " + x))
-    println("Artists:")
-    Artist.loaded.sortWith((x1,x2)=>x1.id<x2.id)    .map(x => println("    " + x))
-    println("Albums:")
-    Album.loaded.sortWith((x1,x2)=>x1.id<x2.id)     .map(x => println("    " + x))
-    println("Playlists:")
-    Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
   }
 }

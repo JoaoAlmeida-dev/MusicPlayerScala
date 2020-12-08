@@ -28,7 +28,6 @@ object Song{
   type id         = Int
   type Name       = String
   type Filepath   = String
-  //type Duration   = Int
   type Artist     = Int
   type Genre      = String
   type Album      = Int
@@ -38,7 +37,7 @@ object Song{
 
 
   val db: String = "DataBases/db_songs"
-  var loaded: ObservableList[Song] = ObservableList[Song]
+  var loaded: ObservableList[Song] = FXCollections.observableArrayList[Song]()
 
 
   def getLoaded[Song](): List[String] ={

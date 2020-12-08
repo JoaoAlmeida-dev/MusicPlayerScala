@@ -27,7 +27,7 @@ object Artist{
   type Songs    = List[Int]
 
   val db: String = "DataBases/db_artists"
-  val loaded: ObservableList[Artist] =  ObservableList[Artist]
+  val loaded: ObservableList[Artist] =  FXCollections.observableArrayList[Artist]()
   def getLoaded[Artist](): List[String] = {
     this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
   }
@@ -79,7 +79,11 @@ object Artist{
   }
 
   def addAlbum(a: Data.Artist, album:Int): Artist ={
-    Artist(a.id,a.name,album::a.albums, a.songs)
+    if(a.albums.filter(x=>x==album).isEmpty){
+      Artist(a.id,a.name,album::a.albums, a.songs)
+    }else{
+      Artist(a.id,a.name,a.albums, a.songs)
+    }
   }
 
   def toString(a: Data.Artist): String={

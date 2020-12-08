@@ -26,17 +26,17 @@ object Album {
   type Artist = Int
 
   val db: String = "DataBases/db_albums"
-  var loaded: ObservableList[Album] = new ListBuffer[Album]
+  var loaded: ObservableList[Album] = FXCollections.observableArrayList[Album]()
 
   def getLoaded[Album](): List[String] = {
-    this.loaded.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
+    this.loaded.toArray.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
   }
 
   def load(line: String): Unit={
     val info=line.split(";").toList
     //val album:Album = Album(info(0),info(1),info(2),info(3))
     val album:Album = Album(info)
-    loaded+=album
+    loaded.add(album)
     println("Loaded " + line)
   }
 
