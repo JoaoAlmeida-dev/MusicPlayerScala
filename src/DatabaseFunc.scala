@@ -43,8 +43,12 @@ object DatabaseFunc {
   def readFile(load: String=>Any, filename: String): Unit={
     val bufferedFile = Source.fromFile(filename)
     val lines = bufferedFile.getLines.toList
-    readline(load,lines)
-    bufferedFile.close()
+    if(lines.isEmpty){
+      bufferedFile.close()
+    }else{
+      readline(load,lines)
+      bufferedFile.close()
+    }
   }
 
   @tailrec
@@ -52,30 +56,15 @@ object DatabaseFunc {
     case a::Nil => load(a)
     case a::t => load(a);readline(load,t)
   }
-  /*
-  def getlastid(filename:String): Int ={
-    def aux( max:Int,list:List[String] ): Int = list match {
-      case h::t => aux(scala.math.max( max , h.split(";")(0).toInt ) ,t)
+
+  def getlastid[A](loaded: List[MusicObject[A]]): Int = {
+    def aux(max: Int, lst: List[MusicObject[A]]): Int = lst match {
+      case h :: t => aux(scala.math.max(h.id, max), t)
       case Nil => max
     }
-
-    val bufferedFile = Source.fromFile(filename)
-    val lines = bufferedFile.getLines.toList
-    bufferedFile.close()
-    aux(0,lines)
+    aux(0, loaded)
   }
-  */
 
-  def printLoaded(): Unit={
-    println("Songs:")
-    Song.loaded.sortWith((x1,x2)=>x1.id<x2.id)      .map(x => println("    " + x))
-    println("Artists:")
-    Artist.loaded.sortWith((x1,x2)=>x1.id<x2.id)    .map(x => println("    " + x))
-    println("Albums:")
-    Album.loaded.sortWith((x1,x2)=>x1.id<x2.id)     .map(x => println("    " + x))
-    println("Playlists:")
-    Playlist.loaded.sortWith((x1,x2)=>x1.id<x2.id)  .map(x => println("    " + x))
-  }
   def GetIDArtistOrCreate(artist: String): String={
     val artistcheck:ListBuffer[Artist]=Artist.loaded.filter(x=>x.name.equals(artist))
 

@@ -39,10 +39,11 @@ class Controller {
   var mediaPlayer: MediaPlayer = _
 
   def initialize(): Unit ={
+
     DatabaseFunc.loadfiles()
     Song.loaded.map(songList.getItems.add)
-    val firstSongPath:String=Song.loaded(0).filepath
-    mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
+    //val firstSongPath:String=Song.loaded(0).filepath
+    //mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
   }
 
   def importMusic(): Unit = {
@@ -50,8 +51,8 @@ class Controller {
     val fileChooser = new FileChooser
     val selectedFile:File = fileChooser.showOpenDialog(stage)
     uploadSong(selectedFile)
-
-
+    songList.getItems.clear()
+    Song.loaded.map(songList.getItems.add)
   }
 
   def setSeekSlider(): Unit = {
@@ -133,10 +134,16 @@ class Controller {
     val media :Try[Media]= Try(new Media(new File(filepath).toURI.toString))
     media match{
       case Success(v) => {
-        val volume = mediaPlayer.getVolume
-        mediaPlayer.dispose()
-        mediaPlayer = new MediaPlayer(v)
-        mediaPlayer.setVolume(volume)
+        if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+          //mediaPlayer has not been instanciated
+          mediaPlayer = new MediaPlayer(v)
+        }else{
+          val volume = mediaPlayer.getVolume
+          mediaPlayer.dispose()
+          mediaPlayer = new MediaPlayer(v)
+          mediaPlayer.setVolume(volume)
+
+        }
         setListeners()
         resetPlayButton()
       }
@@ -157,7 +164,7 @@ class Controller {
 
 
 
-  private def uploadSong(selectedFile: File): Unit={
+  private def uploadSong(selectedFile: File):Unit={
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
     val info:ListBuffer[(String,AnyRef)]=ListBuffer[(String,AnyRef)]()
@@ -221,10 +228,12 @@ class Controller {
           trackN.toString,//9 TrackNumber resolver
         )
         )
-        println(song)
+
         Song.loaded+=song
         //songList.getItems.add(song)
       }
     })
+
   }
+
 }
