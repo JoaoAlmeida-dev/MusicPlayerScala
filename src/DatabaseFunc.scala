@@ -43,8 +43,12 @@ object DatabaseFunc {
   def readFile(load: String=>Any, filename: String): Unit={
     val bufferedFile = Source.fromFile(filename)
     val lines = bufferedFile.getLines.toList
-    readline(load,lines)
-    bufferedFile.close()
+    if(lines.isEmpty){
+      bufferedFile.close()
+    }else{
+      readline(load,lines)
+      bufferedFile.close()
+    }
   }
 
   @tailrec

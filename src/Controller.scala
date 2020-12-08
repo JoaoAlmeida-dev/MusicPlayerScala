@@ -39,10 +39,11 @@ class Controller {
   var mediaPlayer: MediaPlayer = _
 
   def initialize(): Unit ={
+
     DatabaseFunc.loadfiles()
     Song.loaded.map(songList.getItems.add)
-    val firstSongPath:String=Song.loaded(0).filepath
-    mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
+    //val firstSongPath:String=Song.loaded(0).filepath
+    //mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
   }
 
   def importMusic(): Unit = {
@@ -133,10 +134,16 @@ class Controller {
     val media :Try[Media]= Try(new Media(new File(filepath).toURI.toString))
     media match{
       case Success(v) => {
-        val volume = mediaPlayer.getVolume
-        mediaPlayer.dispose()
-        mediaPlayer = new MediaPlayer(v)
-        mediaPlayer.setVolume(volume)
+        if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+          //mediaPlayer has not been instanciated
+          mediaPlayer = new MediaPlayer(v)
+        }else{
+          val volume = mediaPlayer.getVolume
+          mediaPlayer.dispose()
+          mediaPlayer = new MediaPlayer(v)
+          mediaPlayer.setVolume(volume)
+
+        }
         setListeners()
         resetPlayButton()
       }
@@ -221,10 +228,11 @@ class Controller {
           trackN.toString,//9 TrackNumber resolver
         )
         )
-        println(song)
+
         Song.loaded+=song
         //songList.getItems.add(song)
       }
     })
+
   }
 }
