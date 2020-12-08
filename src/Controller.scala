@@ -6,11 +6,12 @@ import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, ListView, MultipleSelectionModel, Slider, ToggleButton}
 import javafx.scene.layout.{AnchorPane, FlowPane, GridPane}
 import javafx.scene.media.{Media, MediaPlayer}
-import javafx.stage.{FileChooser, Stage}
+import javafx.stage.{DirectoryChooser, FileChooser, Stage}
 import javafx.util.Duration
-import java.io.File
 
+import java.io.File
 import scala.collection.mutable.ListBuffer
+import scala.reflect.io.Directory
 import scala.util.{Failure, Success, Try}
 
 
@@ -20,6 +21,7 @@ class Controller {
   @FXML private var bottomGrid: GridPane = _
   @FXML private var togglePlayPause: ToggleButton = _
   @FXML private var chooseFileButton: Button = _
+  @FXML private var chooseDirectoryButton: Button = _
   @FXML private var musicNameLabel: Label = _
   @FXML private var volumeSlider: Slider = _
   @FXML private var durationSlider: Slider = _
@@ -50,7 +52,32 @@ class Controller {
     val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
     val fileChooser = new FileChooser
     val selectedFile:File = fileChooser.showOpenDialog(stage)
-    uploadSong(selectedFile)
+
+    if(selectedFile.getName.endsWith(".mp3")){
+      uploadSong(selectedFile)
+    }
+
+  }
+
+  def importFolder():Unit={
+
+    def aux(file:File): Unit ={
+      if(file.exists()&&file.isDirectory){
+        file.listFiles().filter(_.getName.endsWith(".mp3")).map(aux)
+        file.listFiles().filter(_.isDirectory).map(aux)
+      }else if(file.exists() && file.isFile){
+        if(file.getName.endsWith(".mp3")){
+          uploadSong(file)
+        }
+      }
+    }
+
+    val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
+    val directoryChooser = new DirectoryChooser
+    val selectedDirectory:File = directoryChooser.showDialog(stage)
+
+    aux(selectedDirectory)
+
   }
 
   def setSeekSlider(): Unit = {
