@@ -1,5 +1,5 @@
 
-import Data.{Album, Artist, MusicObject, Playlist, Song}
+import Data.{Album, Artist, DatabaseFunc, MusicObject, Playlist, Song}
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.transformation.FilteredList
 import javafx.collections.{FXCollections, ListChangeListener, MapChangeListener, ObservableList}
@@ -17,6 +17,8 @@ import java.io.File
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import javafx.scene.control.Alert.AlertType
+
+import scala.::
 
 class Controller {
 
@@ -52,6 +54,7 @@ class Controller {
   @FXML private var FastForwardButton: Button = _
   @FXML private var ResetForwardButton: Button = _
   @FXML private var SlowForwardButton: Button = _
+  @FXML private var addToPlaylistAlbum: Button = _
   @FXML private var rateLabel: Label = _
 
 
@@ -64,7 +67,6 @@ class Controller {
     listPlaylist.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
     listSongs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
     setCellFactories()
-
     /*
     listSongs.setItems(Song.loaded)
     listPlaylist.setItems(Playlist.loaded)
@@ -401,6 +403,7 @@ class Controller {
         if (!mediaPlayer.isInstanceOf[MediaPlayer]) {
           //mediaPlayer has not been instanciated
           mediaPlayer = new MediaPlayer(v)
+          mediaPlayer.setVolume(volumeSlider.getValue)
         } else {
           val volume = mediaPlayer.getVolume
           val rate: Double = mediaPlayer.getRate
@@ -563,6 +566,8 @@ class Controller {
         togglePlayPause.setText("Play")
         mediaPlayer.pause()
       }
+    }else{
+      resetPlayButton()
     }
 
   }
@@ -642,9 +647,13 @@ class Controller {
     }
   }
   def setVolume(): Unit = {
-    val volume: Double = volumeSlider.getValue
-    mediaPlayer.setVolume(volume / 100)
-    volumeLabel.setText("vol:" + volume.toInt.toString + "%")
+      val volume: Double = volumeSlider.getValue
+    if(!mediaPlayer.isInstanceOf[MediaPlayer]){
+      volumeLabel.setText("vol:" + volume.toInt.toString + "%")
+    }else {
+      volumeLabel.setText("vol:" + volume.toInt.toString + "%")
+      mediaPlayer.setVolume(volume / 100)
+    }
   }
 
   def selectFromListSongs(): Unit = {
@@ -696,15 +705,37 @@ class Controller {
     })
     updateListPlaylists()
   }
-  def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
-    case h::t => Playlist.addSong(playlist, h.id); addToPlaylist(t, playlist)
-    case Nil => print("Done") //TODO retirar o print, acho que o stor n vai gostar
+  /*def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
+    case h::t => addToPlaylist(t, Playlist.addSong(playlist, h.id))
+    case Nil => println("Done") //TODO retirar o print, acho que o stor n vai gostar
+  }*/
+
+  def addToPlayFromAlbum(): Unit ={
+    def aux(oblst:ObservableList[Song],list:List[Int], index:Int): List[Int] ={
+      if(oblst.size() == index){
+        list
+      } else{
+        val song:Song=oblst.get(index)
+        aux(oblst, list:::List(song.id), index+1)
+      }
+    }
+    def recursiveAdd(playlist: Playlist,id:List[Int]): Playlist =id match{
+      case h::t => recursiveAdd (playlist.addSong(h),t)
+      case Nil => playlist
+    }
+
+    val lst:List[Int] =aux(listSongsAlbum.getSelectionModel.getSelectedItems ,List[Int](), 0)
+    val playlist:Playlist = listPlaylist.getSelectionModel.getSelectedItem
+    recursiveAdd(playlist,lst)
+
+
   }
+
 
   //Auxiliaries
   private def gotoSong(listView: ListView[Song], pos: Int): Unit = {
     val newSong: Song = listView.getItems.get(pos)
-    listView.getSelectionModel.select(pos)
+    listView.getSelectionModel.clearAndSelect(pos)
     mediaChange(newSong.filepath)
     musicNameLabel.setText(newSong.name)
     mediaPlayer.play()

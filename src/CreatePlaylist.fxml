@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CreatePlaylistController">
+<GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CreatePlaylistController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="49.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.99999999999999" minWidth="10.0" prefWidth="110.99999999999999" />
@@ -17,11 +17,14 @@
    <children>
       <TextField fx:id="nameTextField" alignment="CENTER" onAction="#changeFocus" GridPane.columnIndex="1" />
       <TextField fx:id="themeTextField" onAction="#create" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Button fx:id="okButton" alignment="CENTER" mnemonicParsing="false" onAction="#create" text="OK" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Button fx:id="okButton" alignment="CENTER" mnemonicParsing="false" onAction="#create" text="OK" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
       <Label fx:id="themeLabel" text="Theme" GridPane.rowIndex="1" />
       <Label fx:id="nameLabel" text="Name" />
    </children>
    <padding>
-      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
 </GridPane>

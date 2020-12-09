@@ -1,5 +1,5 @@
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
-import Data._
+import Data.{DatabaseFunc, _}
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.fxml.FXMLLoader

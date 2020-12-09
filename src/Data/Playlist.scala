@@ -6,7 +6,7 @@ import scala.collection.mutable.ListBuffer
 case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends MusicObject[Playlist] {
   def info(): Option[(Int,String,List[Int],String)] ={ Playlist.info(this) }
   def addSong(song: Int): Playlist={ Playlist.addSong(this,song) }
-  def removeSong(song: Int): Playlist={ Playlist.removeSong(this,song) }
+  //def removeSong(song: Int): Playlist={ Playlist.removeSong(this,song) }
 
   override def toString(): String ={ Playlist.toString(this) }
   override val db: String = Playlist.db
@@ -51,7 +51,7 @@ object Playlist{
 //--------------------------- LOAD APPLY
   //def apply(id: String,name:String,songs:String, theme: String):Playlist={
   def apply(info:List[String]):Playlist={
-    val songsList=info(2).split(" ").toList
+    val songsList=info(2).trim.split(" ").toList
     if(songsList(0)==""){
       Playlist(info(0).toInt,info(1),List(),info(3))
     } else{
@@ -59,14 +59,16 @@ object Playlist{
     }
   }
 //------------------------------------------
-
+//TODO usar Database.func update
   def addSong(p: Playlist, song: Int): Playlist={
-    Playlist(p.id,p.name,song::p.songs,p.theme)
+    DatabaseFunc.update[Playlist](p,2,p.songs.mkString(" ")+" "+song)
+    //Playlist(p.id,p.name,song::p.songs,p.theme)
   }
+  /*
   def removeSong(p: Playlist, song: Int): Playlist={
     val songs=p.songs.filter( _ != song)
-    Playlist(p.id,p.name,songs,p.theme)
-  }
+
+  }*/
 
   def toString(p: Playlist): String={
     p.id+";"+p.name+";"+p.songs.mkString(" ")+";"+p.theme+";end;"

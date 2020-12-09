@@ -52,7 +52,7 @@
                                  <bottom>
                                     <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                        <Button alignment="CENTER" mnemonicParsing="false" text="AddToPlayslist" />
+                                        <Button fx:id="addToPlaylistAlbum" alignment="CENTER" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="AddToPlayslist" />
                                       </buttons>
                                        <padding>
                                           <Insets top="5.0" />
