@@ -66,6 +66,9 @@ class Controller {
 
     listPlaylist.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
     listSongs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
+    listSongsAlbum.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
+    listSongsArtist.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
+
     setCellFactories()
     /*
     listSongs.setItems(Song.loaded)
