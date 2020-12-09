@@ -6,11 +6,11 @@ import javafx.event.{ActionEvent, EventHandler}
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
 import javafx.scene.{Parent, Scene}
-import javafx.scene.control.{Alert, Button, Label, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
+import javafx.scene.control.{Alert, Button, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
-import javafx.util.Duration
+import javafx.util.{Callback, Duration}
 
 import java.io.File
 import scala.collection.mutable.ListBuffer
@@ -57,7 +57,15 @@ class Controller {
     setLoadedListeners()
 
     listPlaylist.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
+    listSongs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
+    setCellFactories()
 
+    /*
+    listSongs.setItems(Song.loaded)
+    listPlaylist.setItems(Playlist.loaded)
+    listAlbums.setItems(Album.loaded)
+    listArtists.setItems(Artist.loaded)
+    */
     updateListSongs()
     updateListAlbums()
     updateListArtists()
@@ -65,7 +73,52 @@ class Controller {
     //val firstSongPath:String=Song.loaded(0).filepath
     //mediaPlayer = new MediaPlayer(new Media(new File(firstSongPath).toURI.toString))
   }
-
+  private def setCellFactories(): Unit ={
+    listSongs.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (t != null) {setText(t.name)}
+          }
+        }
+        cell
+      }
+    })
+    listArtists.setCellFactory(new Callback[ListView[Artist], ListCell[Artist]](){
+      def call(p:ListView[Artist] ):ListCell[Artist] = {
+        val cell: ListCell[Artist] = new ListCell[Artist] {
+          override def updateItem(t: Artist, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (t != null) {setText(t.name)}
+          }
+        }
+        cell
+      }
+    })
+    listAlbums.setCellFactory(new Callback[ListView[Album], ListCell[Album]](){
+      def call(p:ListView[Album] ):ListCell[Album] = {
+        val cell: ListCell[Album] = new ListCell[Album] {
+          override def updateItem(t: Album, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (t != null) {setText(t.name)}
+          }
+        }
+        cell
+      }
+    })
+    listPlaylist.setCellFactory(new Callback[ListView[Playlist], ListCell[Playlist]](){
+      def call(p:ListView[Playlist] ):ListCell[Playlist] = {
+        val cell: ListCell[Playlist] = new ListCell[Playlist] {
+          override def updateItem(t: Playlist, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (t != null) {setText(t.name)}
+          }
+        }
+        cell
+      }
+    })
+  }
   def fastForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
 
