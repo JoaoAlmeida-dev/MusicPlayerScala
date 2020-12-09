@@ -29,10 +29,11 @@ object DatabaseFunc {
       val loadedObject: A = objectold.loaded.toArray().filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0).asInstanceOf[A]
       val info: List[String] = loadedObject.toString().split(";").toList.updated(field, newv)
       //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
-      //val objectNew: A = a.apply(info)
 
       a.loaded.remove(a)
-      a.load(info.mkString(";")).asInstanceOf[A]
+      a.load(info.mkString(";"))
+
+      a.apply(info)
   }
 
   //currying right here

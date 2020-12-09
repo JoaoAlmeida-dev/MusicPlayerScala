@@ -6,6 +6,7 @@ import scala.collection.mutable.ListBuffer
 
 trait MusicObject[A]{
 
+
   val id:Int
   val db:String
   val constructN:Int

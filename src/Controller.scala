@@ -675,7 +675,7 @@ class Controller {
   }
   def selectFromListArtist(): Unit = {
     val artist: Artist = listArtists.getSelectionModel.getSelectedItems.get(0)
-    val songsArtist:FilteredList[Song] = Song.loaded.filtered(x=> x.artist == artist.id)
+    val songsArtist:FilteredList[Song] = Song.loaded.filtered(x=> x.artist == artist.id || x.feats.contains(artist.id))
     listSongsArtist.getItems.clear()
     listSongsArtist.getItems.addAll(songsArtist)
 
@@ -722,14 +722,23 @@ class Controller {
         aux(oblst, list:::List(song.id), index+1)
       }
     }
-    def recursiveAdd(playlist: Playlist,id:List[Int]): Playlist =id match{
-      case h::t => recursiveAdd (playlist.addSong(h),t)
+
+    def recursiveAdd(playlist: Playlist,id:List[Int],songsold:List[Int]): Playlist =id match{
+      case h::t =>
+        val pl:Playlist = if(songsold.contains(h)){
+          playlist
+        }else{
+          playlist.addSong(h)
+        }
+
+        recursiveAdd (pl,t,songsold)
       case Nil => playlist
     }
 
     val lst:List[Int] =aux(listSongsAlbum.getSelectionModel.getSelectedItems ,List[Int](), 0)
     val playlist:Playlist = listPlaylist.getSelectionModel.getSelectedItem
-    recursiveAdd(playlist,lst)
+    val songs:List[Int]  = playlist.songs
+    recursiveAdd(playlist,lst,songs)
 
 
   }
