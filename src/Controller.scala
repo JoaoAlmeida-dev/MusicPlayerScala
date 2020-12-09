@@ -644,6 +644,11 @@ class Controller {
     updateListPlaylists()
   }
 
+  def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
+    case h::t => Playlist.addSong(playlist, h.id); addToPlaylist(t, playlist)
+    case Nil => print("Done") //TODO retirar o print, acho que o stor n vai gostar
+  }
+
   //Auxiliaries
   private def gotoSong(listView: ListView[Song], pos: Int): Unit = {
     val newSong: Song = listView.getItems.get(pos)
