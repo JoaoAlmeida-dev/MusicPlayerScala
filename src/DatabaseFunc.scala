@@ -69,6 +69,14 @@ object DatabaseFunc {
     case a::t => load(a);readline(load,t)
   }
 
+  def getlastidPlaylists(loaded: ObservableList[Playlist]): Int = {
+    var max=0
+    loaded.forEach(x=>{
+      if(x.id>max) max=x.id
+    })
+    max
+  }
+
   def getlastidSongs(loaded: ObservableList[Song]): Int = {
     var max=0
     loaded.forEach(x=>{
