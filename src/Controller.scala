@@ -149,15 +149,32 @@ class Controller {
   //Setters
   def setSeekSlider(): Unit = {
     //minDurationLabel.setText(math.round(seektime).toString)
-    val time:(Int,Int,Int)= msToMinSec(mediaPlayer.getTotalDuration)
-    val hours:String = if(time._1 !=0){
-        time._1.toString+":"
-    }else{
-        ""
+    val time: (Int, Int, Int) = msToMinSec(mediaPlayer.getTotalDuration)
+    val hours: String = if (time._1 != 0) {
+      time._1.toString + ":"
+    } else {
+      ""
     }
-    val sec:String={if(time._3-10<0){"0"+time._3.toString}else{time._3.toString}}
-    maxDurationLabel.setText(hours + time._2+":"+sec)
-    minDurationLabel.setText("0:0")
+    val sec: String = {
+      if (time._3 - 10 < 0) {
+        "0" + time._3.toString
+      } else {
+        time._3.toString
+      }
+    }
+    val min: String = {
+      if (time._1 != 0) {
+        if (time._2 - 10 < 0) {
+          "0" + time._2 + ":"
+        } else {
+          time._2 + ":"
+        }
+      } else {
+        time._2 + ":"
+      }
+    }
+    maxDurationLabel.setText(hours + min + sec)
+    minDurationLabel.setText("-")
   }
 
   def currentTimeLabelSet(time: String): Unit = {
@@ -180,7 +197,26 @@ class Controller {
         } else {
           ""
         }
-        currentTimeLabelSet(hours + currtime._2+":"+currtime._3)
+        val min: String = {
+          if (hours.length > 0) {
+            if (currtime._2 - 10 < 0) {
+              "0" + currtime._2 + ":"
+            } else {
+              currtime._2 + ":"
+            }
+          } else {
+            currtime._2 + ":"
+          }
+        }
+        val currSec: String = {
+          if (currtime._3 - 10 < 0) {
+            "0" + currtime._3.toString
+          }
+          else {
+            currtime._3.toString
+          }
+        }
+        currentTimeLabelSet(hours + min + currSec)
 
         setDurationSlider((newValue.toSeconds * 100) / mediaPlayer.getTotalDuration.toSeconds)
 
