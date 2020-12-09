@@ -31,7 +31,7 @@ object DatabaseFunc {
       //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
       //val objectNew: A = a.apply(info)
 
-      a.loaded.remove(objectold)
+      a.loaded.remove(a)
       a.load(info.mkString(";")).asInstanceOf[A]
   }
 
