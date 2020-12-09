@@ -32,7 +32,7 @@ class Main extends Application{
 
   override def start(primaryStage: Stage): Unit = {
 
-    primaryStage.setTitle("MP3")
+    primaryStage.setTitle("MusicPlayerScala")
 
     val fxmlLoader = new FXMLLoader(getClass.getResource("Controller.fxml"))
 
@@ -41,18 +41,10 @@ class Main extends Application{
     primaryStage.setScene(scene)
     primaryStage.show()
 
-
-    Main.pStage = primaryStage
-
   }
 
-  def getPrimaryStage():Stage= {
-    Main.pStage
-  }
   /*
    TODO
-    ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
-    menus para navegar pela db (cmd style)
     Playlists
       create
       add
@@ -60,9 +52,12 @@ class Main extends Application{
       addSong
       removeSong
       ChangeOrder
+    Show Musics from artist or from album
+    ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
+    menus para navegar pela db (cmd style)
   */
 
-  def showPropt(): Unit ={
+  def showPrompt(): Unit ={
 
     println("-----------------------MusicPlayer in SCALA-----------------------")
     println("Menu, type the specified line below to choose:")
@@ -84,7 +79,7 @@ class Main extends Application{
 
   @tailrec
   final def mainLoop(): Unit ={
-    showPropt()
+    showPrompt()
     val userInput:String = getUserInput()
     userInput match{
       case "DISPLAY" => display() ;mainLoop()

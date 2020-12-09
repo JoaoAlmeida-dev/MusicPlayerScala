@@ -73,9 +73,9 @@
                      <bottom>
                         <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <buttons>
-                            <Button mnemonicParsing="false" text="New" />
-                              <Button mnemonicParsing="false" text="Remove" />
-                              <Button mnemonicParsing="false" text="Edit" />
+                            <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
+                              <Button fx:id="removePlaylistButton" mnemonicParsing="false" text="Remove" />
+                              <Button fx:id="editPlaylistButton" mnemonicParsing="false" text="Edit" />
                           </buttons>
                         </ButtonBar>
                      </bottom>
