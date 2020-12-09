@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane fx:id="BaseBorderPane" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
@@ -15,26 +16,15 @@
                       <Tab text="Play">
                            <content>
                               <BorderPane>
-                                 <center>
-                                    <GridPane fx:id="centerGrid" alignment="CENTER">
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                       </rowConstraints>
-                                       <children>
-                                          <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
-                                          <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.rowIndex="1" />
-                                       </children>
-                                    </GridPane>
-                                 </center>
                                  <top>
                                     <Label fx:id="musicNameLabel" text="musicname" BorderPane.alignment="CENTER" />
                                  </top>
+                                 <center>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                                 </center>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                               </BorderPane>
                            </content>
                         </Tab>
@@ -52,7 +42,7 @@
                                  <bottom>
                                     <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                        <Button alignment="CENTER" mnemonicParsing="false" text="AddToPlayslist" />
+                                        <Button fx:id="addToPlaylistAlbum" alignment="CENTER" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="AddToPlayslist" />
                                       </buttons>
                                        <padding>
                                           <Insets top="5.0" />
@@ -69,7 +59,14 @@
                                     <SplitPane dividerPositions="0.5">
                                        <items>
                                               <ListView fx:id="listArtists" onKeyPressed="#selectFromListArtist" onMouseClicked="#selectFromListArtist" />
-                                          <ListView fx:id="listSongsArtist" />
+                                          <BorderPane>
+                                             <center>
+                                                <ListView fx:id="listSongsArtist" />
+                                             </center>
+                                             <top>
+                                                <ChoiceBox BorderPane.alignment="CENTER_RIGHT" />
+                                             </top>
+                                          </BorderPane>
                                        </items>
                                     </SplitPane>
                                     </center>
@@ -77,14 +74,6 @@
                                     <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
                                       <buttons>
                                         <Button mnemonicParsing="false" text="AddToPlayslist" />
-                                          <ComboBox promptText="AddToPlaylist" />
-                                          <ChoiceBox />
-                                          <MenuButton mnemonicParsing="false" text="MenuButton">
-                                            <items>
-                                              <MenuItem mnemonicParsing="false" text="Action 1" />
-                                              <MenuItem mnemonicParsing="false" text="Action 2" />
-                                            </items>
-                                          </MenuButton>
                                       </buttons>
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -94,7 +83,7 @@
                                 </BorderPane>
                             </content>
                         </Tab>
-                        <Tab text="Playlists">
+                        <Tab fx:id="removeSongPlaylistButton" text="Playlists">
                             <content>
                                 <BorderPane>
                                     <center>
@@ -110,12 +99,32 @@
                                       <buttons>
                                         <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
                                           <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
+                                          <Button mnemonicParsing="false" text="RemoveSong" />
                                           <Button fx:id="editPlaylistButton" mnemonicParsing="false" text="Edit" />
                                       </buttons>
                                     </ButtonBar>
                                  </bottom>
                                 </BorderPane>
                             </content>
+                        </Tab>
+                        <Tab text="Import">
+                           <BorderPane>
+                              <center>
+                                 <GridPane>
+                                    <columnConstraints>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                       <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.columnIndex="1" />
+                                       <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
+                                    </children>
+                                 </GridPane>
+                              </center>
+                           </BorderPane>
                         </Tab>
                     </tabs>
                   </TabPane>
