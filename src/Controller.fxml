@@ -50,10 +50,13 @@
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                    <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                        <Button mnemonicParsing="false" text="AddToPlayslist" />
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="AddToPlayslist" />
                                       </buttons>
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
                                     </ButtonBar>
                                  </bottom>
                                 </BorderPane>
@@ -71,11 +74,21 @@
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                    <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
                                       <buttons>
                                         <Button mnemonicParsing="false" text="AddToPlayslist" />
                                           <ComboBox promptText="AddToPlaylist" />
+                                          <ChoiceBox />
+                                          <MenuButton mnemonicParsing="false" text="MenuButton">
+                                            <items>
+                                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                                            </items>
+                                          </MenuButton>
                                       </buttons>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
                                     </ButtonBar>
                                  </bottom>
                                 </BorderPane>

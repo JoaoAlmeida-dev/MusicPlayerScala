@@ -206,7 +206,6 @@ class Controller {
 
     }
   }
-
   def resetForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
 
@@ -217,7 +216,6 @@ class Controller {
       rateLabel.setText("rate:" + 1 + "x")
     }
   }
-
   def slowForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
 
@@ -235,7 +233,6 @@ class Controller {
     }
   }
 
-
   //Imports
   def importMusic(): Unit = {
     val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
@@ -247,7 +244,6 @@ class Controller {
     }
 
   }
-
   def importFolder(): Unit = {
 
     def aux(file: File): Unit = {
@@ -268,7 +264,6 @@ class Controller {
     aux(selectedDirectory)
 
   }
-
 
   //Setters
   def setSeekSlider(): Unit = {
@@ -300,15 +295,12 @@ class Controller {
     maxDurationLabel.setText(hours + min + sec)
     minDurationLabel.setText("-")
   }
-
   def currentTimeLabelSet(time: String): Unit = {
     minDurationLabel.setText(time)
   }
-
   def setDurationSlider(value: Double): Unit = {
     durationSlider.setValue(value)
   }
-
 
   //Listeners
   def setListeners(): Unit = {
@@ -353,7 +345,6 @@ class Controller {
     })
 
   }
-
   def setLoadedListeners(): Unit = {
     Song.loaded.addListener(new ListChangeListener[Song] {
       override def onChanged(change: ListChangeListener.Change[_ <: Song]): Unit = {
@@ -401,7 +392,6 @@ class Controller {
 
   }
 
-
   //Liseners End
   def mediaChange(filepath: String): Unit = {
 
@@ -438,7 +428,6 @@ class Controller {
     }
 
   }
-
   private def uploadSong(selectedFile: File): Unit = {
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
@@ -536,7 +525,6 @@ class Controller {
 
   }
 
-
   //UpdateLists
   def updateListSongs(): Unit = {
     listSongs.getItems.clear()
@@ -544,28 +532,24 @@ class Controller {
     println("------------- número de items " + listSongs.getItems.size)
     listSongs.getItems.forEach(println)
   }
-
   def updateListAlbums(): Unit = {
     listAlbums.getItems.clear()
     Album.loaded.forEach(x => listAlbums.getItems.add(x))
     println("------------- número de items " + listAlbums.getItems.size)
     listAlbums.getItems.forEach(println)
   }
-
   def updateListArtists(): Unit = {
     listArtists.getItems.clear()
     Artist.loaded.forEach(x => listArtists.getItems.add(x))
     println("------------- número de items " + listArtists.getItems.size)
     listArtists.getItems.forEach(println)
   }
-
   def updateListPlaylists(): Unit = {
     listPlaylist.getItems.clear()
     Playlist.loaded.forEach(x => listPlaylist.getItems.add(x))
     println("------------- número de items " + listPlaylist.getItems.size)
     listPlaylist.getItems.forEach(println)
   }
-
 
   //MediaControl
   def playpause(): Unit = {
@@ -669,7 +653,7 @@ class Controller {
     musicNameLabel.setText(song.name)
 
   }
-  //
+  //Display Song from [A]
   def selectFromListAlbums(): Unit = {
     val album: Album = listAlbums.getSelectionModel.getSelectedItems.get(0)
     val songsAlbum:FilteredList[Song] = Song.loaded.filtered(x=> x.album == album.id)
@@ -705,7 +689,6 @@ class Controller {
     stage.setScene(new Scene(parent));
     stage.show();
   }
-
   def removePlaylist(): Unit ={
     val toRemove :ObservableList[Playlist]= listPlaylist.getSelectionModel.getSelectedItems
     toRemove.forEach(x=> {
@@ -713,7 +696,6 @@ class Controller {
     })
     updateListPlaylists()
   }
-
   def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
     case h::t => Playlist.addSong(playlist, h.id); addToPlaylist(t, playlist)
     case Nil => print("Done") //TODO retirar o print, acho que o stor n vai gostar
@@ -727,7 +709,6 @@ class Controller {
     musicNameLabel.setText(newSong.name)
     mediaPlayer.play()
   }
-
   private def msToMinSec(duration: Duration): (Int, Int, Int) = {
     val hours: Int = math.floor(duration.toHours).toInt
     val minutes: Int = math.floor(duration.toMinutes).toInt - (hours * 60)
@@ -735,12 +716,10 @@ class Controller {
 
     (hours, minutes, sec)
   }
-
   private def resetPlayButton(): Unit = {
     togglePlayPause.setSelected(false)
     togglePlayPause.setText("Play")
   }
-
   private def showMediaNullDialogWarning(): Boolean = {
     val title: String = "You should select a Song to play first"
     if (!mediaPlayer.isInstanceOf[MediaPlayer]) {
