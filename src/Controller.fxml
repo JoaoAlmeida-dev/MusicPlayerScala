@@ -5,122 +5,165 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane fx:id="BaseBorderPane" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
-   <left>
-      <AnchorPane fx:id="leftPane" BorderPane.alignment="CENTER">
-         <children>
-            <ListView fx:id="listSongs" layoutX="-1.0" layoutY="-2.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#selectFromListSongs" onMouseClicked="#selectFromListSongs" />
-         </children></AnchorPane>
-   </left>
    <center>
-      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab text="Play">
-               <content>
+      <SplitPane dividerPositions="0.8636026686434396" orientation="VERTICAL" BorderPane.alignment="CENTER">
+        <items>
+            <SplitPane dividerPositions="0.8001022494887525">
+               <items>
+                  <TabPane tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Play">
+                           <content>
+                              <BorderPane>
+                                 <center>
+                                    <GridPane fx:id="centerGrid" alignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
+                                          <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.rowIndex="1" />
+                                       </children>
+                                    </GridPane>
+                                 </center>
+                                 <top>
+                                    <Label fx:id="musicNameLabel" text="musicname" BorderPane.alignment="CENTER" />
+                                 </top>
+                              </BorderPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Albums">
+                            <content>
+                                <BorderPane>
+                                    <center>
+                                    <SplitPane dividerPositions="0.5">
+                                       <items>
+                                              <ListView fx:id="listAlbums" onKeyPressed="#selectFromListAlbums" onMouseClicked="#selectFromListAlbums" />
+                                          <ListView fx:id="listSongsAlbum" />
+                                       </items>
+                                    </SplitPane>
+                                    </center>
+                                 <bottom>
+                                    <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
+                                      <buttons>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="AddToPlayslist" />
+                                      </buttons>
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
+                                    </ButtonBar>
+                                 </bottom>
+                                </BorderPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Artists">
+                            <content>
+                                <BorderPane>
+                                    <center>
+                                    <SplitPane dividerPositions="0.5">
+                                       <items>
+                                              <ListView fx:id="listArtists" onKeyPressed="#selectFromListArtist" onMouseClicked="#selectFromListArtist" />
+                                          <ListView fx:id="listSongsArtist" />
+                                       </items>
+                                    </SplitPane>
+                                    </center>
+                                 <bottom>
+                                    <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
+                                      <buttons>
+                                        <Button mnemonicParsing="false" text="AddToPlayslist" />
+                                          <ComboBox promptText="AddToPlaylist" />
+                                          <ChoiceBox />
+                                          <MenuButton mnemonicParsing="false" text="MenuButton">
+                                            <items>
+                                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                                            </items>
+                                          </MenuButton>
+                                      </buttons>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </ButtonBar>
+                                 </bottom>
+                                </BorderPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Playlists">
+                            <content>
+                                <BorderPane>
+                                    <center>
+                                    <SplitPane dividerPositions="0.5">
+                                       <items>
+                                              <ListView fx:id="listPlaylist" onKeyPressed="#selectFromListPlaylist" onMouseClicked="#selectFromListPlaylist" />
+                                          <ListView fx:id="listSongsPlaylist" />
+                                       </items>
+                                    </SplitPane>
+                                    </center>
+                                 <bottom>
+                                    <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                      <buttons>
+                                        <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
+                                          <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
+                                          <Button fx:id="editPlaylistButton" mnemonicParsing="false" text="Edit" />
+                                      </buttons>
+                                    </ButtonBar>
+                                 </bottom>
+                                </BorderPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
                   <BorderPane>
                      <center>
-                        <GridPane fx:id="centerGrid" alignment="CENTER">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                           <children>
-                              <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
-                              <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.rowIndex="1" />
-                           </children>
-                        </GridPane>
+                        <ListView fx:id="listSongs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#selectFromListSongs" onMouseClicked="#selectFromListSongs" />
                      </center>
                      <top>
-                        <Label fx:id="musicNameLabel" text="musicname" BorderPane.alignment="CENTER" />
+                        <Label text="Queue" BorderPane.alignment="CENTER" />
                      </top>
                   </BorderPane>
-               </content></Tab>
-            <Tab text="Albums">
-                <content>
-                    <BorderPane>
-                        <center>
-                            <ListView fx:id="listAlbums" />
-                        </center>
-                    </BorderPane>
-                </content>
-            </Tab>
-            <Tab text="Artists">
-                <content>
-                    <BorderPane>
-                        <center>
-                            <ListView fx:id="listArtists" />
-                        </center>
-                    </BorderPane>
-                </content>
-            </Tab>
-            <Tab text="Playlists">
-                <content>
-                    <BorderPane>
-                        <center>
-                            <ListView fx:id="listPlaylist" />
-                        </center>
-                     <bottom>
-                        <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                          <buttons>
-                            <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
-                              <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
-                              <Button fx:id="editPlaylistButton" mnemonicParsing="false" text="Edit" />
-                          </buttons>
-                        </ButtonBar>
-                     </bottom>
-                    </BorderPane>
-                </content>
-            </Tab>
-        </tabs>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </TabPane>
+               </items>
+            </SplitPane>
+            <GridPane fx:id="bottomGrid">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="93.0" prefWidth="103.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="55.400000000000006" prefWidth="77.19999999999999" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="207.60000000000002" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="67.0" prefWidth="72.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="105.60000000000002" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="101.20000000000005" prefWidth="107.20000000000005" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" prefHeight="14.0" prefWidth="94.0" value="100.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Label fx:id="volumeLabel" text="vol:100%" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Slider fx:id="durationSlider" onKeyPressed="#dragDuration" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" text="SlowForward" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" text="ResetForward" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" text="FastForward" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Label fx:id="rateLabel" text="Rate" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </GridPane>
+        </items>
+      </SplitPane>
    </center>
-   <bottom>
-      <GridPane fx:id="bottomGrid" prefHeight="70.0" prefWidth="850.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Label fx:id="volumeLabel" text="vol:100%" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <ToggleButton fx:id="togglePlayPause" mnemonicParsing="false" onAction="#playpause" text="Play" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Slider fx:id="durationSlider" onKeyPressed="#dragDuration" onMouseClicked="#dragDuration" onMouseDragged="#dragDuration" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" text="SlowForward" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" text="ResetForward" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" text="FastForward" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Label fx:id="rateLabel" text="Rate" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-         </children>
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </GridPane>
-   </bottom>
 </BorderPane>

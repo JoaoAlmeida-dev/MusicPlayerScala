@@ -1,6 +1,7 @@
 
 import Data.{Album, Artist, MusicObject, Playlist, Song}
 import javafx.beans.value.{ChangeListener, ObservableValue}
+import javafx.collections.transformation.FilteredList
 import javafx.collections.{FXCollections, ListChangeListener, MapChangeListener, ObservableList}
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.fxml.{FXML, FXMLLoader}
@@ -32,10 +33,14 @@ class Controller {
   @FXML private var maxDurationLabel: Label = _
   @FXML private var volumeLabel: Label = _
   @FXML private var leftPane: AnchorPane = _
+
   @FXML private var listSongs: ListView[Song] = new ListView()
   @FXML private var listAlbums: ListView[Album] = new ListView()
   @FXML private var listArtists: ListView[Artist] = new ListView()
   @FXML private var listPlaylist: ListView[Playlist] = new ListView()
+  @FXML private var listSongsAlbum: ListView[Song] = new ListView()
+  @FXML private var listSongsArtist: ListView[Song] = new ListView()
+  @FXML private var listSongsPlaylist: ListView[Song] = new ListView()
 
   @FXML private var randomButton: ToggleButton = _
   @FXML private var repeatButton: ToggleButton = _
@@ -119,10 +124,27 @@ class Controller {
         cell
       }
     })
+
     listPlaylist.setCellFactory(new Callback[ListView[Playlist], ListCell[Playlist]](){
       def call(p:ListView[Playlist] ):ListCell[Playlist] = {
         val cell: ListCell[Playlist] = new ListCell[Playlist] {
           override def updateItem(t: Playlist, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              val themeString = if(t.theme.isEmpty){""}else{"("+t.theme+")"}
+              setText(t.name+themeString)
+            }
+          }
+        }
+        cell
+      }
+    })
+    listSongsArtist.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
             super.updateItem(t,bln)
             if (bln || t == null) {
               setText("")
@@ -134,6 +156,38 @@ class Controller {
         cell
       }
     })
+    listSongsAlbum.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
+          }
+        }
+        cell
+      }
+    })
+    listSongsPlaylist.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
+          }
+        }
+        cell
+      }
+    })
+
+
   }
   def fastForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
@@ -152,7 +206,6 @@ class Controller {
 
     }
   }
-
   def resetForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
 
@@ -163,7 +216,6 @@ class Controller {
       rateLabel.setText("rate:" + 1 + "x")
     }
   }
-
   def slowForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
 
@@ -181,7 +233,6 @@ class Controller {
     }
   }
 
-
   //Imports
   def importMusic(): Unit = {
     val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
@@ -193,7 +244,6 @@ class Controller {
     }
 
   }
-
   def importFolder(): Unit = {
 
     def aux(file: File): Unit = {
@@ -214,7 +264,6 @@ class Controller {
     aux(selectedDirectory)
 
   }
-
 
   //Setters
   def setSeekSlider(): Unit = {
@@ -246,15 +295,12 @@ class Controller {
     maxDurationLabel.setText(hours + min + sec)
     minDurationLabel.setText("-")
   }
-
   def currentTimeLabelSet(time: String): Unit = {
     minDurationLabel.setText(time)
   }
-
   def setDurationSlider(value: Double): Unit = {
     durationSlider.setValue(value)
   }
-
 
   //Listeners
   def setListeners(): Unit = {
@@ -299,7 +345,6 @@ class Controller {
     })
 
   }
-
   def setLoadedListeners(): Unit = {
     Song.loaded.addListener(new ListChangeListener[Song] {
       override def onChanged(change: ListChangeListener.Change[_ <: Song]): Unit = {
@@ -347,7 +392,6 @@ class Controller {
 
   }
 
-
   //Liseners End
   def mediaChange(filepath: String): Unit = {
 
@@ -384,7 +428,6 @@ class Controller {
     }
 
   }
-
   private def uploadSong(selectedFile: File): Unit = {
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
@@ -482,7 +525,6 @@ class Controller {
 
   }
 
-
   //UpdateLists
   def updateListSongs(): Unit = {
     listSongs.getItems.clear()
@@ -490,28 +532,24 @@ class Controller {
     println("------------- número de items " + listSongs.getItems.size)
     listSongs.getItems.forEach(println)
   }
-
   def updateListAlbums(): Unit = {
     listAlbums.getItems.clear()
     Album.loaded.forEach(x => listAlbums.getItems.add(x))
     println("------------- número de items " + listAlbums.getItems.size)
     listAlbums.getItems.forEach(println)
   }
-
   def updateListArtists(): Unit = {
     listArtists.getItems.clear()
     Artist.loaded.forEach(x => listArtists.getItems.add(x))
     println("------------- número de items " + listArtists.getItems.size)
     listArtists.getItems.forEach(println)
   }
-
   def updateListPlaylists(): Unit = {
     listPlaylist.getItems.clear()
     Playlist.loaded.forEach(x => listPlaylist.getItems.add(x))
     println("------------- número de items " + listPlaylist.getItems.size)
     listPlaylist.getItems.forEach(println)
   }
-
 
   //MediaControl
   def playpause(): Unit = {
@@ -528,7 +566,6 @@ class Controller {
     }
 
   }
-
   def before(): Unit = {
     val listview: ListView[Song] = listSongs
     if (showMediaNullDialogWarning()) {
@@ -554,7 +591,6 @@ class Controller {
       }
     }
   }
-
   def next(): Unit = {
     val listview: ListView[Song] = listSongs
 
@@ -577,7 +613,6 @@ class Controller {
       }
     }
   }
-
   def random(): Unit = {
     if (showMediaNullDialogWarning()) {
       if (repeatButton.isSelected) {
@@ -586,7 +621,6 @@ class Controller {
       }
     }
   }
-
   def repeat(): Unit = {
     if (showMediaNullDialogWarning()) {
       if (randomButton.isSelected) {
@@ -599,7 +633,6 @@ class Controller {
       }
     }
   }
-
   def dragDuration(): Unit = {
     if (showMediaNullDialogWarning()) {
       this.synchronized {
@@ -608,7 +641,6 @@ class Controller {
       }
     }
   }
-
   def setVolume(): Unit = {
     val volume: Double = volumeSlider.getValue
     mediaPlayer.setVolume(volume / 100)
@@ -619,7 +651,30 @@ class Controller {
     val song: Song = listSongs.getSelectionModel.getSelectedItems.get(0)
     mediaChange(song.filepath)
     musicNameLabel.setText(song.name)
-    resetPlayButton()
+
+  }
+  //Display Song from [A]
+  def selectFromListAlbums(): Unit = {
+    val album: Album = listAlbums.getSelectionModel.getSelectedItems.get(0)
+    val songsAlbum:FilteredList[Song] = Song.loaded.filtered(x=> x.album == album.id)
+    listSongsAlbum.getItems.clear()
+    listSongsAlbum.getItems.addAll(songsAlbum)
+
+  }
+  def selectFromListArtist(): Unit = {
+    val artist: Artist = listArtists.getSelectionModel.getSelectedItems.get(0)
+    val songsArtist:FilteredList[Song] = Song.loaded.filtered(x=> x.artist == artist.id)
+    listSongsArtist.getItems.clear()
+    listSongsArtist.getItems.addAll(songsArtist)
+
+  }
+  def selectFromListPlaylist(): Unit = {
+    val playlist: Playlist = listPlaylist.getSelectionModel.getSelectedItems.get(0)
+    val songs:List[Int] = playlist.songs
+    val songsPlaylist:FilteredList[Song] = Song.loaded.filtered(x=> songs.contains(x.id))
+    listSongsPlaylist.getItems.clear()
+    listSongsPlaylist.getItems.addAll(songsPlaylist)
+
   }
 
 
@@ -634,7 +689,6 @@ class Controller {
     stage.setScene(new Scene(parent));
     stage.show();
   }
-
   def removePlaylist(): Unit ={
     val toRemove :ObservableList[Playlist]= listPlaylist.getSelectionModel.getSelectedItems
     toRemove.forEach(x=> {
@@ -642,7 +696,6 @@ class Controller {
     })
     updateListPlaylists()
   }
-
   def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
     case h::t => Playlist.addSong(playlist, h.id); addToPlaylist(t, playlist)
     case Nil => print("Done") //TODO retirar o print, acho que o stor n vai gostar
@@ -656,7 +709,6 @@ class Controller {
     musicNameLabel.setText(newSong.name)
     mediaPlayer.play()
   }
-
   private def msToMinSec(duration: Duration): (Int, Int, Int) = {
     val hours: Int = math.floor(duration.toHours).toInt
     val minutes: Int = math.floor(duration.toMinutes).toInt - (hours * 60)
@@ -664,12 +716,10 @@ class Controller {
 
     (hours, minutes, sec)
   }
-
   private def resetPlayButton(): Unit = {
     togglePlayPause.setSelected(false)
     togglePlayPause.setText("Play")
   }
-
   private def showMediaNullDialogWarning(): Boolean = {
     val title: String = "You should select a Song to play first"
     if (!mediaPlayer.isInstanceOf[MediaPlayer]) {
