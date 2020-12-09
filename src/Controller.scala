@@ -6,19 +6,16 @@ import javafx.event.{ActionEvent, EventHandler}
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
 import javafx.scene.{Parent, Scene}
-import javafx.scene.control.{Alert, Button, Label, ListView, MultipleSelectionModel, Slider, TextArea, TextField, ToggleButton}
+import javafx.scene.control.{Alert, Button, Label, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
 import javafx.util.Duration
 
-
 import java.io.File
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import javafx.scene.control.Alert.AlertType
-
-
 
 class Controller {
 
@@ -39,6 +36,7 @@ class Controller {
   @FXML private var listAlbums: ListView[Album] = new ListView()
   @FXML private var listArtists: ListView[Artist] = new ListView()
   @FXML private var listPlaylist: ListView[Playlist] = new ListView()
+
   @FXML private var randomButton: ToggleButton = _
   @FXML private var repeatButton: ToggleButton = _
 
@@ -57,6 +55,9 @@ class Controller {
   def initialize(): Unit = {
     DatabaseFunc.loadfiles()
     setLoadedListeners()
+
+    listPlaylist.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
+
     updateListSongs()
     updateListAlbums()
     updateListArtists()
@@ -563,6 +564,12 @@ class Controller {
 
     stage.setScene(new Scene(parent));
     stage.show();
+  }
+
+  def removePlaylist(): Unit ={
+    val toRemove :ObservableList[Playlist]= listPlaylist.getSelectionModel.getSelectedItems
+    toRemove.forEach(x=>Playlist.loaded.remove(x))
+    updateListPlaylists()
   }
 
   //Auxiliaries

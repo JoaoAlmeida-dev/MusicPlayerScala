@@ -1,6 +1,7 @@
 import Data.Playlist
 import javafx.fxml.FXML
-import javafx.scene.control.{Button, Label, TextField}
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.{Alert, Button, Label, TextField}
 import javafx.stage.Stage
 
 class CreatePlaylistController {
@@ -25,8 +26,16 @@ class CreatePlaylistController {
       println(Playlist.loaded)
       okButton.getScene().getWindow().asInstanceOf[Stage].close()
     }else{
-      alertLabel.setText("Playlist with that name already exists, try again!")
+      //alertLabel.setText("Playlist with that name already exists, try again!")
+      val alert = new Alert(AlertType.WARNING)
+      alert.setTitle("Try again!")
+      alert.setHeaderText("Playlist already exists")
+      alert.setContentText("Try again!")
+
+      alert.showAndWait()
     }
   }
+
+
 
 }
