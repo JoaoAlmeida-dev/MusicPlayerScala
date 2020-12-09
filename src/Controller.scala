@@ -127,7 +127,8 @@ class Controller {
             if (bln || t == null) {
               setText("")
             }else {
-              setText(t.name)
+              val themeString = if(t.theme.isEmpty){""}else{"("+t.theme+")"}
+              setText(t.name+themeString)
             }
           }
         }
@@ -641,11 +642,6 @@ class Controller {
       Playlist.loaded.remove(x)
     })
     updateListPlaylists()
-  }
-
-  def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
-    case h::t => Playlist.addSong(playlist, h.id); addToPlaylist(t, playlist)
-    case Nil => print("Done") //TODO retirar o print, acho que o stor n vai gostar
   }
 
   //Auxiliaries

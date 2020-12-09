@@ -85,22 +85,22 @@
       </TabPane>
    </center>
    <bottom>
-      <GridPane fx:id="bottomGrid" prefHeight="70.0" prefWidth="850.0" BorderPane.alignment="CENTER">
+      <GridPane fx:id="bottomGrid" BorderPane.alignment="CENTER">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="93.0" prefWidth="103.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="55.400000000000006" prefWidth="77.19999999999999" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="207.60000000000002" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="67.0" prefWidth="72.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="105.60000000000002" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="101.20000000000005" prefWidth="107.20000000000005" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" value="100.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" prefHeight="14.0" prefWidth="94.0" value="100.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Label fx:id="volumeLabel" text="vol:100%" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />

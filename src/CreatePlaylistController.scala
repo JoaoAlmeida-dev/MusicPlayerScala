@@ -36,6 +36,8 @@ class CreatePlaylistController {
     }
   }
 
-
+def changeFocus(): Unit ={
+  themeTextField.requestFocus()
+}
 
 }

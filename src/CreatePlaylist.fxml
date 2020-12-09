@@ -15,8 +15,8 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TextField fx:id="nameTextField" alignment="CENTER" onAction="#create" GridPane.columnIndex="1" />
-      <TextField fx:id="themeTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="nameTextField" alignment="CENTER" onAction="#changeFocus" GridPane.columnIndex="1" />
+      <TextField fx:id="themeTextField" onAction="#create" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button fx:id="okButton" alignment="CENTER" mnemonicParsing="false" onAction="#create" text="OK" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Label fx:id="themeLabel" text="Theme" GridPane.rowIndex="1" />
       <Label fx:id="nameLabel" text="Name" />
