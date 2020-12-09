@@ -79,7 +79,11 @@ class Controller {
         val cell: ListCell[Song] = new ListCell[Song] {
           override def updateItem(t: Song, bln: Boolean): Unit={
             super.updateItem(t,bln)
-            if (t != null) {setText(t.name)}
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
           }
         }
         cell
@@ -90,7 +94,11 @@ class Controller {
         val cell: ListCell[Artist] = new ListCell[Artist] {
           override def updateItem(t: Artist, bln: Boolean): Unit={
             super.updateItem(t,bln)
-            if (t != null) {setText(t.name)}
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
           }
         }
         cell
@@ -101,7 +109,11 @@ class Controller {
         val cell: ListCell[Album] = new ListCell[Album] {
           override def updateItem(t: Album, bln: Boolean): Unit={
             super.updateItem(t,bln)
-            if (t != null) {setText(t.name)}
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
           }
         }
         cell
@@ -112,7 +124,11 @@ class Controller {
         val cell: ListCell[Playlist] = new ListCell[Playlist] {
           override def updateItem(t: Playlist, bln: Boolean): Unit={
             super.updateItem(t,bln)
-            if (t != null) {setText(t.name)}
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
           }
         }
         cell
@@ -621,7 +637,9 @@ class Controller {
 
   def removePlaylist(): Unit ={
     val toRemove :ObservableList[Playlist]= listPlaylist.getSelectionModel.getSelectedItems
-    toRemove.forEach(x=>Playlist.loaded.remove(x))
+    toRemove.forEach(x=> {
+      Playlist.loaded.remove(x)
+    })
     updateListPlaylists()
   }
 
