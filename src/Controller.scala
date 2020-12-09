@@ -740,9 +740,7 @@ class Controller {
     val songs:List[Int]  = playlist.songs
     recursiveAdd(playlist,lst,songs)
 
-
   }
-
 
   //Auxiliaries
   private def gotoSong(listView: ListView[Song], pos: Int): Unit = {

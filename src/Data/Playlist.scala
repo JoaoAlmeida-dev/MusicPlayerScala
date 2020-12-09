@@ -64,11 +64,11 @@ object Playlist{
     DatabaseFunc.update[Playlist](p,2,p.songs.mkString(" ")+" "+song)
     //Playlist(p.id,p.name,song::p.songs,p.theme)
   }
-  /*
+
   def removeSong(p: Playlist, song: Int): Playlist={
     val songs=p.songs.filter( _ != song)
 
-  }*/
+  }
 
   def toString(p: Playlist): String={
     p.id+";"+p.name+";"+p.songs.mkString(" ")+";"+p.theme+";end;"
