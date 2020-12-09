@@ -1,6 +1,7 @@
 
 import Data.{Album, Artist, MusicObject, Playlist, Song}
 import javafx.beans.value.{ChangeListener, ObservableValue}
+import javafx.collections.transformation.FilteredList
 import javafx.collections.{FXCollections, ListChangeListener, MapChangeListener, ObservableList}
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.fxml.{FXML, FXMLLoader}
@@ -32,10 +33,14 @@ class Controller {
   @FXML private var maxDurationLabel: Label = _
   @FXML private var volumeLabel: Label = _
   @FXML private var leftPane: AnchorPane = _
+
   @FXML private var listSongs: ListView[Song] = new ListView()
   @FXML private var listAlbums: ListView[Album] = new ListView()
   @FXML private var listArtists: ListView[Artist] = new ListView()
   @FXML private var listPlaylist: ListView[Playlist] = new ListView()
+  @FXML private var listSongsAlbum: ListView[Song] = new ListView()
+  @FXML private var listSongsArtist: ListView[Song] = new ListView()
+  @FXML private var listSongsPlaylist: ListView[Song] = new ListView()
 
   @FXML private var randomButton: ToggleButton = _
   @FXML private var repeatButton: ToggleButton = _
@@ -119,6 +124,7 @@ class Controller {
         cell
       }
     })
+
     listPlaylist.setCellFactory(new Callback[ListView[Playlist], ListCell[Playlist]](){
       def call(p:ListView[Playlist] ):ListCell[Playlist] = {
         val cell: ListCell[Playlist] = new ListCell[Playlist] {
@@ -135,6 +141,53 @@ class Controller {
         cell
       }
     })
+    listSongsArtist.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
+          }
+        }
+        cell
+      }
+    })
+    listSongsAlbum.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
+          }
+        }
+        cell
+      }
+    })
+    listSongsPlaylist.setCellFactory(new Callback[ListView[Song], ListCell[Song]](){
+      def call(p:ListView[Song] ):ListCell[Song] = {
+        val cell: ListCell[Song] = new ListCell[Song] {
+          override def updateItem(t: Song, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
+          }
+        }
+        cell
+      }
+    })
+
+
   }
   def fastForward(): Unit = {
     //mediaPlayer.setRate(mediaPlayer.getCurrentRate*2)
@@ -529,7 +582,6 @@ class Controller {
     }
 
   }
-
   def before(): Unit = {
     val listview: ListView[Song] = listSongs
     if (showMediaNullDialogWarning()) {
@@ -555,7 +607,6 @@ class Controller {
       }
     }
   }
-
   def next(): Unit = {
     val listview: ListView[Song] = listSongs
 
@@ -578,7 +629,6 @@ class Controller {
       }
     }
   }
-
   def random(): Unit = {
     if (showMediaNullDialogWarning()) {
       if (repeatButton.isSelected) {
@@ -587,7 +637,6 @@ class Controller {
       }
     }
   }
-
   def repeat(): Unit = {
     if (showMediaNullDialogWarning()) {
       if (randomButton.isSelected) {
@@ -600,7 +649,6 @@ class Controller {
       }
     }
   }
-
   def dragDuration(): Unit = {
     if (showMediaNullDialogWarning()) {
       this.synchronized {
@@ -609,7 +657,6 @@ class Controller {
       }
     }
   }
-
   def setVolume(): Unit = {
     val volume: Double = volumeSlider.getValue
     mediaPlayer.setVolume(volume / 100)
@@ -620,7 +667,30 @@ class Controller {
     val song: Song = listSongs.getSelectionModel.getSelectedItems.get(0)
     mediaChange(song.filepath)
     musicNameLabel.setText(song.name)
-    resetPlayButton()
+
+  }
+  //
+  def selectFromListAlbums(): Unit = {
+    val album: Album = listAlbums.getSelectionModel.getSelectedItems.get(0)
+    val songsAlbum:FilteredList[Song] = Song.loaded.filtered(x=> x.album == album.id)
+    listSongsAlbum.getItems.clear()
+    listSongsAlbum.getItems.addAll(songsAlbum)
+
+  }
+  def selectFromListArtist(): Unit = {
+    val artist: Artist = listArtists.getSelectionModel.getSelectedItems.get(0)
+    val songsArtist:FilteredList[Song] = Song.loaded.filtered(x=> x.artist == artist.id)
+    listSongsArtist.getItems.clear()
+    listSongsArtist.getItems.addAll(songsArtist)
+
+  }
+  def selectFromListPlaylist(): Unit = {
+    val playlist: Playlist = listPlaylist.getSelectionModel.getSelectedItems.get(0)
+    val songs:List[Int] = playlist.songs
+    val songsPlaylist:FilteredList[Song] = Song.loaded.filtered(x=> songs.contains(x.id))
+    listSongsPlaylist.getItems.clear()
+    listSongsPlaylist.getItems.addAll(songsPlaylist)
+
   }
 
 
