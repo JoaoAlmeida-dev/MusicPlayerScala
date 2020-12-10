@@ -1,5 +1,8 @@
 package Data
+import javafx.collections.transformation.FilteredList
 import javafx.collections.{FXCollections, ObservableList}
+
+import scala.util.Random
 
 case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends MusicObject[Playlist] {
   def info(): Option[(Int,String,List[Int],String)] ={ Playlist.info(this) }
@@ -95,6 +98,14 @@ object Playlist{
   def toString(p: Playlist): String={
     p.id+";"+p.name+";"+p.songs.mkString(" ")+";"+p.theme+";end;"
   }
+
+  def shuffle(playlist: Playlist) = {Random.shuffle(playlist.songs)}
+
+  def addFromFilter(f: Function[Song, Boolean], playlist: Playlist): Unit = {
+    var lst:List[Song] = DatabaseFunc.observableListToList((Song.loaded)).filter(x => f(x))
+    lst.foreach(x => addSong(playlist, x.id))
+  }
+
 
 
 }

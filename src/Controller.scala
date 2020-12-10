@@ -834,14 +834,14 @@ class Controller {
     updateListPlaylists()
   }
   def addToPlayFromAlbum(): Unit = {
-    val lst:List[Song] =ObservableListToList[Song](listSongsAlbum.getSelectionModel.getSelectedItems ,List[Song](), 0)
+    val lst:List[Song] =observableListToList[Song](listSongsAlbum.getSelectionModel.getSelectedItems)
 
     val playlist:Playlist = listPlaylist.getSelectionModel.getSelectedItem
     val songs:List[Int]  = lst.map(x=>x.id)
     playlist.addSong(songs)
   }
   def remFromPlay(): Unit ={
-    val lst:List[Int] =  ObservableListToList(listSongsPlaylist.getSelectionModel.getSelectedItems,List(),0).map(x=>x.id)
+    val lst:List[Int] =  observableListToList(listSongsPlaylist.getSelectionModel.getSelectedItems).map(x=>x.id)
     val playlist:Playlist = listPlaylist.getSelectionModel.getSelectedItem
     playlist.removeSong(lst)
   }
@@ -885,14 +885,17 @@ class Controller {
     }
     mediaPlayer.isInstanceOf[MediaPlayer]
   }
-  @tailrec
-  private def ObservableListToList[A](oblst:ObservableList[A],list:List[A], index:Int): List[A] ={
-    if(oblst.size() == index){
-      list
-    } else{
-      val obj:A=oblst.get(index)
-      ObservableListToList(oblst, list:::List(obj), index+1)
+  private def observableListToList[A](oblst:ObservableList[A]): List[A] ={
+    @tailrec
+    def aux(oblst:ObservableList[A],list:List[A], index:Int): List[A]={
+      if (oblst.size() == index) {
+        list
+      } else {
+        val obj: A = oblst.get(index)
+        aux(oblst, list ::: List(obj), index + 1)
+      }
     }
+    aux (oblst,List[A](),0)
   }
 
   private def setImage(imageSong: Image): Unit ={

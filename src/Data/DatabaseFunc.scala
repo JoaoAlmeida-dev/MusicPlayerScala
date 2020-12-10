@@ -127,4 +127,18 @@ object DatabaseFunc {
     )
     bw.close()
   }
+
+  def observableListToList[A](oblst:ObservableList[A]): List[A] ={
+    @tailrec
+    def aux(oblst:ObservableList[A],list:List[A], index:Int): List[A]={
+      if (oblst.size() == index) {
+        list
+      } else {
+        val obj: A = oblst.get(index)
+        aux(oblst, list ::: List(obj), index + 1)
+      }
+    }
+    aux (oblst,List[A](),0)
+  }
+
 }
