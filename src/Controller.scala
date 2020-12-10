@@ -711,6 +711,7 @@ class Controller {
       }
     }
   }
+  def clickDuration():Unit = {playpause();dragDuration();}
   def setVolume(): Unit = {
     if(!mediaPlayer.isInstanceOf[MediaPlayer]){
       volumeLabel.setText("vol:" + volumeSlider.getValue.toInt.toString + "%")
