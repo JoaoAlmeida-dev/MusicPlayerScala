@@ -42,7 +42,8 @@
                                  <bottom>
                                     <ButtonBar maxHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                        <Button fx:id="addToPlaylistAlbum" alignment="CENTER" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="AddToPlayslist" />
+                                          <ComboBox fx:id="addToPlaylistAlbumCombo" prefWidth="125.0" promptText="SelectPlaylist" />
+                                          <Button fx:id="addToPlaylistAlbumButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="Add" />
                                       </buttons>
                                        <padding>
                                           <Insets top="5.0" />
@@ -76,12 +77,13 @@
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar maxHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
-                                      <buttons>
-                                        <Button fx:id="addToPlaylistArtist" alignment="CENTER" mnemonicParsing="false" text="AddToPlayslist" />
-                                      </buttons>
+                                    <ButtonBar maxHeight="-Infinity" prefHeight="40.0">
+                                       <buttons>
+                                          <ComboBox fx:id="addToPlaylistArtistCombo" prefWidth="125.0" promptText="SelectPlaylist" />
+                                          <Button fx:id="addToPlaylistArtistButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromArtist" text="Add" />
+                                       </buttons>
                                        <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                          <Insets top="5.0" />
                                        </padding>
                                     </ButtonBar>
                                  </bottom>
@@ -190,9 +192,9 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <ToggleButton fx:id="togglePlayPause" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" text="Play" textAlignment="CENTER" GridPane.columnIndex="1" />
-                        <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" text="Before" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <ToggleButton fx:id="togglePlayPause" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefWidth="60.0" text="Play" textAlignment="CENTER" GridPane.columnIndex="1" />
+                        <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" prefWidth="60.0" text="Before" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefWidth="60.0" text="Next" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                   <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
