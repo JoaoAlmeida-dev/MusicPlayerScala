@@ -2,8 +2,6 @@ package Data
 
 import javafx.collections.ObservableList
 
-import scala.collection.mutable.ListBuffer
-
 trait MusicObject[A]{
 
 

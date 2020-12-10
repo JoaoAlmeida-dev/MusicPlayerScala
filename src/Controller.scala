@@ -1,64 +1,81 @@
 
-import Data.{Album, Artist, DatabaseFunc, MusicObject, Playlist, Song}
+import Data._
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.transformation.FilteredList
-import javafx.collections.{FXCollections, ListChangeListener, MapChangeListener, ObservableList}
-import javafx.event.{ActionEvent, EventHandler}
+import javafx.collections.{ListChangeListener, MapChangeListener, ObservableList}
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
-import javafx.scene.{Parent, Scene, image}
-import javafx.scene.control.{Alert, Button, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
+import javafx.scene.{Parent, Scene}
+import javafx.scene.control.{Alert, Button, ComboBox, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
+import javafx.scene.{Parent, Scene}
 import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
 import javafx.util.{Callback, Duration}
+
 import java.io.{File, FileInputStream, InputStream}
 import java.util.Arrays.stream
 import java.util.stream.StreamSupport.stream
-
+import java.io.File
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.{Image, ImageView}
 
 import scala.::
+import scala.annotation.tailrec
 
 class Controller {
-
+  //Panes
   @FXML private var BaseBorderPane: BorderPane = _
   @FXML private var centerGrid: GridPane = _
   @FXML private var bottomGrid: GridPane = _
-  @FXML private var togglePlayPause: ToggleButton = _
-  @FXML private var chooseFileButton: Button = _
-  @FXML private var chooseDirectoryButton: Button = _
+  @FXML private var volumeLabel: Label = _
+  @FXML private var leftPane: AnchorPane = _
+
+  //play
   @FXML private var musicNameLabel: Label = _
+  @FXML private var togglePlayPause: ToggleButton = _
   @FXML private var volumeSlider: Slider = _
   @FXML private var durationSlider: Slider = _
   @FXML private var minDurationLabel: Label = _
   @FXML private var maxDurationLabel: Label = _
-  @FXML private var volumeLabel: Label = _
-  @FXML private var leftPane: AnchorPane = _
+  @FXML private var randomButton: ToggleButton = _
+  @FXML private var repeatButton: ToggleButton = _
+  @FXML private var FastForwardButton: Button = _
+  @FXML private var ResetForwardButton: Button = _
+  @FXML private var SlowForwardButton: Button = _
+  @FXML private var rateLabel: Label = _
 
+  //import
+  @FXML private var chooseFileButton: Button = _
+  @FXML private var chooseDirectoryButton: Button = _
+
+  //listviews
   @FXML private var listSongs: ListView[Song] = new ListView()
   @FXML private var listAlbums: ListView[Album] = new ListView()
   @FXML private var listArtists: ListView[Artist] = new ListView()
   @FXML private var listPlaylist: ListView[Playlist] = new ListView()
   @FXML private var listSongsAlbum: ListView[Song] = new ListView()
-  @FXML private var listSongsArtist: ListView[Song] = new ListView()
   @FXML private var listSongsPlaylist: ListView[Song] = new ListView()
 
-  @FXML private var randomButton: ToggleButton = _
-  @FXML private var repeatButton: ToggleButton = _
+  @FXML private var listSongsArtist: ListView[Song] = new ListView()
+  @FXML private var listAlbumsArtist: ListView[Album] = new ListView()
 
+  //Artist view
+  @FXML private var addToPlaylistArtist: Button = _
+  @FXML private var ArtistShowAlbumOrSong: ComboBox[String] = _
+
+  //Album view
+  @FXML private var addToPlaylistAlbum: Button = _
+
+  //Playlist view
   @FXML private var editPlaylistButton: Button = _
   @FXML private var createPlaylistButton: Button = _
   @FXML private var removePlaylistButton: Button = _
+  @FXML private var remFromPlayButton: Button = _
 
-  @FXML private var FastForwardButton: Button = _
-  @FXML private var ResetForwardButton: Button = _
-  @FXML private var SlowForwardButton: Button = _
-  @FXML private var addToPlaylistAlbum: Button = _
-  @FXML private var rateLabel: Label = _
+
 
   @FXML private var image: ImageView = new ImageView()
 
@@ -67,10 +84,14 @@ class Controller {
   def initialize(): Unit = {
     DatabaseFunc.loadfiles()
     setLoadedListeners()
-    listPlaylist.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
-    listSongs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
+    listPlaylist.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
+    listSongs.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
     listSongsAlbum.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
     listSongsArtist.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
+
+    ArtistShowAlbumOrSong.getItems.addAll("Albums","Songs")
+    ArtistShowAlbumOrSong.getSelectionModel.select(0)
+    listSongsArtist.setVisible(false)
 
     setCellFactories()
     /*
@@ -194,7 +215,21 @@ class Controller {
         cell
       }
     })
-
+    listAlbumsArtist.setCellFactory(new Callback[ListView[Album], ListCell[Album]](){
+      def call(p:ListView[Album] ):ListCell[Album] = {
+        val cell: ListCell[Album] = new ListCell[Album] {
+          override def updateItem(t: Album, bln: Boolean): Unit={
+            super.updateItem(t,bln)
+            if (bln || t == null) {
+              setText("")
+            }else {
+              setText(t.name)
+            }
+          }
+        }
+        cell
+      }
+    })
 
   }
   def fastForward(): Unit = {
@@ -243,7 +278,7 @@ class Controller {
 
   //Imports
   def importMusic(): Unit = {
-    val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
+    val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
     val fileChooser = new FileChooser
     val selectedFile: File = fileChooser.showOpenDialog(stage)
 
@@ -265,7 +300,7 @@ class Controller {
       }
     }
 
-    val stage: Stage = (chooseFileButton.getScene.getWindow).asInstanceOf[Stage]
+    val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
     val directoryChooser = new DirectoryChooser
     val selectedDirectory: File = directoryChooser.showDialog(stage)
 
@@ -322,7 +357,7 @@ class Controller {
           ""
         }
         val min: String = {
-          if (hours.length > 0) {
+          if (hours.nonEmpty) {
             if (currtime._2 - 10 < 0) {
               "0" + currtime._2 + ":"
             } else {
@@ -434,6 +469,7 @@ class Controller {
       case Failure(e) =>
         print("Erro a criar media")
         throw e
+
     }
 
   }
@@ -668,7 +704,7 @@ class Controller {
     musicNameLabel.setText(song.name)
 
   }
-  //Display Song from [A]
+  //Display Song from
   def selectFromListAlbums(): Unit = {
     val album: Album = listAlbums.getSelectionModel.getSelectedItems.get(0)
     val songsAlbum:FilteredList[Song] = Song.loaded.filtered(x=> x.album == album.id)
@@ -677,11 +713,20 @@ class Controller {
 
   }
   def selectFromListArtist(): Unit = {
-    val artist: Artist = listArtists.getSelectionModel.getSelectedItems.get(0)
-    val songsArtist:FilteredList[Song] = Song.loaded.filtered(x=> x.artist == artist.id || x.feats.contains(artist.id))
+    val artist: Artist = if(listArtists.getSelectionModel.getSelectedItems.isEmpty){
+      listArtists.getSelectionModel.select(0)
+      listArtists.getItems.get(0)
+    }else{
+      listArtists.getSelectionModel.getSelectedItems.get(0)
+    }
+    val songsArtist: FilteredList[Song] = Song.loaded.filtered(x => x.artist == artist.id || x.feats.contains(artist.id))
+    val albunsArtist:FilteredList[Album] = Album.loaded.filtered(x => x.artist == artist.id )
+
     listSongsArtist.getItems.clear()
     listSongsArtist.getItems.addAll(songsArtist)
 
+    listAlbumsArtist.getItems.clear()
+    listAlbumsArtist.getItems.addAll(albunsArtist)
   }
   def selectFromListPlaylist(): Unit = {
     val playlist: Playlist = listPlaylist.getSelectionModel.getSelectedItems.get(0)
@@ -692,17 +737,29 @@ class Controller {
 
   }
 
+  //Artists
+  def chooseListArtist(): Unit ={
+    val listType:String = ArtistShowAlbumOrSong.getSelectionModel.getSelectedItem
+    if(listType.equals("Albums")){
+      listAlbumsArtist.setVisible(true)
+      listSongsArtist.setVisible(false)
+    }else if (listType.equals("Songs")){
+      listAlbumsArtist.setVisible(false)
+      listSongsArtist.setVisible(true )
+    }
+  }
+
 
   //Playlists
   def createPlaylist(): Unit = {
-    val loader:FXMLLoader=new FXMLLoader(getClass().getResource("CreatePlaylist.fxml"))
+    val loader:FXMLLoader=new FXMLLoader(getClass.getResource("CreatePlaylist.fxml"))
     val parent:Parent = loader.load().asInstanceOf[Parent]
     val stage:Stage = new Stage()
     stage.initModality(Modality.APPLICATION_MODAL)
     stage.setTitle("CreatePlaylist")
 
-    stage.setScene(new Scene(parent));
-    stage.show();
+    stage.setScene(new Scene(parent))
+    stage.show()
   }
   def removePlaylist(): Unit ={
     val toRemove :ObservableList[Playlist]= listPlaylist.getSelectionModel.getSelectedItems
@@ -711,38 +768,17 @@ class Controller {
     })
     updateListPlaylists()
   }
-  /*def addToPlaylist(lst:List[Song],playlist:Playlist): Unit= lst match {
-    case h::t => addToPlaylist(t, Playlist.addSong(playlist, h.id))
-    case Nil => println("Done") //TODO retirar o print, acho que o stor n vai gostar
-  }*/
+  def addToPlayFromAlbum(): Unit = {
+    val lst:List[Song] =ObservableListToList[Song](listSongsAlbum.getSelectionModel.getSelectedItems ,List[Song](), 0)
 
-  def addToPlayFromAlbum(): Unit ={
-    def aux(oblst:ObservableList[Song],list:List[Int], index:Int): List[Int] ={
-      if(oblst.size() == index){
-        list
-      } else{
-        val song:Song=oblst.get(index)
-        aux(oblst, list:::List(song.id), index+1)
-      }
-    }
-
-    def recursiveAdd(playlist: Playlist,id:List[Int],songsold:List[Int]): Playlist =id match{
-      case h::t =>
-        val pl:Playlist = if(songsold.contains(h)){
-          playlist
-        }else{
-          playlist.addSong(h)
-        }
-
-        recursiveAdd (pl,t,songsold)
-      case Nil => playlist
-    }
-
-    val lst:List[Int] =aux(listSongsAlbum.getSelectionModel.getSelectedItems ,List[Int](), 0)
     val playlist:Playlist = listPlaylist.getSelectionModel.getSelectedItem
-    val songs:List[Int]  = playlist.songs
-    recursiveAdd(playlist,lst,songs)
-
+    val songs:List[Int]  = lst.map(x=>x.id)
+    playlist.addSong(songs)
+  }
+  def remFromPlay(): Unit ={
+    val lst:List[Int] =  ObservableListToList(listSongsPlaylist.getSelectionModel.getSelectedItems,List(),0).map(x=>x.id)
+    val playlist:Playlist = listPlaylist.getSelectionModel.getSelectedItem
+    playlist.removeSong(lst)
   }
 
   //Auxiliaries
@@ -776,6 +812,17 @@ class Controller {
     }
     mediaPlayer.isInstanceOf[MediaPlayer]
   }
+  @tailrec
+  private def ObservableListToList[A](oblst:ObservableList[A],list:List[A], index:Int): List[A] ={
+    if(oblst.size() == index){
+      list
+    } else{
+      val obj:A=oblst.get(index)
+      ObservableListToList(oblst, list:::List(obj), index+1)
+    }
+  }
+
+
   private def setImage(imageSong: Image): Unit ={
     image.setImage(imageSong)
     println(image.getImage)

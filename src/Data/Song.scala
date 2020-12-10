@@ -1,9 +1,6 @@
 package Data
 
-import javafx.collections.{FXCollections, ObservableList, ObservableListBase}
-import javafx.scene.image.Image
-
-import scala.collection.mutable.ListBuffer
+import javafx.collections.{FXCollections, ObservableList}
 
 case class Song (id: Int, name:String,filepath:String, artist:Int, genre:String, album:Int, feats: List[Int], listened:Int, trackN:Int) extends MusicObject[Song] {
 
@@ -21,9 +18,8 @@ case class Song (id: Int, name:String,filepath:String, artist:Int, genre:String,
 
 }
 /*
-tiramos o duration
+tirámos o duration
  */
-
 
 object Song{
   type id         = Int
@@ -36,10 +32,8 @@ object Song{
   type Listened   = Int
   type TrackN     = Int
 
-
   val db: String = "DataBases/db_songs"
   var loaded: ObservableList[Song] = FXCollections.observableArrayList[Song]()
-
 
   def getLoaded[Song](): List[String] ={
     this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
@@ -92,6 +86,5 @@ object Song{
   def toString(s:Song ): String ={
      s.id + ";" + s.name + ";"+ s.filepath + ";" + s.artist + ";" + s.genre + ";" + s.album + ";" + s.feats.mkString(" ") + ";" + s.listened +";"+s.trackN+";end;"
   }
-
 
 }

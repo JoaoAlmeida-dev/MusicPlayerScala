@@ -1,9 +1,6 @@
 package Data
 
-import Data.Artist.addAlbum
 import javafx.collections.{FXCollections, ObservableList}
-
-import scala.collection.mutable.ListBuffer
 
 case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ) extends MusicObject[Artist]{
   def info():Option[(Int,String,List[Int],List[Int])]={ Artist.info(this) }

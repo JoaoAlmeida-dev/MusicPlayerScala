@@ -1,6 +1,5 @@
 package Data
-import scala.collection.mutable.ListBuffer
-import javafx.collections.{FXCollections, ModifiableObservableListBase, ObservableList, ObservableListBase}
+import javafx.collections.{FXCollections, ObservableList}
 
 
 case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends MusicObject[Album]{
