@@ -73,6 +73,7 @@ class Controller {
   @FXML private var listSongsArtist: ListView[Song] = new ListView()
   @FXML private var listAlbumsArtist: ListView[Album] = new ListView()
 
+
   //Artist view
   @FXML private var addToPlaylistArtist: Button = _
   @FXML private var ArtistShowAlbumOrSong: ComboBox[String] = _
@@ -102,18 +103,6 @@ class Controller {
     ArtistShowAlbumOrSong.getItems.addAll("Albums","Songs")
     ArtistShowAlbumOrSong.getSelectionModel.select(0)
     listSongsArtist.setVisible(false)
-
-    /*listAlbumsArtist.setOnMouseClicked(new EventHandler[MouseEvent]{
-
-      override def handle(click: MouseEvent): Unit = {
-        if(click.getClickCount == 2){
-          val album:Album = listAlbumsArtist.getSelectionModel.getSelectedItem
-
-          TabPane.getSelectionModel.clearSelection()
-          TabPane.getSelectionModel.select(AlbumsTab)
-        }
-      }
-    })*/
 
     setCellFactories()
     /*
@@ -797,6 +786,17 @@ class Controller {
     listSongsPlaylist.getItems.addAll(songsPlaylist)
 
   }
+  def SelectAlbumFromArtist(mouseEvent: MouseEvent): Unit ={
+    if(mouseEvent.getClickCount == 2){
+      val album:Album = listAlbumsArtist.getSelectionModel.getSelectedItem
+
+      TabPane.getSelectionModel.clearSelection()
+      TabPane.getSelectionModel.select(AlbumsTab)
+
+      listAlbums.getSelectionModel.select(album)
+      selectFromListAlbums()
+    }
+  }
 
   //Artists
   def chooseListArtist(): Unit ={
@@ -881,7 +881,6 @@ class Controller {
       ObservableListToList(oblst, list:::List(obj), index+1)
     }
   }
-
 
   private def setImage(imageSong: Image): Unit ={
     image.setImage(imageSong)

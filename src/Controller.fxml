@@ -34,7 +34,7 @@
                                     <center>
                                     <SplitPane dividerPositions="0.5">
                                        <items>
-                                              <ListView fx:id="listAlbums" onKeyPressed="#selectFromListAlbums" onMouseClicked="#selectFromListAlbums" />
+                                              <ListView fx:id="listAlbums" onMouseClicked="#selectFromListAlbums" />
                                           <ListView fx:id="listSongsAlbum" />
                                        </items>
                                     </SplitPane>
@@ -63,7 +63,7 @@
                                              <center>
                                                 <StackPane>
                                                    <children>
-                                                      <ListView fx:id="listAlbumsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                      <ListView fx:id="listAlbumsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#SelectAlbumFromArtist" />
                                                       <ListView fx:id="listSongsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                                                    </children>
                                                 </StackPane>
