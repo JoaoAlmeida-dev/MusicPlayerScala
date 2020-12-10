@@ -457,7 +457,6 @@ class Controller {
           //mediaPlayer has not been instanciated
           mediaPlayer = new MediaPlayer(v)
           mediaPlayer.setVolume(volumeSlider.getValue)
-          mediaPlayer.setBalance(balanceSlider.getValue)
         } else {
           val volume = mediaPlayer.getVolume
           val rate: Double = mediaPlayer.getRate
@@ -467,6 +466,8 @@ class Controller {
           mediaPlayer.setRate(rate)
 
         }
+        mediaPlayer.setBalance(balanceSlider.getValue)
+        mediaPlayer.setAutoPlay(true)
         setListeners()
         //resetPlayButton()
         mediaPlayer.statusProperty().addListener(new ChangeListener[MediaPlayer.Status] {
@@ -749,10 +750,15 @@ class Controller {
     setBalance()
   }
 
-  def selectFromListSongs(): Unit = {
-    val song: Song = listSongs.getSelectionModel.getSelectedItems.get(0)
-    mediaChange(song.filepath)
-    musicNameLabel.setText(song.name)
+  def selectFromListSongs(mouseEvent: MouseEvent): Unit = {
+    if(mouseEvent.getClickCount==2){
+      val song: Song = listSongs.getSelectionModel.getSelectedItems.get(0)
+      mediaChange(song.filepath)
+      musicNameLabel.setText(song.name)
+      durationSlider.setValue(0)
+      resetPlayButton()
+
+    }
 
   }
   //Display Song from
