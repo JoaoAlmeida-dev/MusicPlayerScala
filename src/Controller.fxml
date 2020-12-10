@@ -5,9 +5,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="BaseBorderPane" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<BorderPane fx:id="BaseBorderPane" minHeight="200.0" minWidth="200.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <center>
-      <SplitPane dividerPositions="0.8623693379790941" orientation="VERTICAL" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8623693379790941" minHeight="200.0" minWidth="200.0" orientation="VERTICAL" BorderPane.alignment="CENTER">
         <items>
             <SplitPane dividerPositions="0.8001022494887525">
                <items>
@@ -34,8 +34,8 @@
                                     <center>
                                     <SplitPane dividerPositions="0.5">
                                        <items>
-                                              <ListView fx:id="listAlbums" onMouseClicked="#selectFromListAlbums" />
-                                          <ListView fx:id="listSongsAlbum" />
+                                              <ListView fx:id="listAlbums" onMouseClicked="#AlbumListViewClick" />
+                                          <ListView fx:id="listSongsAlbum" minWidth="90.0" onMouseClicked="#SongAlbumListViewClick" />
                                        </items>
                                     </SplitPane>
                                     </center>
@@ -58,18 +58,18 @@
                                     <center>
                                     <SplitPane dividerPositions="0.5">
                                        <items>
-                                              <ListView fx:id="listArtists" onKeyPressed="#selectFromListArtist" onMouseClicked="#selectFromListArtist" />
+                                              <ListView fx:id="listArtists" onKeyPressed="#ArtistListViewClick" onMouseClicked="#ArtistListViewClick" />
                                           <BorderPane>
                                              <center>
                                                 <StackPane>
                                                    <children>
-                                                      <ListView fx:id="listAlbumsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#SelectAlbumFromArtist" />
-                                                      <ListView fx:id="listSongsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                      <ListView fx:id="listAlbumsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#AlbumArtistListViewClick" />
+                                                      <ListView fx:id="listSongsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#SongArtistListViewClick" />
                                                    </children>
                                                 </StackPane>
                                              </center>
                                              <top>
-                                                <ComboBox fx:id="ArtistShowAlbumOrSong" onAction="#chooseListArtist" BorderPane.alignment="CENTER_RIGHT" />
+                                                <ComboBox fx:id="ArtistShowAlbumOrSong" maxWidth="1.7976931348623157E308" minWidth="90.0" onAction="#chooseListArtist" BorderPane.alignment="CENTER_RIGHT" />
                                              </top>
                                           </BorderPane>
                                        </items>
@@ -94,10 +94,10 @@
                                     <center>
                                     <SplitPane dividerPositions="0.5">
                                        <items>
-                                              <ListView fx:id="listPlaylist" onKeyPressed="#selectFromListPlaylist" onMouseClicked="#selectFromListPlaylist" />
+                                              <ListView fx:id="listPlaylist" onKeyPressed="#DisplayPlaylist" onMouseClicked="#PlaylistListViewClick" />
                                           <BorderPane>
                                              <center>
-                                                <ListView fx:id="listSongsPlaylist" />
+                                                <ListView fx:id="listSongsPlaylist" minWidth="90.0" onMouseClicked="#PlaylistSongListViewClick" />
                                              </center>
                                           </BorderPane>
                                        </items>
@@ -139,15 +139,18 @@
                   </TabPane>
                   <BorderPane>
                      <center>
-                        <ListView fx:id="listSongs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#selectFromListSongs" onMouseClicked="#selectFromListSongs" />
+                        <ListView fx:id="listQueue" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#selectFromQueue" onMouseClicked="#selectFromQueue" />
                      </center>
                      <top>
                         <Label text="Queue" BorderPane.alignment="CENTER" />
                      </top>
+                     <bottom>
+                        <Button fx:id="deleteFromQueueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#remFromQueue" text="Delete" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                     </bottom>
                   </BorderPane>
                </items>
             </SplitPane>
-            <GridPane fx:id="bottomGrid" alignment="CENTER">
+            <GridPane fx:id="bottomGrid" alignment="CENTER" minHeight="80.0">
               <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="93.0" prefWidth="103.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
