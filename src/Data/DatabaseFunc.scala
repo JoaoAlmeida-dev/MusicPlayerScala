@@ -141,6 +141,4 @@ object DatabaseFunc {
     aux (oblst,List[A](),0)
   }
 
-
-
 }

@@ -1,4 +1,6 @@
 
+
+
 import Data.DatabaseFunc.observableListToList
 import Data._
 import javafx.beans.value.{ChangeListener, ObservableValue}
@@ -23,7 +25,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.{Image, ImageView}
-import javafx.scene.input.MouseEvent
+import javafx.scene.input.{KeyCode, KeyEvent, MouseEvent}
 
 import scala.annotation.tailrec
 
@@ -91,7 +93,7 @@ class Controller {
   @FXML private var image: ImageView = new ImageView()
 
   var mediaPlayer: MediaPlayer = _
-  var volume: Double = 100
+  //var volume: Double = 100
 
   def initialize(): Unit = {
     DatabaseFunc.loadfiles()
@@ -252,9 +254,10 @@ class Controller {
     val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
     val fileChooser = new FileChooser
     val selectedFile: File = fileChooser.showOpenDialog(stage)
-
-    if (selectedFile.getName.endsWith(".mp3")) {
-      uploadSong(selectedFile)
+    if (selectedFile != null) {
+      if (selectedFile.getName.endsWith(".mp3")) {
+        uploadSong(selectedFile)
+      }
     }
 
   }
@@ -418,12 +421,17 @@ class Controller {
           mediaPlayer = new MediaPlayer(v)
           mediaPlayer.setVolume(volumeSlider.getValue)
         } else {
-          val volume = mediaPlayer.getVolume
+
           val rate: Double = mediaPlayer.getRate
+          val vol: Double = mediaPlayer.getVolume
+          val mute: Boolean = mediaPlayer.isMute
           mediaPlayer.dispose()
           mediaPlayer = new MediaPlayer(v)
-          mediaPlayer.setVolume(volume)
+          //setVolumeSlider()
           mediaPlayer.setRate(rate)
+          mediaPlayer.setMute(mute)
+          mediaPlayer.setVolume(vol)
+
 
         }
         mediaPlayer.setBalance(balanceSlider.getValue)
@@ -434,7 +442,6 @@ class Controller {
           override def changed(observable: ObservableValue[_ <: MediaPlayer.Status], oldValue: MediaPlayer.Status, newValue: MediaPlayer.Status): Unit = {
             if (newValue.equals(MediaPlayer.Status.READY)) {
               setSeekSlider()
-
 
             }
           }
@@ -599,7 +606,8 @@ class Controller {
 
   //MediaControl
   def playpause(): Unit = {
-    if(mediaPlayer.isInstanceOf[MediaPlayer]){
+    if(!listQueue.getItems.isEmpty){
+      if (mediaPlayer.isInstanceOf[MediaPlayer]) {
         if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
           selectPlayButton()
           mediaPlayer.play()
@@ -607,10 +615,19 @@ class Controller {
           deSelectPlayButton()
           mediaPlayer.pause()
         }
+      } else {
+        mediaChange(listQueue.getItems.get(0).filepath)
+        listQueue.scrollTo(0)
+        listQueue.getSelectionModel.select(0)
+        selectPlayButton()
+      }
     }else{
-      mediaChange(listQueue.getItems.get(0).filepath)
-      listQueue.getSelectionModel.select(0)
-      selectPlayButton()
+      val alert = new Alert(AlertType.WARNING)
+      alert.setTitle("Warning")
+      alert.setHeaderText("No Songs imported")
+      alert.setContentText("Import songs on the import tab")
+      alert.showAndWait()
+      TabPane.getSelectionModel.clearAndSelect(TabPane.getTabs.indexOf(ImportTab))
     }
 
   }
@@ -690,17 +707,27 @@ class Controller {
     }
   }
   def clickDuration():Unit = {playpause();dragDuration();}
-  def setVolume(): Unit = {
-    if(!mediaPlayer.isInstanceOf[MediaPlayer]){
-      volumeLabel.setText("vol:" + volumeSlider.getValue.toInt.toString + "%")
-    }else {
-      volumeLabel.setText("vol:" + volumeSlider.getValue.toInt.toString + "%")
-      mediaPlayer.setVolume(volumeSlider.getValue / 100)
+  def setVolumeSlider(): Unit = {
+    val volume:Double = volumeSlider.getValue/100
+    setVolume(volume)
+  }
+  def setVolume(vol:Double): Unit ={
+    if(mediaPlayer.isInstanceOf[MediaPlayer]){
+      mediaPlayer.setMute(false)
+      mediaPlayer.setVolume(vol)
+
     }
+      volumeLabel.setText("vol:" + volumeSlider.getValue.toInt.toString + "%")
   }
   def muteVolume(): Unit = {
-    if(volumeSlider.getValue==0){volumeSlider.adjustValue(volume); setVolume()}
-    else {volume=volumeSlider.getValue;volumeSlider.adjustValue(0); setVolume()}
+    if(mediaPlayer.isMute){
+      mediaPlayer.setMute(false)
+      setVolumeSlider
+    }else {
+      volumeLabel.setText("Mute")
+      mediaPlayer.setMute(true)
+
+    }
   }
   def setBalance(): Unit = {
     if(mediaPlayer.isInstanceOf[MediaPlayer]){
@@ -754,6 +781,27 @@ class Controller {
       rateLabel.setText("rate:" + rate + "x")
     }
   }
+    //PlayWithkeyboard
+    def keyboardEvent(eventHandler: KeyEvent): Unit ={
+      val key:KeyCode = eventHandler.getCode
+      val keychar =eventHandler.getCharacter
+      println(key)
+      println(keychar)
+      if(key.equals(KeyCode.SPACE) ||key.equals(KeyCode.ENTER) || key.equals(KeyCode.P) || key.equals(KeyCode.PLAY) || key.equals(KeyCode.PAUSE)  ){
+        playpause()
+      }else if(key.equals(KeyCode.TRACK_PREV)){
+        before()
+      }else if(key.equals(KeyCode.TRACK_NEXT)){
+        next()
+      }else if(key.equals(KeyCode.VOLUME_DOWN)){
+        setVolume(volumeSlider.getValue - 10)
+      }else if(key.equals(KeyCode.VOLUME_UP)){
+        setVolume(volumeSlider.getValue + 10)
+      }
+      eventHandler.consume()
+
+    }
+
 
   def selectFromQueue(mouseEvent: MouseEvent): Unit = {
     if(mouseEvent.getClickCount==2){
@@ -810,7 +858,6 @@ class Controller {
     }
   }
 
-
   //Albums
   def AlbumListViewClick(mouseEvent: MouseEvent):Unit={
     if(mouseEvent.getClickCount==2){
@@ -857,7 +904,7 @@ class Controller {
   }
   //Playlists
   def createPlaylist(): Unit = {
-    val loader:FXMLLoader=new FXMLLoader(getClass.getResource("CreatePlaylist.fxml"))
+    val loader:FXMLLoader=new FXMLLoader(getClass.getResource("FXML/CreatePlaylist.fxml.fxml"))
     val parent:Parent = loader.load().asInstanceOf[Parent]
     val stage:Stage = new Stage()
     stage.initModality(Modality.APPLICATION_MODAL)
@@ -920,6 +967,7 @@ class Controller {
   private def gotoSong(listView: ListView[Song], pos: Int): Unit = {
     val newSong: Song = listView.getItems.get(pos)
     listView.getSelectionModel.clearAndSelect(pos)
+    listView.scrollTo(pos)
     mediaChange(newSong.filepath)
     musicNameLabel.setText(newSong.name)
     mediaPlayer.play()

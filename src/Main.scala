@@ -28,7 +28,7 @@ class Main extends Application{
 
   override def start(primaryStage: Stage): Unit = {
 
-    primaryStage.setTitle("MusicPlayerScala")
+    primaryStage.setTitle("MusicPlayerScala - DEMO")
 
     val fxmlLoader = new FXMLLoader(getClass.getResource("Controller.fxml"))
 
@@ -42,11 +42,6 @@ class Main extends Application{
   /*
    TODO
     Playlists
-      create
-      add
-      remove
-      addSong
-      removeSong
       ChangeOrder
     Show Musics from artist or from album
     ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)

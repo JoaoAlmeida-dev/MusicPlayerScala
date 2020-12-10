@@ -1,3 +1,4 @@
+
 import Data.{DatabaseFunc, Playlist}
 import javafx.fxml.FXML
 import javafx.scene.control.Alert.AlertType

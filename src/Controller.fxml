@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="BaseBorderPane" minHeight="200.0" minWidth="200.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<BorderPane fx:id="BaseBorderPane" minHeight="200.0" minWidth="200.0" onKeyPressed="#keyboardEvent" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <center>
       <SplitPane dividerPositions="0.8623693379790941" minHeight="200.0" minWidth="200.0" orientation="VERTICAL" BorderPane.alignment="CENTER">
         <items>
@@ -40,7 +40,7 @@
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
+                                    <ButtonBar maxHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
                                         <Button fx:id="addToPlaylistAlbum" alignment="CENTER" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="AddToPlayslist" />
                                       </buttons>
@@ -64,7 +64,7 @@
                                                 <StackPane>
                                                    <children>
                                                       <ListView fx:id="listAlbumsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#AlbumArtistListViewClick" />
-                                                      <ListView fx:id="listSongsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#SongArtistListViewClick" />
+                                                      <ListView fx:id="listSongsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#SongArtistListViewClick" StackPane.alignment="CENTER" />
                                                    </children>
                                                 </StackPane>
                                              </center>
@@ -76,9 +76,9 @@
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
+                                    <ButtonBar maxHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                        <Button fx:id="addToPlaylistArtist" mnemonicParsing="false" text="AddToPlayslist" />
+                                        <Button fx:id="addToPlaylistArtist" alignment="CENTER" mnemonicParsing="false" text="AddToPlayslist" />
                                       </buttons>
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -104,7 +104,7 @@
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                    <ButtonBar prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
                                         <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
                                           <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
@@ -121,15 +121,15 @@
                               <center>
                                  <GridPane>
                                     <columnConstraints>
-                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     </columnConstraints>
                                     <rowConstraints>
-                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                       <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                       <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.columnIndex="1" />
-                                       <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
+                                       <Button fx:id="chooseDirectoryButton" alignment="CENTER" mnemonicParsing="false" onAction="#importFolder" text="Import Folder" GridPane.columnIndex="1" />
+                                       <Button fx:id="chooseFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#importMusic" text="ImportMusic" />
                                     </children>
                                  </GridPane>
                               </center>
@@ -174,7 +174,7 @@
                         <RowConstraints maxHeight="32.4" minHeight="10.0" prefHeight="26.4" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Slider fx:id="volumeSlider" onMouseClicked="#setVolume" onMouseDragged="#setVolume" prefHeight="14.0" prefWidth="94.0" value="100.0" GridPane.rowIndex="1" />
+                        <Slider fx:id="volumeSlider" onMouseClicked="#setVolumeSlider" onMouseDragged="#setVolumeSlider" prefHeight="14.0" prefWidth="94.0" value="100.0" GridPane.rowIndex="1" />
                         <Label fx:id="volumeLabel" onMouseClicked="#muteVolume" text="vol:100%" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
