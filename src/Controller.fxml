@@ -208,11 +208,11 @@
                         <Label text="Now Playing: " />
                      </children>
                   </GridPane>
-                  <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" text="SlowForward" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" text="ResetForward" GridPane.columnIndex="1" />
-                  <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" text="FastForward" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefWidth="100.0" text="SlowForward" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefWidth="100.0" text="ResetForward" GridPane.columnIndex="1" />
+                  <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefWidth="100.0" text="FastForward" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" prefWidth="100.0" text="Random" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefWidth="100.0" text="No Repeat" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />

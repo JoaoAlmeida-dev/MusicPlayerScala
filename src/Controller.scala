@@ -423,6 +423,7 @@ class Controller {
         } else {
 
           val rate: Double = mediaPlayer.getRate
+          val cycleCount: Int = mediaPlayer.getCycleCount
           val vol: Double = mediaPlayer.getVolume
           val mute: Boolean = mediaPlayer.isMute
           mediaPlayer.dispose()
@@ -432,6 +433,12 @@ class Controller {
           mediaPlayer.setMute(mute)
           mediaPlayer.setVolume(vol)
 
+          val repeatButtonText:String = repeatButton.getText
+          repeatButtonText match{
+            case "Repeat 1"   =>mediaPlayer.setCycleCount(2)
+            case "Repeat All" =>mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE)
+            case "No Repeat"  =>mediaPlayer.setCycleCount(1)
+          }
 
         }
         mediaPlayer.setBalance(balanceSlider.getValue)
@@ -661,8 +668,13 @@ class Controller {
 
     if (showMediaNullDialogWarning()) {
       val song: Song = listview.getSelectionModel.getSelectedItems.get(0)
-      if (repeatButton.isSelected) {
+      val cycles:Int = mediaPlayer.getCycleCount
+      if (mediaPlayer.getCycleCount.equals(MediaPlayer.INDEFINITE)) {
         mediaPlayer.seek(new Duration(0))
+      }else if(cycles>1){
+        mediaPlayer.setCycleCount(cycles-1)
+        mediaPlayer.seek(new Duration(0))
+
       }
       else if (randomButton.isSelected) {
         val r = scala.util.Random
@@ -687,15 +699,36 @@ class Controller {
     }
   }
   def repeat(): Unit = {
+    val cycles : List[Int] = List(1,2,MediaPlayer.INDEFINITE)
     if (showMediaNullDialogWarning()) {
+      val currCycle:Int = mediaPlayer.getCycleCount
+    val currCyleindex : Int = cycles.indexOf(currCycle)
       if (randomButton.isSelected) {
         randomButton.setSelected(false)
       }
-      if (repeatButton.isSelected) {
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE)
-      } else {
-        mediaPlayer.setCycleCount(1)
+      currCyleindex match {
+        case 0 =>{
+          //change from no repeat to repeat 1
+          mediaPlayer.setCycleCount(2)
+
+          repeatButton.setSelected(true)
+          repeatButton.setText("Repeat 1")}
+        case 1 =>{
+          //change from repeat 1 to repeat all
+          mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE)
+
+          repeatButton.setText("Repeat All")
+          repeatButton.setSelected(true)}
+        case 2 =>{
+          //change from repeat all to no repeat
+          mediaPlayer.setCycleCount(1)
+
+          repeatButton.setText("No Repeat")
+          repeatButton.setSelected(false)
+        }
       }
+      //not working
+      // mediaPlayer.setCycleCount(math.floorMod(cycles.size,cycles.indexOf(mediaPlayer.getCycleCount)+1))
     }
   }
   def dragDuration(): Unit = {
@@ -958,8 +991,10 @@ class Controller {
     addToQueue(observableListToList(lst))
   }
   def remFromQueue(): Unit ={
+    val currPlaying:Song = listQueue.getSelectionModel.getSelectedItem
+    println(currPlaying)
     val queueSelected:List[Song]=observableListToList(listQueue.getSelectionModel.getSelectedItems)
-    queueSelected.map(x=> listQueue.getItems.remove(x) )
+    queueSelected.filter(x=> x!= currPlaying).map(x=> listQueue.getItems.remove(x) )
   }
 
 
