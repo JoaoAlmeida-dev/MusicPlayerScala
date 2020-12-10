@@ -7,13 +7,13 @@
 
 <BorderPane fx:id="BaseBorderPane" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <center>
-      <SplitPane dividerPositions="0.8636026686434396" orientation="VERTICAL" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8623693379790941" orientation="VERTICAL" BorderPane.alignment="CENTER">
         <items>
             <SplitPane dividerPositions="0.8001022494887525">
                <items>
-                  <TabPane tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="TabPane" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab text="Play">
+                      <Tab fx:id="PlayTab" text="Play">
                            <content>
                               <BorderPane>
                                  <top>
@@ -28,7 +28,7 @@
                               </BorderPane>
                            </content>
                         </Tab>
-                        <Tab text="Albums">
+                        <Tab fx:id="AlbumsTab" text="Albums">
                             <content>
                                 <BorderPane>
                                     <center>
@@ -52,7 +52,7 @@
                                 </BorderPane>
                             </content>
                         </Tab>
-                        <Tab text="Artists">
+                        <Tab fx:id="ArtistsTab" text="Artists">
                             <content>
                                 <BorderPane>
                                     <center>
@@ -88,7 +88,7 @@
                                 </BorderPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="removeSongPlaylistButton" text="Playlists">
+                        <Tab fx:id="PlaylistsTab" text="Playlists">
                             <content>
                                 <BorderPane>
                                     <center>
@@ -116,7 +116,7 @@
                                 </BorderPane>
                             </content>
                         </Tab>
-                        <Tab text="Import">
+                        <Tab fx:id="ImportTab" text="Import">
                            <BorderPane>
                               <center>
                                  <GridPane>
@@ -147,22 +147,22 @@
                   </BorderPane>
                </items>
             </SplitPane>
-            <GridPane fx:id="bottomGrid">
+            <GridPane fx:id="bottomGrid" alignment="CENTER">
               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="93.0" prefWidth="103.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="19.599984741210903" prefWidth="47.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="267.6" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="31.999969482421875" prefWidth="45.200000000000045" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="105.60000000000002" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="101.20000000000005" prefWidth="107.20000000000005" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="93.0" prefWidth="103.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="19.599984741210903" prefWidth="47.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="267.6" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="31.999969482421875" prefWidth="45.200000000000045" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="105.60000000000002" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="101.20000000000005" prefWidth="107.20000000000005" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="41.0" minHeight="10.0" prefHeight="31.999999999999996" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="42.8" minHeight="10.0" prefHeight="34.39999999999999" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <GridPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <GridPane alignment="CENTER" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -177,10 +177,10 @@
                   </GridPane>
                   <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <GridPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="63.599999999999994" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="87.0" minWidth="10.0" prefWidth="84.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="87.0" minWidth="10.0" prefWidth="84.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="85.0" minWidth="10.0" prefWidth="60.599999999999994" />
                      </columnConstraints>
                      <rowConstraints>
@@ -192,7 +192,7 @@
                         <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                  <GridPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -210,13 +210,13 @@
                   <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" text="FastForward" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" text="Random" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                   <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" text="Repeat" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <GridPane GridPane.columnIndex="6">
+                  <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints maxHeight="21.4" minHeight="10.0" prefHeight="16.4" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="21.400000953674315" minHeight="10.0" prefHeight="20.4" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="21.4" minHeight="10.0" prefHeight="16.4" valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="21.400000953674315" minHeight="10.0" prefHeight="20.4" valignment="CENTER" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <Slider fx:id="balanceSlider" max="1.0" min="-1.0" onMouseDragged="#setBalance" GridPane.rowIndex="1" />
