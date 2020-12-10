@@ -7,7 +7,7 @@ import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
 import javafx.scene.{Parent, Scene}
-import javafx.scene.control.{Alert, Button, ComboBox, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, Tab, TabPane, TextArea, TextField, ToggleButton}
+import javafx.scene.control.{Alert, Button, ComboBox, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, SingleSelectionModel, Slider, Tab, TabPane, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.scene.{Parent, Scene}
@@ -99,6 +99,7 @@ class Controller {
     listSongs.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
     listSongsAlbum.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
     listSongsArtist.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
+
 
     ArtistShowAlbumOrSong.getItems.addAll("Albums","Songs")
     ArtistShowAlbumOrSong.getSelectionModel.select(0)
@@ -790,8 +791,7 @@ class Controller {
     if(mouseEvent.getClickCount == 2){
       val album:Album = listAlbumsArtist.getSelectionModel.getSelectedItem
 
-      TabPane.getSelectionModel.clearSelection()
-      TabPane.getSelectionModel.select(AlbumsTab)
+      TabPane.getSelectionModel.clearAndSelect(TabPane.getTabs.indexOf(AlbumsTab))
 
       listAlbums.getSelectionModel.select(album)
       selectFromListAlbums()
