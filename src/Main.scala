@@ -1,12 +1,8 @@
-import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
 import Data.{DatabaseFunc, _}
 import javafx.application.Application
-import javafx.application.Application.launch
 import javafx.fxml.FXMLLoader
-import javafx.scene.{Group, Parent, Scene}
-import javafx.scene.media.{Media, MediaPlayer, MediaView}
-import javafx.stage.{FileChooser, Stage}
-import javafx.util.Duration
+import javafx.scene.{Parent, Scene}
+import javafx.stage.Stage
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine

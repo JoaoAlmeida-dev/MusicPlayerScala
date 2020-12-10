@@ -61,10 +61,15 @@
                                               <ListView fx:id="listArtists" onKeyPressed="#selectFromListArtist" onMouseClicked="#selectFromListArtist" />
                                           <BorderPane>
                                              <center>
-                                                <ListView fx:id="listSongsArtist" />
+                                                <StackPane>
+                                                   <children>
+                                                      <ListView fx:id="listAlbumsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                      <ListView fx:id="listSongsArtist" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                   </children>
+                                                </StackPane>
                                              </center>
                                              <top>
-                                                <ChoiceBox BorderPane.alignment="CENTER_RIGHT" />
+                                                <ComboBox fx:id="ArtistShowAlbumOrSong" onAction="#chooseListArtist" BorderPane.alignment="CENTER_RIGHT" />
                                              </top>
                                           </BorderPane>
                                        </items>
@@ -73,7 +78,7 @@
                                  <bottom>
                                     <ButtonBar prefHeight="30.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                        <Button mnemonicParsing="false" text="AddToPlayslist" />
+                                        <Button fx:id="addToPlaylistArtist" mnemonicParsing="false" text="AddToPlayslist" />
                                       </buttons>
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -90,7 +95,11 @@
                                     <SplitPane dividerPositions="0.5">
                                        <items>
                                               <ListView fx:id="listPlaylist" onKeyPressed="#selectFromListPlaylist" onMouseClicked="#selectFromListPlaylist" />
-                                          <ListView fx:id="listSongsPlaylist" />
+                                          <AnchorPane>
+                                             <children>
+                                                <ListView fx:id="listSongsPlaylist" />
+                                             </children>
+                                          </AnchorPane>
                                        </items>
                                     </SplitPane>
                                     </center>
@@ -99,7 +108,7 @@
                                       <buttons>
                                         <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
                                           <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
-                                          <Button mnemonicParsing="false" text="RemoveSong" />
+                                          <Button fx:id="remFromPlayButton" mnemonicParsing="false" onAction="#remFromPlay" text="RemoveSong" />
                                           <Button fx:id="editPlaylistButton" mnemonicParsing="false" text="Edit" />
                                       </buttons>
                                     </ButtonBar>

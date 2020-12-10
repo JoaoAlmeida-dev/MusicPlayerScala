@@ -1,12 +1,14 @@
 package Data
 import javafx.collections.{FXCollections, ObservableList}
 
-import scala.collection.mutable.ListBuffer
-
 case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends MusicObject[Playlist] {
   def info(): Option[(Int,String,List[Int],String)] ={ Playlist.info(this) }
-  def addSong(song: Int): Playlist={ Playlist.addSong(this,song) }
-  //def removeSong(song: Int): Playlist={ Playlist.removeSong(this,song) }
+
+  def addSong(songid: Int): Playlist={ Playlist.addSong(this,songid) }
+  def addSong(songsid: List[Int]): Playlist={ Playlist.addSong(this,songsid) }
+
+  def removeSong(songid: Int): Playlist={ Playlist.removeSong(this,songid) }
+  def removeSong(songsid: List[Int]): Playlist={ Playlist.removeSong(this,songsid) }
 
   override def toString(): String ={ Playlist.toString(this) }
   override val db: String = Playlist.db
@@ -60,15 +62,35 @@ object Playlist{
   }
 //------------------------------------------
 //TODO usar Database.func update
-  def addSong(p: Playlist, song: Int): Playlist={
-    DatabaseFunc.update[Playlist](p,2,p.songs.mkString(" ")+" "+song)
+  def addSong(p: Playlist, songid: Int): Playlist={
+    DatabaseFunc.update[Playlist](p,2,p.songs.mkString(" ")+" "+songid)
     //Playlist(p.id,p.name,song::p.songs,p.theme)
   }
 
-  /*def removeSong(p: Playlist, song: Int): Playlist={
-    val songs=p.songs.filter( _ != song)
+  def addSong(p: Playlist, songsid: List[Int]): Playlist={
 
-  }*/
+    def recursiveAdd(playlist: Playlist,id:List[Int],songsold:List[Int]): Playlist =id match{
+      case h::t =>
+        val pl:Playlist = if(songsold.contains(h)){
+          playlist
+        }else{
+          playlist.addSong(h)
+        }
+        recursiveAdd (pl,t,songsold)
+      case Nil => playlist
+    }
+    recursiveAdd(p,songsid,p.songs)
+    //Playlist(p.id,p.name,song::p.songs,p.theme)
+  }
+
+  def removeSong(p: Playlist, songid: Int): Playlist={
+    val songs=p.songs.filter( _ != songid)
+    DatabaseFunc.update[Playlist](p,2,songs.mkString(" "))
+  }
+  def removeSong(p: Playlist, songsid: List[Int]): Playlist={
+    val songs=p.songs.filter( !songsid.contains(_))
+    DatabaseFunc.update[Playlist](p,2,songs.mkString(" "))
+  }
 
   def toString(p: Playlist): String={
     p.id+";"+p.name+";"+p.songs.mkString(" ")+";"+p.theme+";end;"

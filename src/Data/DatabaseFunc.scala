@@ -3,6 +3,7 @@ package Data
 import javafx.collections.ObservableList
 
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
+import java.nio.file.{Files,  Paths}
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Try}
@@ -50,6 +51,8 @@ object DatabaseFunc {
         }
       }
       case Failure(e) => {
+        new File("DataBases").mkdir()
+
         val f: File = new File(filename)
         val writer = new PrintWriter(f)
         writer.write("")
