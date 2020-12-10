@@ -513,13 +513,25 @@ class Controller {
       override def run(): Unit = {
 
         println(info)
-        val album: String = info.filter(x => x._1.equals("album")).head._2.toString.trim
-        val artist: String = info.filter(x => x._1.equals("artist")).map(_._2).remove(0).toString.split(",").head.trim
+        val album = info.filter(x => x._1.equals("album"))
+        val artist = info.filter(x => x._1.equals("artist"))
+
+        val albumName: String=if(album.isEmpty){
+          "Unknown"
+        }else{
+          album.remove(0)._2.toString.trim
+        }
+        val artistNames: List[String]=if(artist.isEmpty){
+          List("Unknown")
+        }else{
+          artist.remove(0)._2.toString.split(",").toList
+        }
+
         val songid = DatabaseFunc.getlastidSongs(Song.loaded) + 1
 
-        val albumcheck = Album.loaded.filtered(x => x.name.equals(album))
+        val albumcheck = Album.loaded.filtered(x => x.name.equals(albumName))
 
-        val artistcheck = Artist.loaded.filtered(x => x.name.equals(artist))
+        val artistcheck = Artist.loaded.filtered(x => x.name.equals(artistNames.head.trim))
 
         println()
         println()
@@ -541,7 +553,7 @@ class Controller {
         val albumid: Int = {
           if (albumcheck.isEmpty) {
             val newid: Int = DatabaseFunc.getlastidAlbums(Album.loaded) + 1
-            Album.loaded.add(Album(List(newid.toString, album, songid.toString, artistid.toString)))
+            Album.loaded.add(Album(List(newid.toString, albumName, songid.toString, artistid.toString)))
             newid
           } else {
             val album_temp = albumcheck.get(0).addSong(songid)
@@ -554,7 +566,7 @@ class Controller {
         //artist exists? if not creating it
 
         if (artistcheck.isEmpty) {
-          Artist.loaded.add(Artist(List(artistid.toString, artist, albumid.toString, songid.toString)))
+          Artist.loaded.add(Artist(List(artistid.toString, artistNames.head.trim, albumid.toString, songid.toString)))
         } else {
           val artist_temp = artistcheck.get(0).addSong(songid)
           Artist.loaded.remove(artistcheck.get(0))
@@ -562,9 +574,9 @@ class Controller {
         }
 
 
-        val nomeFeats = info.filter(x => x._1.equals("artist")).map(_._2).remove(0).toString.split(", ").tail.toList
-
+        val nomeFeats = artistNames.tail
         val idFeats = nomeFeats.map(x => DatabaseFunc.GetIDArtistOrCreateFeats(x.trim, songid.toString))
+
 
         val trackNaux: ListBuffer[(String, AnyRef)] = info.filter(x => x._1.equals("track number"))
         val trackN = if (trackNaux.isEmpty) {
@@ -573,12 +585,25 @@ class Controller {
           trackNaux.head._2.toString.trim
         }
 
+        val title: String=if( info.filter(x => x._1.equals("title")).isEmpty){
+          print(selectedFile.getName.split(".mp3"))
+          selectedFile.getName.split(".mp3").head.trim
+        }else{
+          info.filter(x => x._1.equals("title")).head._2.toString
+        }
+
+        val genre: String=if( info.filter(x => x._1.equals("genre")).isEmpty){
+          "Unknown"
+        }else{
+          info.filter(x => x._1.equals("genre")).head._2.toString
+        }
+
         val song: Song = Song(List[String](
           songid.toString, //0
-          info.filter(x => x._1.equals("title")).head._2.toString.trim, //1
+          title, //1
           selectedFile.getAbsolutePath, //2 filepath
           artistid.toString, //4 artist
-          info.filter(x => x._1.equals("genre")).head._2.toString, //5 genre
+          genre, //5 genre
           albumid.toString, //6 album
           idFeats.mkString(" "), //7 feats
           0.toString, //8
