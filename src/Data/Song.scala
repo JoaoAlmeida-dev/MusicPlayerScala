@@ -1,6 +1,7 @@
 package Data
 
 import javafx.collections.{FXCollections, ObservableList, ObservableListBase}
+import javafx.scene.image.Image
 
 import scala.collection.mutable.ListBuffer
 
