@@ -3,6 +3,7 @@
 
 import Data.DatabaseFunc.observableListToList
 import Data._
+import javafx.beans.InvalidationListener
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.transformation.FilteredList
 import javafx.collections.{ListChangeListener, MapChangeListener, ObservableList}
@@ -22,11 +23,12 @@ import java.util.Arrays.stream
 import java.util.stream.StreamSupport.stream
 import java.io.File
 import scala.collection.mutable.ListBuffer
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Random, Success, Try}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{KeyCode, KeyEvent, MouseEvent}
 
+import java.util
 import scala.annotation.tailrec
 
 class Controller {
@@ -76,7 +78,6 @@ class Controller {
   @FXML private var listSongsArtist: ListView[Song] = new ListView()
   @FXML private var listAlbumsArtist: ListView[Album] = new ListView()
 
-
   //Artist view
   @FXML private var addToPlaylistArtist: Button = _
   @FXML private var ArtistShowAlbumOrSong: ComboBox[String] = _
@@ -94,6 +95,10 @@ class Controller {
 
   var mediaPlayer: MediaPlayer = _
   //var volume: Double = 100
+  //Queue
+  private var oldQueue: List[Song] = _
+  private var oldPos: Int = _
+  private var isShuffled: Boolean = false
 
   def initialize(): Unit = {
     DatabaseFunc.loadfiles()
@@ -837,7 +842,7 @@ class Controller {
 
 
   def selectFromQueue(mouseEvent: MouseEvent): Unit = {
-    if(mouseEvent.getClickCount==2){
+    if(mouseEvent.getClickCount==2) {
       val song: Song = listQueue.getSelectionModel.getSelectedItems.get(0)
       mediaChange(song.filepath)
       musicNameLabel.setText(song.name)
@@ -847,6 +852,35 @@ class Controller {
 
     }
 
+  }
+  def shuffleQueue(): Unit = {
+    if (!isShuffled) {
+      oldQueue = observableListToList(listQueue.getItems)
+      oldPos = listQueue.getSelectionModel.getSelectedIndices.get(0)
+
+      //newQueue.addAll(listQueue.getItems)
+      //newQueue.forEach(x => print(x+"\n"))
+      //removed selcted
+      val filteredQueue = oldQueue.filter(x=> x.id != listQueue.getSelectionModel.getSelectedItem.id)
+
+      val shuffled: List[Song] = Random.shuffle(filteredQueue)
+      val first: Song = listQueue.getSelectionModel.getSelectedItem
+
+      listQueue.getItems.clear()
+      listQueue.getItems.add(first)
+      shuffled.map(listQueue.getItems.add)
+
+      listQueue.getSelectionModel.clearAndSelect(0)
+      //shuffled.foreach(x => listQueue.getItems.add(x))
+      isShuffled = true
+    } else {
+      listQueue.getItems.clear()
+//      listQueue.getItems.addAll(oldQueue)
+      oldQueue.map(listQueue.getItems.add)
+      listQueue.getSelectionModel.clearAndSelect(oldPos)
+      oldQueue = oldQueue.filter(x=>false)
+      isShuffled = false
+    }
   }
 
   //Display Song from

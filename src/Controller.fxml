@@ -156,8 +156,8 @@
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="19.599984741210903" prefWidth="47.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="267.6" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="31.999969482421875" prefWidth="45.200000000000045" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="105.60000000000002" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="31.999969482421875" prefWidth="56.60000000000002" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="107.39999999999998" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="101.20000000000005" prefWidth="107.20000000000005" />
               </columnConstraints>
               <rowConstraints>
@@ -227,6 +227,7 @@
                      </children>
                   </GridPane>
                   <Label fx:id="rateLabel" text="Rate" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#shuffleQueue" prefHeight="26.0" prefWidth="59.0" text="Shuffle" GridPane.columnIndex="4" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
