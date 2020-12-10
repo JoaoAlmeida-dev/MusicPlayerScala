@@ -37,6 +37,7 @@ class Controller {
   @FXML private var musicNameLabel: Label = _
   @FXML private var togglePlayPause: ToggleButton = _
   @FXML private var volumeSlider: Slider = _
+  @FXML private var balanceSlider: Slider = _
   @FXML private var durationSlider: Slider = _
   @FXML private var minDurationLabel: Label = _
   @FXML private var maxDurationLabel: Label = _
@@ -445,6 +446,7 @@ class Controller {
           //mediaPlayer has not been instanciated
           mediaPlayer = new MediaPlayer(v)
           mediaPlayer.setVolume(volumeSlider.getValue)
+          mediaPlayer.setBalance(balanceSlider.getValue)
         } else {
           val volume = mediaPlayer.getVolume
           val rate: Double = mediaPlayer.getRate
@@ -689,12 +691,16 @@ class Controller {
     }
   }
   def setVolume(): Unit = {
-      val volume: Double = volumeSlider.getValue
     if(!mediaPlayer.isInstanceOf[MediaPlayer]){
-      volumeLabel.setText("vol:" + volume.toInt.toString + "%")
+      volumeLabel.setText("vol:" + volumeSlider.getValue.toInt.toString + "%")
     }else {
-      volumeLabel.setText("vol:" + volume.toInt.toString + "%")
-      mediaPlayer.setVolume(volume / 100)
+      volumeLabel.setText("vol:" + volumeSlider.getValue.toInt.toString + "%")
+      mediaPlayer.setVolume(volumeSlider.getValue / 100)
+    }
+  }
+  def setBalance(): Unit = {
+    if(mediaPlayer.isInstanceOf[MediaPlayer]){
+      mediaPlayer.setBalance(balanceSlider.getValue)
     }
   }
 

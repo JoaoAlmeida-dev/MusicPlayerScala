@@ -13,10 +13,10 @@ object Main {
   {
     Application.launch(classOf[Main], args: _*)
 
-  /*  DatabaseFunc.writeDB(Artist.loaded, Artist.db)
+    DatabaseFunc.writeDB(Artist.loaded, Artist.db)
     DatabaseFunc.writeDB(Album.loaded, Album.db)
     DatabaseFunc.writeDB(Song.loaded, Song.db)
-    DatabaseFunc.writeDB(Playlist.loaded, Playlist.db)*/
+    DatabaseFunc.writeDB(Playlist.loaded, Playlist.db)
 
     //DatabaseFunc.printLoaded()
     //mainLoop()
