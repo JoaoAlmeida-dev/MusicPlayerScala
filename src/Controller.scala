@@ -3,10 +3,11 @@ import Data._
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.transformation.FilteredList
 import javafx.collections.{ListChangeListener, MapChangeListener, ObservableList}
+import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
 import javafx.scene.{Parent, Scene}
-import javafx.scene.control.{Alert, Button, ComboBox, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
+import javafx.scene.control.{Alert, Button, ComboBox, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, Tab, TabPane, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.scene.{Parent, Scene}
@@ -21,8 +22,8 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.{Image, ImageView}
+import javafx.scene.input.MouseEvent
 
-import scala.::
 import scala.annotation.tailrec
 
 class Controller {
@@ -47,6 +48,15 @@ class Controller {
   @FXML private var ResetForwardButton: Button = _
   @FXML private var SlowForwardButton: Button = _
   @FXML private var rateLabel: Label = _
+
+  //Tabs
+  @FXML private var PlayTab: Tab = _
+  @FXML private var AlbumsTab: Tab = _
+  @FXML private var ArtistsTab: Tab = _
+  @FXML private var PlaylistsTab: Tab = _
+  @FXML private var ImportTab: Tab = _
+  @FXML private var TabPane: TabPane = _
+
 
   //import
   @FXML private var chooseFileButton: Button = _
@@ -76,8 +86,6 @@ class Controller {
   @FXML private var removePlaylistButton: Button = _
   @FXML private var remFromPlayButton: Button = _
 
-
-
   @FXML private var image: ImageView = new ImageView()
 
   var mediaPlayer: MediaPlayer = _
@@ -94,6 +102,18 @@ class Controller {
     ArtistShowAlbumOrSong.getItems.addAll("Albums","Songs")
     ArtistShowAlbumOrSong.getSelectionModel.select(0)
     listSongsArtist.setVisible(false)
+
+    /*listAlbumsArtist.setOnMouseClicked(new EventHandler[MouseEvent]{
+
+      override def handle(click: MouseEvent): Unit = {
+        if(click.getClickCount == 2){
+          val album:Album = listAlbumsArtist.getSelectionModel.getSelectedItem
+
+          TabPane.getSelectionModel.clearSelection()
+          TabPane.getSelectionModel.select(AlbumsTab)
+        }
+      }
+    })*/
 
     setCellFactories()
     /*
@@ -763,7 +783,6 @@ class Controller {
       listSongsArtist.setVisible(true )
     }
   }
-
 
   //Playlists
   def createPlaylist(): Unit = {
