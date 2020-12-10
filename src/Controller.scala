@@ -6,17 +6,20 @@ import javafx.collections.{FXCollections, ListChangeListener, MapChangeListener,
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
-import javafx.scene.{Parent, Scene}
+import javafx.scene.{Parent, Scene, image}
 import javafx.scene.control.{Alert, Button, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, Slider, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
 import javafx.util.{Callback, Duration}
+import java.io.{File, FileInputStream, InputStream}
+import java.util.Arrays.stream
+import java.util.stream.StreamSupport.stream
 
-import java.io.File
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import javafx.scene.control.Alert.AlertType
+import javafx.scene.image.{Image, ImageView}
 
 import scala.::
 
@@ -57,13 +60,13 @@ class Controller {
   @FXML private var addToPlaylistAlbum: Button = _
   @FXML private var rateLabel: Label = _
 
+  @FXML private var image: ImageView = new ImageView()
 
   var mediaPlayer: MediaPlayer = _
 
   def initialize(): Unit = {
     DatabaseFunc.loadfiles()
     setLoadedListeners()
-
     listPlaylist.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
     listSongs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE)
     listSongsAlbum.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
@@ -427,10 +430,10 @@ class Controller {
             }
           }
         })
+        imageSong(v)
       case Failure(e) =>
         print("Erro a criar media")
         throw e
-
     }
 
   }
@@ -761,6 +764,7 @@ class Controller {
     togglePlayPause.setSelected(false)
     togglePlayPause.setText("Play")
   }
+
   private def showMediaNullDialogWarning(): Boolean = {
     val title: String = "You should select a Song to play first"
     if (!mediaPlayer.isInstanceOf[MediaPlayer]) {
@@ -771,5 +775,32 @@ class Controller {
       alert.showAndWait()
     }
     mediaPlayer.isInstanceOf[MediaPlayer]
+  }
+  private def setImage(imageSong: Image): Unit ={
+    image.setImage(imageSong)
+    println(image.getImage)
+  }
+  private def imageSong(media: Media): Unit ={
+    val metadataMediaPlayer = new MediaPlayer(media)
+    val info: ListBuffer[(String, AnyRef)] = ListBuffer[(String, AnyRef)]()
+    media.getMetadata.addListener(new MapChangeListener[String, AnyRef] {
+      override def onChanged(change: MapChangeListener.Change[_ <: String, _ <: AnyRef]): Unit = {
+        if (change.wasAdded()) {
+          info.addOne((change.getKey, change.getValueAdded))
+        }
+      }
+    })
+    val runner = new Runnable {
+      override def run(): Unit = {
+        val imageSong = info.filter(x => x._1.equals("image"))
+        if(imageSong.isEmpty){
+          val stream = new FileInputStream("Images/default.png")
+          val imageSong = new Image(stream)
+          println(imageSong.getHeight)
+          setImage(imageSong)
+        }else setImage(imageSong.map(_._2).remove(0).asInstanceOf[Image])
+      }
+    }
+    metadataMediaPlayer.setOnReady(runner)
   }
 }

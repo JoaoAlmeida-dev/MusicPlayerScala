@@ -20,7 +20,7 @@
                                     <Label fx:id="musicNameLabel" text="musicname" BorderPane.alignment="CENTER" />
                                  </top>
                                  <center>
-                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                                    <ImageView fx:id="image" fitHeight="350.0" fitWidth="553.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
                                  </center>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
