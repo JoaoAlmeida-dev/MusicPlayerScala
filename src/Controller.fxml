@@ -172,7 +172,7 @@
                      </rowConstraints>
                      <children>
                         <Slider fx:id="volumeSlider" onMouseDragged="#setVolume" prefHeight="14.0" prefWidth="94.0" value="100.0" GridPane.rowIndex="1" />
-                        <Label fx:id="volumeLabel" text="vol:100%" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="volumeLabel" onMouseClicked="#muteVolume" text="vol:100%" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                   <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
@@ -220,7 +220,7 @@
                      </rowConstraints>
                      <children>
                         <Slider fx:id="balanceSlider" max="1.0" min="-1.0" onMouseDragged="#setBalance" GridPane.rowIndex="1" />
-                        <Label alignment="CENTER" prefHeight="18.0" prefWidth="119.0" text="Left/Right Balance" textAlignment="CENTER" />
+                        <Label alignment="CENTER" onMouseClicked="#resetBalance" prefHeight="18.0" prefWidth="119.0" text="Left/Right Balance" textAlignment="CENTER" />
                      </children>
                   </GridPane>
                   <Label fx:id="rateLabel" text="Rate" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />

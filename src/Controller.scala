@@ -81,6 +81,7 @@ class Controller {
   @FXML private var image: ImageView = new ImageView()
 
   var mediaPlayer: MediaPlayer = _
+  var volume: Double = 100
 
   def initialize(): Unit = {
     DatabaseFunc.loadfiles()
@@ -698,10 +699,18 @@ class Controller {
       mediaPlayer.setVolume(volumeSlider.getValue / 100)
     }
   }
+  def muteVolume(): Unit = {
+    if(volumeSlider.getValue==0){volumeSlider.adjustValue(volume); setVolume()}
+    else {volume=volumeSlider.getValue;volumeSlider.adjustValue(0); setVolume()}
+  }
   def setBalance(): Unit = {
     if(mediaPlayer.isInstanceOf[MediaPlayer]){
       mediaPlayer.setBalance(balanceSlider.getValue)
     }
+  }
+  def resetBalance(): Unit = {
+    balanceSlider.adjustValue(0)
+    setBalance()
   }
 
   def selectFromListSongs(): Unit = {
