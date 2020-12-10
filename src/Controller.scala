@@ -639,12 +639,10 @@ class Controller {
   def playpause(): Unit = {
     if (showMediaNullDialogWarning()) {
       if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
-        togglePlayPause.setSelected(true)
-        togglePlayPause.setText("Pause")
+        selectPlayButton
         mediaPlayer.play()
       } else {
-        togglePlayPause.setSelected(false)
-        togglePlayPause.setText("Play")
+        deSelectPlayButton()
         mediaPlayer.pause()
       }
     }else{
@@ -757,6 +755,7 @@ class Controller {
       musicNameLabel.setText(song.name)
       durationSlider.setValue(0)
       resetPlayButton()
+      selectPlayButton
 
     }
 
@@ -863,6 +862,14 @@ class Controller {
     (hours, minutes, sec)
   }
   private def resetPlayButton(): Unit = {
+    togglePlayPause.setSelected(false)
+    togglePlayPause.setText("Play")
+  }
+  private def selectPlayButton(): Unit = {
+    togglePlayPause.setSelected(true)
+    togglePlayPause.setText("Pause")
+  }
+  private def deSelectPlayButton(): Unit = {
     togglePlayPause.setSelected(false)
     togglePlayPause.setText("Play")
   }

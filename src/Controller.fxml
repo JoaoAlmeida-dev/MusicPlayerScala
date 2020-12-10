@@ -17,7 +17,7 @@
                            <content>
                               <BorderPane>
                                  <top>
-                                    <Label fx:id="musicNameLabel" text="musicname" BorderPane.alignment="CENTER" />
+                                    <Label fx:id="musicNameLabel" BorderPane.alignment="CENTER" />
                                  </top>
                                  <center>
                                     <ImageView fx:id="image" fitHeight="350.0" fitWidth="553.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
@@ -95,11 +95,11 @@
                                     <SplitPane dividerPositions="0.5">
                                        <items>
                                               <ListView fx:id="listPlaylist" onKeyPressed="#selectFromListPlaylist" onMouseClicked="#selectFromListPlaylist" />
-                                          <AnchorPane>
-                                             <children>
+                                          <BorderPane>
+                                             <center>
                                                 <ListView fx:id="listSongsPlaylist" />
-                                             </children>
-                                          </AnchorPane>
+                                             </center>
+                                          </BorderPane>
                                        </items>
                                     </SplitPane>
                                     </center>
