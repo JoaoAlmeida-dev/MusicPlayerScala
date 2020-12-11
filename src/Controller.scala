@@ -714,12 +714,9 @@ class Controller {
         selectPlayButton()
       }
     }else{
-      val alert = new Alert(AlertType.WARNING)
-      alert.setTitle("Warning")
-      alert.setHeaderText("No Songs imported")
-      alert.setContentText("Import songs on the import tab")
-      alert.showAndWait()
-      TabPane.getSelectionModel.clearAndSelect(TabPane.getTabs.indexOf(ImportTab))
+      showWarning("No Songs on added to queue")
+      deSelectPlayButton()
+      TabPane.getSelectionModel.clearAndSelect(TabPane.getTabs.indexOf(ArtistsTab))
     }
 
   }
