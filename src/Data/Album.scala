@@ -76,17 +76,6 @@ object Album {
   def addSong(a: Album, songsid: List[Int]): Album = {
     DatabaseFunc.update[Album](a,2,(a.tracks:::songsid).mkString(" "))
   }
-/*
-  def removeSong(a: Album, songid: Int): Album = {
-    val songsToRem :List[Int]=a.tracks.filter(_ != songid)
-    DatabaseFunc.update[Album](a,2,songsToRem.mkString(" "))
-  }
-
-  def removeSong(a: Album, songsid: List[Int]): Album = {
-    val songsToRem:List[Int] = a.tracks.filter(x=> !(songsid.contains(x)))
-    DatabaseFunc.update[Album](a,2, songsToRem.mkString(" "))
-  }
-*/
 
   def delete(a:Album): Unit ={
     loaded.remove(a)

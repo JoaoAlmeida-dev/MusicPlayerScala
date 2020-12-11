@@ -37,7 +37,7 @@ object DatabaseFunc {
       a.apply(info)
   }
 
-  //currying right here
+  //Higher order right here
   def readFile(load: String => Any, filename: String): Unit = {
     val bufferedFile: Try[BufferedSource] = Try(Source.fromFile(filename))
     bufferedFile match {
@@ -59,7 +59,7 @@ object DatabaseFunc {
         writer.close()
 
         //println("Ficheiro de BD não existe" + e.getMessage)
-        throw e
+        //throw e
       }
     }
   }

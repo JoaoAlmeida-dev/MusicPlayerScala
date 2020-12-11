@@ -85,6 +85,7 @@ class Controller {
   private var oldPos: Int = _
   private var isShuffled: Boolean = false
   private var repeatState: String = "No Repeat"
+
   //"Repeat 1 , "Repeat All" , "No Repeat"
 
   //Graphic
@@ -342,9 +343,10 @@ class Controller {
       listArtists.getSelectionModel.clearAndSelect(0)
     }
     val artist: Artist = listArtists.getSelectionModel.getSelectedItem
-    listSongsArtist.getItems.clear()
-    artist.getSongs().map(listSongsArtist.getItems.add)
-
+    if(artist != null){
+      listSongsArtist.getItems.clear()
+      artist.getSongs().map(listSongsArtist.getItems.add)
+    }
   }
 
   def updateAlbumListArtists(): Unit = {
@@ -352,9 +354,10 @@ class Controller {
       listAlbumsArtist.getSelectionModel.clearAndSelect(0)
     }
     val artists: List[Artist] = observableListToList(listArtists.getSelectionModel.getSelectedItems)
-    listAlbumsArtist.getItems.clear()
-    artists.map(x => x.getAlbums().map(listAlbumsArtist.getItems.add))
-
+    if(artists.nonEmpty){
+      listAlbumsArtist.getItems.clear()
+      artists.map(x => x.getAlbums().map(listAlbumsArtist.getItems.add))
+    }
   }
 
   def updateListPlaylists(): Unit = {
@@ -751,7 +754,7 @@ class Controller {
       }
     }
   }
-
+/*
   def random(): Unit = {
     if (showMediaNullDialogWarning()) {
       if (repeatButton.isSelected) {
@@ -759,12 +762,52 @@ class Controller {
       }
     }
   }
+  */
+  def shuffleQueue(): Unit = {
+    if (!listQueue.getItems.isEmpty) {
+      if (!isShuffled) {
+        shuffleToggleButton.setSelected(true)
+
+        if (listQueue.getSelectionModel.getSelectedItem == null) {
+          listQueue.getSelectionModel.clearAndSelect(0)
+        }
+        oldQueue = observableListToList(listQueue.getItems)
+        oldPos = listQueue.getSelectionModel.getSelectedIndices.get(0)
+
+        //newQueue.addAll(listQueue.getItems)
+        //newQueue.forEach(x => print(x+"\n"))
+        //removed selcted
+        val filteredQueue = oldQueue.filter(x => x.id != listQueue.getSelectionModel.getSelectedItem.id)
+
+        val shuffled: List[Song] = Random.shuffle(filteredQueue)
+        val first: Song = listQueue.getSelectionModel.getSelectedItem
+
+        listQueue.getItems.clear()
+        listQueue.getItems.add(first)
+        shuffled.map(listQueue.getItems.add)
+
+        listQueue.getSelectionModel.clearAndSelect(0)
+        //shuffled.foreach(x => listQueue.getItems.add(x))
+        isShuffled = true
+      } else {
+        shuffleToggleButton.setSelected(false)
+        listQueue.getItems.clear()
+        //      listQueue.getItems.addAll(oldQueue)
+        oldQueue.map(listQueue.getItems.add)
+        listQueue.getSelectionModel.clearAndSelect(oldPos)
+        oldQueue = oldQueue.filter(x => false)
+        isShuffled = false
+      }
+    }
+  }
+
   def repeatreset(): Unit ={
     repeatButton.setSelected(false)
     repeatButton.setGraphic(repeatGraphic)
     mediaPlayer.setCycleCount(1)
     repeatState = "No Repeat"
   }
+
   def repeat(): Unit = {
     val cycles: List[Int] = List(1, 2, MediaPlayer.INDEFINITE)
     if (showMediaNullDialogWarning()) {
@@ -927,43 +970,6 @@ class Controller {
 
   }
 
-  def shuffleQueue(): Unit = {
-    if (!listQueue.getItems.isEmpty) {
-      if (!isShuffled) {
-        shuffleToggleButton.setSelected(true)
-
-        if (listQueue.getSelectionModel.getSelectedItem == null) {
-          listQueue.getSelectionModel.clearAndSelect(0)
-        }
-        oldQueue = observableListToList(listQueue.getItems)
-        oldPos = listQueue.getSelectionModel.getSelectedIndices.get(0)
-
-        //newQueue.addAll(listQueue.getItems)
-        //newQueue.forEach(x => print(x+"\n"))
-        //removed selcted
-        val filteredQueue = oldQueue.filter(x => x.id != listQueue.getSelectionModel.getSelectedItem.id)
-
-        val shuffled: List[Song] = Random.shuffle(filteredQueue)
-        val first: Song = listQueue.getSelectionModel.getSelectedItem
-
-        listQueue.getItems.clear()
-        listQueue.getItems.add(first)
-        shuffled.map(listQueue.getItems.add)
-
-        listQueue.getSelectionModel.clearAndSelect(0)
-        //shuffled.foreach(x => listQueue.getItems.add(x))
-        isShuffled = true
-      } else {
-        shuffleToggleButton.setSelected(false)
-        listQueue.getItems.clear()
-        //      listQueue.getItems.addAll(oldQueue)
-        oldQueue.map(listQueue.getItems.add)
-        listQueue.getSelectionModel.clearAndSelect(oldPos)
-        oldQueue = oldQueue.filter(x => false)
-        isShuffled = false
-      }
-    }
-  }
 
   //Albums
   def AlbumListViewClick(mouseEvent: MouseEvent): Unit = {
@@ -985,16 +991,23 @@ class Controller {
   }
 
   def removeAlbum(): Unit = {
-    val toRemove: List[Album] = observableListToList(listAlbums.getSelectionModel.getSelectedItems)
-    val artists: List[Int] = toRemove.map(x => x.artist)
-    toRemove.map(x => x.delete())
-    updateSongListAlbums()
+    if(!listAlbums.getSelectionModel.getSelectedItems.isEmpty){
+      val toRemove: List[Album] = observableListToList(listAlbums.getSelectionModel.getSelectedItems)
+      val albumsid: List[Int] = toRemove.map(x => x.artist)
+      toRemove.map(x => x.delete())
+      updateSongListAlbums()
+      updateAlbumListArtists()
+    }else{
+      showWarning("Select an album")
+    }
   }
 
   def removeSongFromAlbum(): Unit = {
     val songsToRem: List[Song] = observableListToList(listSongsAlbum.getSelectionModel.getSelectedItems)
     val album: Album = listAlbums.getSelectionModel.getSelectedItem
-    songsToRem.map(x => x.delete)
+    songsToRem.map(x => if(listQueue.getSelectionModel.getSelectedItem != x){
+      x.delete()
+    })
     updateSongListAlbums()
   }
 
@@ -1003,9 +1016,11 @@ class Controller {
       listAlbums.getSelectionModel.clearAndSelect(0)
     }
     val album: Album = listAlbums.getSelectionModel.getSelectedItem
-    listSongsAlbum.getItems.clear()
-    val songsAlbum: List[Song] = album.getSongs()
-    songsAlbum.map(listSongsAlbum.getItems.add)
+    if (album != null){
+      listSongsAlbum.getItems.clear()
+      val songsAlbum: List[Song] = album.getSongs()
+      songsAlbum.map(listSongsAlbum.getItems.add)
+    }
   }
 
   private def observableListToList[A](oblst: ObservableList[A]): List[A] = {
