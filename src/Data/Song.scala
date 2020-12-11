@@ -48,7 +48,7 @@ object Song{
     //val song:Song = Song(info(0),info(1),info(2),info(3),info(4),info(5),info(6),info(7),info(8),info(9))
     val song:Song = Song(info)
     loaded.add( song)
-    println("Loaded " + line)
+    //println("Loaded " + line)
   }
 
   def info(s:Song): Option[(Int,String,String,Int,String,Int,List[Int],Int,Int)] ={
@@ -86,7 +86,11 @@ object Song{
     }
   }
 
-  def delete(s:Song): Unit ={loaded.remove(s)}
+  def delete(s:Song): Unit ={
+    loaded.remove(s)
+    val playlistswithS : List[Playlist] = DatabaseFunc.observableListToList(Playlist.loaded).filter(x=> x.songs.contains(s.id))
+    playlistswithS.map(x=> x.removeSong(s.id))
+  }
 
   def getArtistAndFeats(s:Song):List[Data.Artist]={
     DatabaseFunc.observableListToList(Artist.loaded).filter(x => x.id == s.artist || s.feats.contains(x.id))

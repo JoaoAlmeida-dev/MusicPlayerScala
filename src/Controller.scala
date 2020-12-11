@@ -471,7 +471,7 @@ class Controller {
         })
         imageSong(v)
       case Failure(e) =>
-        print("Erro a criar media")
+        showWarning("Erro a criar media")
         throw e
 
     }
@@ -733,13 +733,13 @@ class Controller {
         else if (shuffleToggleButton.isSelected) {
           val r = scala.util.Random
           val pos = r.nextInt(listview.getItems.size())
-          gotoSong(listview, pos)
+          gotoSong(listview)(pos)
         } else {
           val pos = listview.getItems.lastIndexOf(song) - 1
           if (pos < 0) {
-            gotoSong(listview, listview.getItems.size - 1)
+            gotoSong(listview)( listview.getItems.size - 1)
           } else {
-            gotoSong(listview, pos)
+            gotoSong(listview)( pos)
           }
         }
       }
@@ -761,13 +761,13 @@ class Controller {
       else if (shuffleToggleButton.isSelected) {
         val r = scala.util.Random
         val pos = r.nextInt(listQueue.getItems.size())
-        gotoSong(listview, pos)
+        gotoSong(listview)( pos)
       } else {
         val pos = listview.getItems.lastIndexOf(song) + 1
         if (pos > listview.getItems.size - 1) {
-          gotoSong(listview, 0)
+          gotoSong(listview)( 0)
         } else {
-          gotoSong(listview, pos)
+          gotoSong(listview)( pos)
         }
       }
     }
@@ -901,8 +901,6 @@ class Controller {
     def keyboardEvent(eventHandler: KeyEvent): Unit ={
       val key:KeyCode = eventHandler.getCode
       val keychar =eventHandler.getCharacter
-      println(key)
-      println(keychar)
       if(key.equals(KeyCode.SPACE) ||key.equals(KeyCode.ENTER) || key.equals(KeyCode.P) || key.equals(KeyCode.PLAY) || key.equals(KeyCode.PAUSE)  ){
         playpause()
       }else if(key.equals(KeyCode.TRACK_PREV)){
@@ -1131,7 +1129,7 @@ class Controller {
 
         val albums: List[Album] = observableListToList[Album](listAlbumsArtist.getSelectionModel.getSelectedItems)
         val tracks: List[Int] = albums.flatten(x => x.tracks)
-        println(tracks)
+        //println(tracks)
         //observableListToList(Song.loaded).filter(x => tracks.contains(x.id))
         albums.map(getSongs).flatten
 
@@ -1176,8 +1174,6 @@ class Controller {
     }
   }
 
-
-
   //Queue
   def addToQueue(lst:List[Song]): Unit ={
     if(!lst.isEmpty){
@@ -1189,7 +1185,7 @@ class Controller {
   }
   def remFromQueue(): Unit ={
     val currPlaying:Song = listQueue.getSelectionModel.getSelectedItem
-    println(currPlaying)
+    //println(currPlaying)
     val queueSelected:List[Song]=observableListToList(listQueue.getSelectionModel.getSelectedItems)
     queueSelected.filter(x=> x!= currPlaying).map(x=> listQueue.getItems.remove(x) )
   }
@@ -1252,7 +1248,7 @@ class Controller {
   }
 
   //Auxiliaries
-  private def gotoSong(listView: ListView[Song], pos: Int): Unit = {
+  private def gotoSong(listView: ListView[Song])(pos: Int): Unit = {
     val newSong: Song = listView.getItems.get(pos)
     listView.getSelectionModel.clearAndSelect(pos)
     listView.scrollTo(pos)
@@ -1312,7 +1308,7 @@ class Controller {
         if(imageSong.isEmpty){
           val stream = new FileInputStream("Images/defaultAlbumCover.png")
           val imageSong = new Image(stream)
-          println(imageSong.getHeight)
+          //println(imageSong.getHeight)
           setSongImage(imageSong)
         }else setSongImage(imageSong.map(_._2).remove(0).asInstanceOf[Image])
       }

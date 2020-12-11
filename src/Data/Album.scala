@@ -46,7 +46,7 @@ object Album {
     //val album:Album = Album(info(0),info(1),info(2),info(3))
     val album:Album = Album(info)
     loaded.add(album)
-    println("Loaded " + line)
+    //println("Loaded " + line)
   }
 
   def info(a: Album): Option[(Int,String, List[Int], Int)] = {

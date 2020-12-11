@@ -22,9 +22,9 @@ class CreatePlaylistController {
         "",
         themeTextField.getText
       ) )
-      println(playlist)
+      //println(playlist)
       Data.Playlist.loaded.add(playlist)
-      println(Playlist.loaded)
+      //println(Playlist.loaded)
       okButton.getScene().getWindow().asInstanceOf[Stage].close()
     }else{
       //alertLabel.setText("Playlist with that name already exists, try again!")

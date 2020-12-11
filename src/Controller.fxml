@@ -232,7 +232,7 @@
                         <Label fx:id="nowPlaying" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="334.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefWidth="100.0" text="ResetForward" GridPane.columnIndex="1" />
+                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefWidth="100.0" text="ResetSpeed" GridPane.columnIndex="1" />
                   <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefWidth="50.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>

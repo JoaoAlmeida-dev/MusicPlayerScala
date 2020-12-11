@@ -20,7 +20,7 @@ object DatabaseFunc {
 
   def unload[A](a: A): Unit = a match {
     case a: Data.MusicObject[A] => {
-      println("Unloaded" + a.toString)
+      //println("Unloaded" + a.toString)
       a.loaded.remove(a.asInstanceOf[A])
     }
   }
@@ -57,7 +57,9 @@ object DatabaseFunc {
         val writer = new PrintWriter(f)
         writer.write("")
         writer.close()
-        println("Ficheiro de BD não existe" + e.getMessage)
+
+        //println("Ficheiro de BD não existe" + e.getMessage)
+        throw e
       }
     }
   }

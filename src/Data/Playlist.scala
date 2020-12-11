@@ -44,7 +44,7 @@ object Playlist{
     //val playlist:Playlist =Playlist(info(0),info(1),info(2),info(3))
     val playlist:Playlist =Playlist(info)
     loaded.add(playlist)
-    println("Loaded " + line)
+    //println("Loaded " + line)
   }
 
   def info(p:Playlist): Option[(Int,String,List[Int],String)] ={

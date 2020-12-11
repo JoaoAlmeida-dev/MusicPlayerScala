@@ -40,7 +40,7 @@ object Artist{
     //val artist:Artist = Artist(info(0),info(1),info(2),info(3))
     val artist:Artist = Artist(info)
     loaded.add( artist)
-    println("Loaded " + line)
+    //println("Loaded " + line)
 
   }
 
