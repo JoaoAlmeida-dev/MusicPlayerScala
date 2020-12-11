@@ -17,7 +17,7 @@
                            <content>
                               <BorderPane>
                                  <top>
-                                    <Label fx:id="musicNameLabel" BorderPane.alignment="CENTER" />
+                                    <Label fx:id="musicNameLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="734.0" BorderPane.alignment="CENTER" />
                                  </top>
                                  <center>
                                     <ImageView fx:id="image" fitHeight="350.0" fitWidth="553.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
@@ -154,17 +154,17 @@
             </SplitPane>
             <GridPane fx:id="bottomGrid" alignment="CENTER" minHeight="80.0">
               <columnConstraints>
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="93.0" prefWidth="103.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="96.4" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="19.599984741210903" prefWidth="47.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="267.6" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="31.999969482421875" prefWidth="56.60000000000002" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="107.39999999999998" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="73.2" prefWidth="82.2" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="93.39998474121096" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="18.19999999999999" prefWidth="27.999984741210938" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="160.0" prefWidth="474.00001525878906" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="12.799999999999955" prefWidth="46.39999999999998" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="97.0" prefWidth="100.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="101.20000000000005" prefWidth="107.20000000000005" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="36.6" valignment="CENTER" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="33.8" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <GridPane alignment="CENTER" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -182,19 +182,23 @@
                   </GridPane>
                   <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <GridPane alignment="CENTER" prefHeight="37.0" prefWidth="453.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="63.599999999999994" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="87.0" minWidth="10.0" prefWidth="84.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="85.0" minWidth="10.0" prefWidth="60.599999999999994" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.2000305175781" minWidth="10.0" prefWidth="140.19999237060546" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.19999237060546" minWidth="0.0" prefWidth="67.20000000000002" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="312.19999237060546" minWidth="0.0" prefWidth="65.19996948242186" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="64.80003051757814" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="147.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <ToggleButton fx:id="togglePlayPause" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefWidth="60.0" text="Play" textAlignment="CENTER" GridPane.columnIndex="1" />
-                        <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" prefWidth="60.0" text="Before" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefWidth="60.0" text="Next" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefHeight="64.0" prefWidth="64.0" text="Play" textAlignment="CENTER" GridPane.columnIndex="2" />
+                        <Button fx:id="beforebutton" mnemonicParsing="false" onAction="#before" prefWidth="60.0" text="Before" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefWidth="60.0" text="Next" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefWidth="100.0" text="SlowForward" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefWidth="100.0" text="FastForward" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                   <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -206,14 +210,12 @@
                         <RowConstraints maxHeight="18.0" minHeight="10.0" prefHeight="14.399999999999999" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Slider fx:id="durationSlider" onKeyPressed="#dragDuration" onMouseDragged="#dragDuration" onMousePressed="#clickDuration" onMouseReleased="#clickDuration" prefHeight="24.0" prefWidth="208.0" GridPane.rowIndex="1" />
-                        <Label text="Now Playing: " />
+                        <Slider fx:id="durationSlider" onKeyPressed="#dragDuration" onMouseDragged="#dragDuration" onMousePressed="#dragDuration" onMouseReleased="#dragDuration" prefHeight="24.0" prefWidth="208.0" GridPane.rowIndex="1" />
+                        <Label fx:id="nowPlaying" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="334.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                  <Button fx:id="SlowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefWidth="100.0" text="SlowForward" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                      <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefWidth="100.0" text="ResetForward" GridPane.columnIndex="1" />
-                  <Button fx:id="FastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefWidth="100.0" text="FastForward" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" prefWidth="100.0" text="Random" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ToggleButton fx:id="randomButton" mnemonicParsing="false" onAction="#random" prefWidth="100.0" text="Random" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefWidth="100.0" text="No Repeat" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>
@@ -229,7 +231,7 @@
                      </children>
                   </GridPane>
                   <Label fx:id="rateLabel" text="Rate" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Button mnemonicParsing="false" onAction="#shuffleQueue" prefHeight="26.0" prefWidth="59.0" text="Shuffle" GridPane.columnIndex="4" />
+                  <Button mnemonicParsing="false" onAction="#shuffleQueue" prefHeight="26.0" prefWidth="59.0" text="Shuffle" GridPane.columnIndex="5" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

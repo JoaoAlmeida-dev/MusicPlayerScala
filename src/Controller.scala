@@ -53,6 +53,7 @@ class Controller {
   @FXML private var ResetForwardButton: Button = _
   @FXML private var SlowForwardButton: Button = _
   @FXML private var rateLabel: Label = _
+  @FXML private var nowPlaying: Label = _
 
   //Tabs
   @FXML private var PlayTab: Tab = _
@@ -103,6 +104,7 @@ class Controller {
   private var isShuffled: Boolean = false
 
   def initialize(): Unit = {
+    loadButtonImages()
     DatabaseFunc.loadfiles()
     setLoadedListeners()
     listPlaylist.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
@@ -281,8 +283,6 @@ class Controller {
 
   }
 
-
-
   //Listeners
   def setListeners(): Unit = {
     //progress Slider updater
@@ -363,12 +363,25 @@ class Controller {
 
   }
 
+  //Graphic
+  private var pauseGraphic: ImageView = _
+  def loadButtonImages(): Unit = {
+    def aux(img: ImageView, path: String): Unit ={
+      val stream = new FileInputStream(path)
+      val img: ImageView = new ImageView(new Image(stream))
+      img.setFitHeight(32)
+      img.setPreserveRatio(true)
+    }
+    aux(pauseGraphic, "Images/pause.png")
+  }
+
   //Media
   def mediaChange(filepath: String): Unit = {
 
     val media: Try[Media] = Try(new Media(new File(filepath).toURI.toString))
     media match {
       case Success(v) =>
+        updateNowPlaying()
         if (!mediaPlayer.isInstanceOf[MediaPlayer]) {
           //mediaPlayer has not been instanciated
           mediaPlayer = new MediaPlayer(v)
@@ -586,6 +599,14 @@ class Controller {
   }
 
   //MediaControl
+  def updateNowPlaying(): Unit ={
+    val song: Song = listQueue.getSelectionModel.getSelectedItem
+    val album: String = Album.loaded.filtered(x => x.id == song.album).get(0).name
+    val artist: String = Artist.loaded.filtered(x => x.id == song.artist).get(0).name
+    nowPlaying.setText(song.name)
+    musicNameLabel.setText(song.name+"\nFrom "+album+" by "+artist)
+
+  }
   def playpause(): Unit = {
     if(!listQueue.getItems.isEmpty){
       if (mediaPlayer.isInstanceOf[MediaPlayer]) {
@@ -713,7 +734,6 @@ class Controller {
       }
     }
   }
-  def clickDuration():Unit = {playpause();dragDuration();}
   def setVolumeSlider(): Unit = {
     val volume:Double = volumeSlider.getValue/100
     setVolume(volume)
@@ -815,7 +835,6 @@ class Controller {
     if(mouseEvent.getClickCount==2) {
       val song: Song = listQueue.getSelectionModel.getSelectedItems.get(0)
       mediaChange(song.filepath)
-      musicNameLabel.setText(song.name)
       durationSlider.setValue(0)
       resetPlayButton()
       selectPlayButton
@@ -1121,7 +1140,6 @@ class Controller {
     listView.getSelectionModel.clearAndSelect(pos)
     listView.scrollTo(pos)
     mediaChange(newSong.filepath)
-    musicNameLabel.setText(newSong.name)
     mediaPlayer.play()
   }
   private def msToMinSec(duration: Duration): (Int, Int, Int) = {
@@ -1137,7 +1155,8 @@ class Controller {
   }
   private def selectPlayButton(): Unit = {
     togglePlayPause.setSelected(true)
-    togglePlayPause.setText("Pause")
+    togglePlayPause.setText("")
+    togglePlayPause.setGraphic(pauseGraphic)
   }
   private def deSelectPlayButton(): Unit = {
     togglePlayPause.setSelected(false)
@@ -1175,7 +1194,7 @@ class Controller {
       override def run(): Unit = {
         val imageSong = info.filter(x => x._1.equals("image"))
         if(imageSong.isEmpty){
-          val stream = new FileInputStream("Images/default.png")
+          val stream = new FileInputStream("Images/defaultAlbumCover.png")
           val imageSong = new Image(stream)
           println(imageSong.getHeight)
           setImage(imageSong)
