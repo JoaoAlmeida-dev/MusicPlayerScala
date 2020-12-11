@@ -1,10 +1,14 @@
 package Data
 
+import Data.Song.Artist
 import javafx.collections.{FXCollections, ObservableList}
 
 case class Song (id: Int, name:String,filepath:String, artist:Int, genre:String, album:Int, feats: List[Int], listened:Int, trackN:Int) extends MusicObject[Song] {
 
   def info(): Option[(Int,String,String,Int,String,Int,List[Int],Int,Int)] ={ Song.info(this) }
+
+  def getArtistAndFeats():List[Data.Artist] = Song.getArtistAndFeats(this)
+  override def delete(): Unit = {Song.delete(this)}
 
   override def toString(): String ={ Song.toString(this) }
   override val db: String = Song.db
@@ -80,6 +84,13 @@ object Song{
         info(7).toInt, //listened
         info(8).toInt) //trackN
     }
+  }
+
+  def delete(s:Song): Unit ={loaded.remove(s)}
+
+  def getArtistAndFeats(s:Song):List[Data.Artist]={
+    DatabaseFunc.observableListToList(Artist.loaded).filter(x => x.id == s.artist || s.feats.contains(x.id))
+
   }
 
 //----------

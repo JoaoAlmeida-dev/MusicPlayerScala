@@ -6,6 +6,11 @@ case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ) exten
   def info():Option[(Int,String,List[Int],List[Int])]={ Artist.info(this) }
   def addSong(song: Int): Artist={ Artist.addSong(this, song) }
   def addAlbum(album: Int): Artist={ Artist.addAlbum(this, album) }
+  def getSongs():List[Song] = {Artist.getSongs(this)}
+  def getAlbums():List[Album] = {Artist.getAlbums(this)}
+
+  override def delete(): Unit = {Artist.delete(this)}
+
 
   override def toString(): String ={ Artist.toString(this) }
   override val db: String =Artist.db
@@ -15,6 +20,7 @@ case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ) exten
 
   override def apply(info:List[String]):Artist=Artist.apply(info)
   override def getLoaded[Artist](): List[String] = Artist.getLoaded[Artist]()
+
 }
 
 object Artist{
@@ -81,6 +87,19 @@ object Artist{
     }else{
       Artist(a.id,a.name,a.albums, a.songs)
     }
+  }
+
+  def delete(a:Artist){
+    loaded.remove(a)
+    val albumsFiltered:List[Album] = DatabaseFunc.observableListToList(Album.loaded).filter(x=>x.artist == a.id)
+    albumsFiltered.map(x=>x.delete)
+  }
+
+  def getSongs(a:Artist): List[Data.Song] ={
+    DatabaseFunc.observableListToList(Song.loaded).filter(x=>a.songs.contains(x.id))
+  }
+  def getAlbums(a:Artist): List[Data.Album] ={
+    DatabaseFunc.observableListToList(Album.loaded).filter(x=>a.albums.contains(x.id))
   }
 
   def toString(a: Data.Artist): String={

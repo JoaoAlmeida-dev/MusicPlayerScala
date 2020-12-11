@@ -12,6 +12,7 @@ trait MusicObject[A]{
 
   def toString:String
   def load(line: String):Unit
+  def delete():Unit
 
   def apply(args:List[String]):A
 

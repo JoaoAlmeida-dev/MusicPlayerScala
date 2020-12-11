@@ -1,6 +1,7 @@
 
 
 
+import Data.Album.getSongs
 import Data.DatabaseFunc.observableListToList
 import Data._
 import javafx.beans.InvalidationListener
@@ -330,9 +331,10 @@ class Controller {
     Artist.loaded.addListener(new ListChangeListener[Artist] {
       override def onChanged(change: ListChangeListener.Change[_ <: Artist]): Unit = {
         while (change.next()) {
-          if (change.wasAdded()) {
+          if (change.wasAdded() || change.wasRemoved()) {
             //println("Um novo artista foi adicionado")
             updateListArtists()
+
           }
         }
       }
@@ -341,9 +343,11 @@ class Controller {
     Album.loaded.addListener(new ListChangeListener[Album] {
       override def onChanged(change: ListChangeListener.Change[_ <: Album]): Unit = {
         while (change.next()) {
-          if (change.wasAdded()) {
+          if (change.wasAdded()|| change.wasRemoved()) {
             //println("Um novo album foi adicionado")
             updateListAlbums()
+            updateSongListAlbums()
+            updateAlbumListArtists()
           }
         }
       }
@@ -352,10 +356,23 @@ class Controller {
     Playlist.loaded.addListener(new ListChangeListener[Playlist] {
       override def onChanged(change: ListChangeListener.Change[_ <: Playlist]): Unit = {
         while (change.next()) {
-          if (change.wasAdded()) {
+          if (change.wasAdded()|| change.wasRemoved()) {
             //println("Uma nova Playlist foi adicionada")
             updateListPlaylists()
+            updateSongListPlaylists()
 
+          }
+        }
+      }
+    })
+
+    Song.loaded.addListener(new ListChangeListener[Song] {
+      override def onChanged(change: ListChangeListener.Change[_ <: Song]): Unit = {
+        while (change.next()) {
+          if (change.wasAdded()|| change.wasRemoved()) {
+            updateSongListPlaylists()
+            updateSongListAlbums()
+            updateSongListArtists()
           }
         }
       }
@@ -458,11 +475,11 @@ class Controller {
           artist.remove(0)._2.toString.split(",").toList
         }
 
-        val songid = DatabaseFunc.getlastidSongs(Song.loaded) + 1
+        val songid:Int = DatabaseFunc.getlastidSongs(Song.loaded) + 1
 
-        val albumcheck = Album.loaded.filtered(x => x.name.equals(albumName))
+        val albumcheck:FilteredList[Album] = Album.loaded.filtered(x => x.name.equals(albumName))
 
-        val artistcheck = Artist.loaded.filtered(x => x.name.equals(artistNames.head.trim))
+        val artistcheck:FilteredList[Artist] = Artist.loaded.filtered(x => x.name.equals(artistNames.head.trim))
         /*
         println()
         println()
@@ -565,12 +582,41 @@ class Controller {
     //println("------------- número de items " + listAlbums.getItems.size)
     //listAlbums.getItems.forEach(println)
   }
+  def updateSongListAlbums(): Unit ={
+    if(listAlbums.getSelectionModel.getSelectedItems.isEmpty){
+      listAlbums.getSelectionModel.clearAndSelect(0)
+    }
+    val album:Album =  listAlbums.getSelectionModel.getSelectedItem
+    listSongsAlbum.getItems.clear()
+    val songsAlbum:List[Song] = album.getSongs()
+    songsAlbum.map(listSongsAlbum.getItems.add)
+  }
+
   def updateListArtists(): Unit = {
     listArtists.getItems.clear()
     observableListToList(Artist.loaded).map(x => listArtists.getItems.add(x))
     //println("------------- número de items " + listArtists.getItems.size)
     //listArtists.getItems.forEach(println)
   }
+  def updateSongListArtists(): Unit ={
+    if(listArtists.getSelectionModel.getSelectedItems.isEmpty){
+      listArtists.getSelectionModel.clearAndSelect(0)
+    }
+    val artist:Artist = listArtists.getSelectionModel.getSelectedItem
+    listSongsArtist.getItems.clear()
+    artist.getSongs().map(listSongsArtist.getItems.add)
+
+  }
+  def updateAlbumListArtists(): Unit ={
+    if(listAlbumsArtist.getSelectionModel.getSelectedItems.isEmpty){
+      listAlbumsArtist.getSelectionModel.clearAndSelect(0)
+    }
+    val artists :List[Artist]= observableListToList(listArtists.getSelectionModel.getSelectedItems)
+    listAlbumsArtist.getItems.clear()
+    artists.map(x=>x.getAlbums().map(listAlbumsArtist.getItems.add))
+
+  }
+
   def updateListPlaylists(): Unit = {
     listPlaylist.getItems.clear()
     observableListToList(Playlist.loaded).map(x => listPlaylist.getItems.add(x))
@@ -587,24 +633,35 @@ class Controller {
 
   }
   def updateSongListPlaylists(): Unit = {
+    if(!listPlaylist.getItems.isEmpty){
+      if (listPlaylist.getSelectionModel.getSelectedItems.isEmpty) {
+        listPlaylist.getSelectionModel.clearAndSelect(0)
+      }
+      val play: Playlist = listPlaylist.getSelectionModel.getSelectedItem
+      listSongsPlaylist.getItems.clear()
+      //val songsPlaylist:List[Song] = observableListToList(Song.loaded).filter(x=>play.songs.contains(x.id))
+      val songsPlaylist: List[Song] = play.getSongs()
 
-    if(listPlaylist.getSelectionModel.getSelectedItems.isEmpty){
-      listPlaylist.getSelectionModel.clearAndSelect(0)
+      songsPlaylist.map(listSongsPlaylist.getItems.add)
+    }else{
+      listSongsPlaylist.getItems.clear()
     }
-    val play:Playlist = listPlaylist.getSelectionModel.getSelectedItem
-    listSongsPlaylist.getItems.clear()
-    val songsPlaylist:List[Song] = observableListToList(Song.loaded).filter(x=>play.songs.contains(x.id))
-
-    songsPlaylist.map(listSongsPlaylist.getItems.add)
   }
 
   //MediaControl
   def updateNowPlaying(): Unit ={
-    val song: Song = listQueue.getSelectionModel.getSelectedItem
-    val album: String = Album.loaded.filtered(x => x.id == song.album).get(0).name
-    val artist: String = Artist.loaded.filtered(x => x.id == song.artist).get(0).name
-    nowPlaying.setText(song.name)
-    musicNameLabel.setText(song.name+"\nFrom "+album+" by "+artist)
+    val song: Song = if(listQueue.getSelectionModel.getSelectedItems.isEmpty){
+      listQueue.getSelectionModel.clearAndSelect(0)
+      listQueue.getSelectionModel.getSelectedItem
+    }else {
+      listQueue.getSelectionModel.getSelectedItem
+    }
+
+      val album: String = Album.loaded.filtered(x => x.id == song.album).get(0).name
+      val artist: String = Artist.loaded.filtered(x => x.id == song.artist).get(0).name
+      nowPlaying.setText(song.name)
+      musicNameLabel.setText(song.name + "\nFrom " + album + " by " + artist)
+
 
   }
   def playpause(): Unit = {
@@ -877,9 +934,9 @@ class Controller {
     if(!listAlbums.getItems.isEmpty){
       val album: Album = listAlbums.getSelectionModel.getSelectedItems.get(0)
       if (album != null) {
-        val songsAlbum: FilteredList[Song] = Song.loaded.filtered(x => x.album == album.id)
+        val songsAlbum: List[Song] = observableListToList(Song.loaded).filter(x => album.tracks.contains(x.id))
         listSongsAlbum.getItems.clear()
-        listSongsAlbum.getItems.addAll(songsAlbum)
+        songsAlbum.map(listSongsAlbum.getItems.add)
       }
     }
   }
@@ -891,14 +948,16 @@ class Controller {
       } else {
         listArtists.getSelectionModel.getSelectedItems.get(0)
       }
-      val songsArtist: FilteredList[Song] = Song.loaded.filtered(x => x.artist == artist.id || x.feats.contains(artist.id))
-      val albunsArtist: FilteredList[Album] = Album.loaded.filtered(x => x.artist == artist.id)
+      //val songsArtist: List[Song] = observableListToList(Song.loaded).filter(x => x.artist == artist.id || x.feats.contains(artist.id))
+      //val albunsArtist: List[Album] = observableListToList(Album.loaded).filter(x => x.artist == artist.id)
+      val songsArtist: List[Song] = observableListToList(Song.loaded).filter(x => x.artist == artist.id || x.feats.contains(artist.id))
+      val albunsArtist: List[Album] = observableListToList(Album.loaded).filter(x => x.artist == artist.id)
 
       listSongsArtist.getItems.clear()
-      listSongsArtist.getItems.addAll(songsArtist)
+      songsArtist.map(listSongsArtist.getItems.add)
 
       listAlbumsArtist.getItems.clear()
-      listAlbumsArtist.getItems.addAll(albunsArtist)
+      albunsArtist.map(listAlbumsArtist.getItems.add)
     }
   }
   def DisplayPlaylist(): Unit = {
@@ -909,9 +968,9 @@ class Controller {
       } else {
         listPlaylist.getItems.get(0).songs
       }
-      val songsPlaylist: FilteredList[Song] = Song.loaded.filtered(x => songs.contains(x.id))
+      val songsPlaylist: List[Song] = observableListToList(Song.loaded).filter(x => songs.contains(x.id))
       listSongsPlaylist.getItems.clear()
-      listSongsPlaylist.getItems.addAll(songsPlaylist)
+      songsPlaylist.map(listSongsPlaylist.getItems.add)
     }
   }
   def DisplayAlbumFromArtist(mouseEvent: MouseEvent): Unit ={
@@ -937,6 +996,18 @@ class Controller {
       addToQueue(listSongsAlbum.getSelectionModel.getSelectedItems)
     }
   }
+  def removeAlbum(): Unit ={
+    val toRemove :List[Album]= observableListToList(listAlbums.getSelectionModel.getSelectedItems)
+    val artists:List[Int] = toRemove.map(x=>x.artist)
+    toRemove.map(x=> x.delete())
+    updateSongListAlbums()
+  }
+  def removeSongFromAlbum(): Unit ={
+    val songsToRem : List[Song]=observableListToList(listSongsAlbum.getSelectionModel.getSelectedItems)
+    val album :Album = listAlbums.getSelectionModel.getSelectedItem
+    songsToRem.map(x=>x.delete)
+    updateSongListAlbums()
+  }
 
 
   // Artists
@@ -945,9 +1016,11 @@ class Controller {
     if(listType.equals("Albums")){
       listAlbumsArtist.setVisible(true)
       listSongsArtist.setVisible(false)
+
     }else if (listType.equals("Songs")){
       listAlbumsArtist.setVisible(false)
       listSongsArtist.setVisible(true )
+
     }
   }
   def addQueueArtist(): Unit ={
@@ -970,6 +1043,15 @@ class Controller {
       addToQueue(listSongsArtist.getSelectionModel.getSelectedItems)
     }
   }
+  def removeArtist(): Unit ={
+    observableListToList(listArtists.getSelectionModel.getSelectedItems).map(x=>x.delete())
+  }
+  def removeAlbumFromArtist(): Unit ={
+    observableListToList(listAlbumsArtist.getSelectionModel.getSelectedItems).map(x=>x.delete())
+  }
+  def removeSongFromArtist(): Unit ={
+    observableListToList(listSongsArtist.getSelectionModel.getSelectedItems).map(x=>x.delete())
+  }
 
   //Playlists
   def createPlaylist(): Unit = {
@@ -984,10 +1066,8 @@ class Controller {
   }
   def removePlaylist(): Unit ={
     val toRemove :List[Playlist]= observableListToList(listPlaylist.getSelectionModel.getSelectedItems)
-    toRemove.map(x=> {
-      Playlist.loaded.remove(x)
-    })
-    updateListPlaylists()
+    toRemove.map(x=>Playlist.loaded.remove(x))
+
     updateSongListPlaylists
   }
   def addToPlayFromAlbum(): Unit = {
@@ -1009,18 +1089,17 @@ class Controller {
   }
   def addToPlayFromArtist(): Unit = {
     val selectedMode:String = ArtistShowAlbumOrSong.getSelectionModel.getSelectedItem
-    val lst: List[Song] = {
-      if (selectedMode.equals("Albums")) {
+    val lst: List[Song] = if (selectedMode.equals("Albums")) {
 
         val albums: List[Album] = observableListToList[Album](listAlbumsArtist.getSelectionModel.getSelectedItems)
         val tracks: List[Int] = albums.flatten(x => x.tracks)
         println(tracks)
-        observableListToList(Song.loaded).filter(x => tracks.contains(x.id))
+        //observableListToList(Song.loaded).filter(x => tracks.contains(x.id))
+        albums.map(getSongs).flatten
 
       } else {
         observableListToList[Song](listSongsArtist.getSelectionModel.getSelectedItems)
       }
-    }
     if(lst.nonEmpty){
       val playlist: Playlist = addToPlaylistArtistCombo.getSelectionModel.getSelectedItem
 

@@ -1,12 +1,21 @@
 package Data
 import javafx.collections.{FXCollections, ObservableList}
 
+import scala.List
 
 case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends MusicObject[Album]{
   def info():Option[(Int,String,List[Int],Int)]= { Album.info(this) }
-  def setArtist(artist: Int): Album= { Album.setArtist(this,artist) }
-  def addSong(song: Int): Album= { Album.addSong(this,song) }
 
+  def addSong(song: Int): Album= { Album.addSong(this,song) }
+  def addSong(songs: List[Int]): Album= { Album.addSong(this,songs) }
+  def getSongs():List[Song] = {Album.getSongs(this)}
+
+  override def delete(): Unit = { Album.delete(this) }
+
+/*
+  def removeSong(song: Int): Album= { Album.removeSong(this,song) }
+  def removeSong(songs: List[Int]): Album= { Album.removeSong(this,songs) }
+*/
   override def toString(): String ={ Album.toString(this) }
   override val db: String = Album.db
   override var loaded: ObservableList[Album] = Album.loaded
@@ -16,6 +25,7 @@ case class Album(id: Int,name:String, tracks:List[Int], artist:Int) extends Musi
   override def apply(info:List[String]):Album=Album.apply(info)
 
   override def getLoaded[Album](): List[String] = Album.getLoaded[Album]()
+
 }
 
 object Album {
@@ -60,12 +70,36 @@ object Album {
   }
 //------------------
 
-  def setArtist(a: Album, artist: Int): Album = {
-    Album(a.id,a.name, a.tracks, artist)
+  def addSong(a: Album, songid: Int): Album = {
+    DatabaseFunc.update[Album](a,2,(a.tracks:::List(songid)).mkString(" "))
+  }
+  def addSong(a: Album, songsid: List[Int]): Album = {
+    DatabaseFunc.update[Album](a,2,(a.tracks:::songsid).mkString(" "))
+  }
+/*
+  def removeSong(a: Album, songid: Int): Album = {
+    val songsToRem :List[Int]=a.tracks.filter(_ != songid)
+    DatabaseFunc.update[Album](a,2,songsToRem.mkString(" "))
   }
 
-  def addSong(a: Album, song: Int): Album = {
-    Album(a.id,a.name, song :: a.tracks, a.artist)
+  def removeSong(a: Album, songsid: List[Int]): Album = {
+    val songsToRem:List[Int] = a.tracks.filter(x=> !(songsid.contains(x)))
+    DatabaseFunc.update[Album](a,2, songsToRem.mkString(" "))
+  }
+*/
+
+  def delete(a:Album): Unit ={
+    loaded.remove(a)
+    val songsfiltered:List[Song] = DatabaseFunc.observableListToList(Song.loaded).filter(x=>x.album == a.id)
+    songsfiltered.map(x=>x.delete())
+  }
+
+  def getSongs(a:Album): List[Data.Song] ={
+    DatabaseFunc.observableListToList(Song.loaded).filter(x=>a.tracks.contains(x.id))
+  }
+
+  def getArtist(a:Album): List[Data.Artist] ={
+    DatabaseFunc.observableListToList(Artist.loaded).filter(x=>x.id == a.artist)
   }
 
   def toString(a: Album): String={

@@ -42,6 +42,8 @@
                                  <bottom>
                                     <ButtonBar maxHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
+                                          <Button fx:id="removeAlbum" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" onAction="#removeAlbum" text="Remove Album" />
+                                          <Button fx:id="removeSongFromAlbum" mnemonicParsing="false" onAction="#removeSongFromAlbum" text="Remove Song" />
                                           <ComboBox fx:id="addToPlaylistAlbumCombo" prefWidth="125.0" promptText="SelectPlaylist" />
                                           <Button fx:id="addToPlaylistAlbumButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="Add" />
                                       </buttons>
@@ -79,8 +81,11 @@
                                  <bottom>
                                     <ButtonBar maxHeight="-Infinity" prefHeight="40.0">
                                        <buttons>
+                                          <Button fx:id="removeArtist" mnemonicParsing="false" onAction="#removeArtist" text="RemoveArtist" />
+                                          <Button fx:id="removeAlbumFromArtist" mnemonicParsing="false" onAction="#removeAlbumFromArtist" text="Remove Album" />
+                                          <Button fx:id="removeSongFromArtist" mnemonicParsing="false" onAction="#removeSongFromArtist" text="Remove Song" />
                                           <ComboBox fx:id="addToPlaylistArtistCombo" prefWidth="125.0" promptText="SelectPlaylist" />
-                                          <Button fx:id="addToPlaylistArtistButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromArtist" text="Add" />
+                                          <Button fx:id="addToPlaylistArtistButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="Add" />
                                        </buttons>
                                        <padding>
                                           <Insets top="5.0" />

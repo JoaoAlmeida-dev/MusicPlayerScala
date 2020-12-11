@@ -1,5 +1,4 @@
 package Data
-import javafx.collections.transformation.FilteredList
 import javafx.collections.{FXCollections, ObservableList}
 
 import scala.util.Random
@@ -13,6 +12,8 @@ case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends M
   def removeSong(songid: Int): Playlist={ Playlist.removeSong(this,songid) }
   def removeSong(songsid: List[Int]): Playlist={ Playlist.removeSong(this,songsid) }
 
+  def getSongs():List[Song] = Playlist.getSongs(this)
+
   override def toString(): String ={ Playlist.toString(this) }
   override val db: String = Playlist.db
   override var loaded: ObservableList[Playlist] = Playlist.loaded
@@ -21,6 +22,8 @@ case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends M
 
   override def apply(info:List[String]):Playlist=Playlist.apply(info)
   override def getLoaded[Playlist](): List[String] = Playlist.getLoaded[Playlist]()
+
+  override def delete(): Unit = {Playlist.delete(this)}
 }
 
 object Playlist{
@@ -93,6 +96,12 @@ object Playlist{
   def removeSong(p: Playlist, songsid: List[Int]): Playlist={
     val songs=p.songs.filter( !songsid.contains(_))
     DatabaseFunc.update[Playlist](p,2,songs.mkString(" "))
+  }
+
+  def delete(playlist: Playlist): Unit = {loaded.remove(playlist)}
+
+  def getSongs(playlist: Playlist):List[Song]={
+    DatabaseFunc.observableListToList(Song.loaded).filter(x=>playlist.songs.contains(x.id))
   }
 
   def toString(p: Playlist): String={
