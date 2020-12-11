@@ -12,7 +12,7 @@ import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.Pos
 import javafx.scene.{Parent, Scene}
-import javafx.scene.control.{Alert, Button, ComboBox, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, SingleSelectionModel, Slider, SplitMenuButton, Tab, TabPane, TextArea, TextField, ToggleButton}
+import javafx.scene.control.{Alert, Button, ComboBox, Control, Label, ListCell, ListView, MultipleSelectionModel, SelectionMode, SingleSelectionModel, Slider, SplitMenuButton, Tab, TabPane, TextArea, TextField, ToggleButton}
 import javafx.scene.layout.{AnchorPane, BorderPane, FlowPane, GridPane, StackPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.scene.{Parent, Scene}
@@ -42,19 +42,23 @@ class Controller {
 
   //play
   @FXML private var musicNameLabel: Label = _
-  @FXML private var togglePlayPause: ToggleButton = _
   @FXML private var volumeSlider: Slider = _
   @FXML private var balanceSlider: Slider = _
   @FXML private var durationSlider: Slider = _
   @FXML private var minDurationLabel: Label = _
   @FXML private var maxDurationLabel: Label = _
-  @FXML private var randomButton: ToggleButton = _
-  @FXML private var repeatButton: ToggleButton = _
-  @FXML private var FastForwardButton: Button = _
-  @FXML private var ResetForwardButton: Button = _
-  @FXML private var SlowForwardButton: Button = _
   @FXML private var rateLabel: Label = _
   @FXML private var nowPlaying: Label = _
+  //button
+  @FXML private var togglePlayPause: ToggleButton = _
+  @FXML private var fastForwardButton: Button = _
+  @FXML private var resetForwardButton: Button = _
+  @FXML private var slowForwardButton: Button = _
+  @FXML private var shuffleToggleButton: ToggleButton = _
+  @FXML private var repeatButton: ToggleButton = _
+  @FXML private var nextButton: Button = _
+  @FXML private var beforeButton: Button = _
+
 
   //Tabs
   @FXML private var PlayTab: Tab = _
@@ -106,6 +110,8 @@ class Controller {
 
   def initialize(): Unit = {
     loadButtonImages()
+    setInitialButtonIcons
+
     DatabaseFunc.loadfiles()
     setLoadedListeners()
     listPlaylist.getSelectionModel.setSelectionMode(SelectionMode.MULTIPLE)
@@ -381,15 +387,42 @@ class Controller {
   }
 
   //Graphic
-  private var pauseGraphic: ImageView = _
+  private var pauseGraphic: ImageView = new ImageView()
+  private var playGraphic: ImageView = new ImageView()
+  private var nextGraphic: ImageView = new ImageView()
+  private var beforeGraphic: ImageView = new ImageView()
+  private var fastforwardGraphic: ImageView = new ImageView()
+  private var slowforwardGraphic: ImageView = new ImageView()
+  private var repeatGraphic: ImageView = new ImageView()
+  private var shuffleGraphic: ImageView = new ImageView()
+
   def loadButtonImages(): Unit = {
     def aux(img: ImageView, path: String): Unit ={
+      //img.setImage(new Image(getClass.getResourceAsStream(path)))
       val stream = new FileInputStream(path)
-      val img: ImageView = new ImageView(new Image(stream))
+      img.setImage(new Image(stream))
       img.setFitHeight(32)
       img.setPreserveRatio(true)
     }
     aux(pauseGraphic, "Images/pause.png")
+    aux(playGraphic, "Images/play.png")
+    aux(nextGraphic, "Images/next.png")
+    aux(beforeGraphic, "Images/before.png")
+    aux(fastforwardGraphic, "Images/fastforward.png")
+    aux(slowforwardGraphic, "Images/slowforward.png")
+    aux(repeatGraphic, "Images/repeat.png")
+    aux(shuffleGraphic, "Images/shuffle.png")
+  }
+
+  def setInitialButtonIcons(): Unit ={
+    togglePlayPause.setGraphic(playGraphic)
+    nextButton.setGraphic(nextGraphic)
+    beforeButton.setGraphic(beforeGraphic)
+    fastForwardButton.setGraphic(fastforwardGraphic)
+    //resetForwardButton.setGraphic()
+    slowForwardButton.setGraphic(slowforwardGraphic)
+    repeatButton.setGraphic(repeatGraphic)
+    shuffleToggleButton.setGraphic(shuffleGraphic)
   }
 
   //Media
@@ -700,7 +733,7 @@ class Controller {
         if (repeatButton.isSelected) {
           mediaPlayer.seek(new Duration(0))
         }
-        else if (randomButton.isSelected) {
+        else if (shuffleToggleButton.isSelected) {
           val r = scala.util.Random
           val pos = r.nextInt(listview.getItems.size())
           gotoSong(listview, pos)
@@ -728,7 +761,7 @@ class Controller {
         mediaPlayer.seek(new Duration(0))
 
       }
-      else if (randomButton.isSelected) {
+      else if (shuffleToggleButton.isSelected) {
         val r = scala.util.Random
         val pos = r.nextInt(listQueue.getItems.size())
         gotoSong(listview, pos)
@@ -755,8 +788,8 @@ class Controller {
     if (showMediaNullDialogWarning()) {
       val currCycle:Int = mediaPlayer.getCycleCount
     val currCyleindex : Int = cycles.indexOf(currCycle)
-      if (randomButton.isSelected) {
-        randomButton.setSelected(false)
+      if (shuffleToggleButton.isSelected) {
+        shuffleToggleButton.setSelected(false)
       }
       currCyleindex match {
         case 0 =>{
@@ -900,32 +933,40 @@ class Controller {
 
   }
   def shuffleQueue(): Unit = {
-    if (!isShuffled) {
-      oldQueue = observableListToList(listQueue.getItems)
-      oldPos = listQueue.getSelectionModel.getSelectedIndices.get(0)
+    if(!listQueue.getItems.isEmpty){
+      if (!isShuffled) {
+        shuffleToggleButton.setSelected(true)
 
-      //newQueue.addAll(listQueue.getItems)
-      //newQueue.forEach(x => print(x+"\n"))
-      //removed selcted
-      val filteredQueue = oldQueue.filter(x=> x.id != listQueue.getSelectionModel.getSelectedItem.id)
+        if(listQueue.getSelectionModel.getSelectedItem == null){
+          listQueue.getSelectionModel.clearAndSelect(0)
+        }
+        oldQueue = observableListToList(listQueue.getItems)
+        oldPos = listQueue.getSelectionModel.getSelectedIndices.get(0)
 
-      val shuffled: List[Song] = Random.shuffle(filteredQueue)
-      val first: Song = listQueue.getSelectionModel.getSelectedItem
+        //newQueue.addAll(listQueue.getItems)
+        //newQueue.forEach(x => print(x+"\n"))
+        //removed selcted
+        val filteredQueue = oldQueue.filter(x => x.id != listQueue.getSelectionModel.getSelectedItem.id)
 
-      listQueue.getItems.clear()
-      listQueue.getItems.add(first)
-      shuffled.map(listQueue.getItems.add)
+        val shuffled: List[Song] = Random.shuffle(filteredQueue)
+        val first: Song = listQueue.getSelectionModel.getSelectedItem
 
-      listQueue.getSelectionModel.clearAndSelect(0)
-      //shuffled.foreach(x => listQueue.getItems.add(x))
-      isShuffled = true
-    } else {
-      listQueue.getItems.clear()
-//      listQueue.getItems.addAll(oldQueue)
-      oldQueue.map(listQueue.getItems.add)
-      listQueue.getSelectionModel.clearAndSelect(oldPos)
-      oldQueue = oldQueue.filter(x=>false)
-      isShuffled = false
+        listQueue.getItems.clear()
+        listQueue.getItems.add(first)
+        shuffled.map(listQueue.getItems.add)
+
+        listQueue.getSelectionModel.clearAndSelect(0)
+        //shuffled.foreach(x => listQueue.getItems.add(x))
+        isShuffled = true
+      } else {
+        shuffleToggleButton.setSelected(false)
+        listQueue.getItems.clear()
+        //      listQueue.getItems.addAll(oldQueue)
+        oldQueue.map(listQueue.getItems.add)
+        listQueue.getSelectionModel.clearAndSelect(oldPos)
+        oldQueue = oldQueue.filter(x => false)
+        isShuffled = false
+      }
     }
   }
 
@@ -1229,8 +1270,7 @@ class Controller {
     (hours, minutes, sec)
   }
   private def resetPlayButton(): Unit = {
-    togglePlayPause.setSelected(false)
-    togglePlayPause.setText("Play")
+    deSelectPlayButton
   }
   private def selectPlayButton(): Unit = {
     togglePlayPause.setSelected(true)
@@ -1239,7 +1279,7 @@ class Controller {
   }
   private def deSelectPlayButton(): Unit = {
     togglePlayPause.setSelected(false)
-    togglePlayPause.setText("Play")
+    togglePlayPause.setGraphic(playGraphic)
   }
 
   private def observableListToList[A](oblst:ObservableList[A]): List[A] ={
@@ -1255,9 +1295,9 @@ class Controller {
     aux (oblst,List[A](),0)
   }
 
-  private def setImage(imageSong: Image): Unit ={
+  private def setSongImage(imageSong: Image): Unit ={
     image.setImage(imageSong)
-    println(image.getImage)
+    //println(image.getImage)
   }
   private def imageSong(media: Media): Unit ={
     val metadataMediaPlayer = new MediaPlayer(media)
@@ -1276,8 +1316,8 @@ class Controller {
           val stream = new FileInputStream("Images/defaultAlbumCover.png")
           val imageSong = new Image(stream)
           println(imageSong.getHeight)
-          setImage(imageSong)
-        }else setImage(imageSong.map(_._2).remove(0).asInstanceOf[Image])
+          setSongImage(imageSong)
+        }else setSongImage(imageSong.map(_._2).remove(0).asInstanceOf[Image])
       }
     }
     metadataMediaPlayer.setOnReady(runner)
