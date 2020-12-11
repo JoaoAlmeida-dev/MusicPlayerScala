@@ -43,9 +43,6 @@ class Main extends Application{
    TODO
     Playlists
       ChangeOrder
-    Show Musics from artist or from album
-    ficheiro cache pa guardar o estado da app ao fechar (queue, time da musica atual e assim)
-    menus para navegar pela db (cmd style)
   */
 
   def showPrompt(): Unit ={

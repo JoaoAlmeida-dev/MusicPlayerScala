@@ -67,7 +67,6 @@ object Playlist{
     }
   }
 //------------------------------------------
-//TODO usar Database.func update
   def addSong(p: Playlist, songid: Int): Playlist={
     DatabaseFunc.update[Playlist](p,2,p.songs.mkString(" ")+" "+songid)
     //Playlist(p.id,p.name,song::p.songs,p.theme)

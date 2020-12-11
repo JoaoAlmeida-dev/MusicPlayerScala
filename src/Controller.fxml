@@ -98,7 +98,7 @@
                                           <Button fx:id="removeAlbumFromArtist" mnemonicParsing="false" onAction="#removeAlbumFromArtist" text="Remove Album" />
                                           <Button fx:id="removeSongFromArtist" mnemonicParsing="false" onAction="#removeSongFromArtist" text="Remove Song" />
                                           <ComboBox fx:id="addToPlaylistArtistCombo" prefWidth="125.0" promptText="SelectPlaylist" />
-                                          <Button fx:id="addToPlaylistArtistButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="Add" />
+                                          <Button fx:id="addToPlaylistArtistButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromArtist" text="Add" />
                                        </buttons>
                                        <padding>
                                           <Insets top="5.0" />
@@ -200,25 +200,15 @@
                   </GridPane>
                   <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <GridPane alignment="CENTER" prefHeight="37.0" prefWidth="453.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.2000305175781" minWidth="10.0" prefWidth="140.19999237060546" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.19999237060546" minWidth="0.0" prefWidth="67.20000000000002" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="312.19999237060546" minWidth="0.0" prefWidth="65.19996948242186" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="64.80003051757814" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="147.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefHeight="64.0" prefWidth="64.0" textAlignment="CENTER" GridPane.columnIndex="2" />
-                        <Button fx:id="beforeButton" mnemonicParsing="false" onAction="#before" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefWidth="60.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Button fx:id="slowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefWidth="50.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Button fx:id="fastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefWidth="50.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                     </children>
-                  </GridPane>
+                  <ButtonBar fx:id="playButtonBar" buttonMinWidth="0.0" buttonOrder="L+HEUFBAIXNCYO+R" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <buttons>
+                        <Button fx:id="slowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefWidth="50.0" />
+                        <Button fx:id="beforeButton" mnemonicParsing="false" onAction="#before" prefWidth="60.0" />
+                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefHeight="64.0" prefWidth="64.0" textAlignment="CENTER" />
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefWidth="60.0" />
+                        <Button fx:id="fastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefWidth="50.0" />
+                     </buttons>
+                  </ButtonBar>
                   <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -232,7 +222,7 @@
                         <Label fx:id="nowPlaying" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="334.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefWidth="100.0" text="ResetSpeed" GridPane.columnIndex="1" />
+                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefHeight="64.0" prefWidth="100.0" text="ResetSpeed" GridPane.rowIndex="1" />
                   <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefWidth="50.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>
