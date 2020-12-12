@@ -113,6 +113,7 @@
                                  <bottom>
                                     <ButtonBar prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
+                                          <Button fx:id="shufflePlaylistButton" mnemonicParsing="false" onAction="#shufflePlaylist" text="Shuffle Playlist" />
                                         <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
                                           <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
                                           <Button fx:id="remFromPlayButton" mnemonicParsing="false" onAction="#remFromPlay" text="RemoveSong" />
@@ -187,13 +188,13 @@
                   </GridPane>
                   <Label fx:id="minDurationLabel" text="0:0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <ButtonBar fx:id="playButtonBar" buttonMinWidth="0.0" buttonOrder="L+HEUFBAIXNCYO+R" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <ButtonBar fx:id="playButtonBar" buttonMinWidth="0.0" buttonOrder="L+HEUFBAIXNCYO+R" prefHeight="37.0" prefWidth="484.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <buttons>
-                        <Button fx:id="slowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefWidth="50.0" />
-                        <Button fx:id="beforeButton" mnemonicParsing="false" onAction="#before" prefWidth="60.0" />
-                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefWidth="64.0" textAlignment="CENTER" />
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefWidth="60.0" />
-                        <Button fx:id="fastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefWidth="50.0" />
+                        <Button fx:id="slowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
+                        <Button fx:id="beforeButton" mnemonicParsing="false" onAction="#before" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
+                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
+                        <Button fx:id="fastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
                      </buttons>
                   </ButtonBar>
                   <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -209,7 +210,7 @@
                         <Label fx:id="nowPlaying" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="334.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefWidth="100.0" text="ResetSpeed" GridPane.rowIndex="1" />
+                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefHeight="64.0" prefWidth="100.0" text="ResetSpeed" GridPane.rowIndex="1" />
                   <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefWidth="50.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>

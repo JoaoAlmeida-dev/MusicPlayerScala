@@ -29,9 +29,9 @@ case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends M
 object Playlist{
 
   type id     = Int
-  type Name   = String
-  type Songs  = List[Int]
-  type Theme  = String
+  type name   = String
+  type songs  = List[Int]
+  type theme  = String
 
   val db: String = "DataBases/db_playlists"
   var loaded: ObservableList[Playlist] =FXCollections.observableArrayList[Playlist]()
@@ -107,7 +107,9 @@ object Playlist{
     p.id+";"+p.name+";"+p.songs.mkString(" ")+";"+p.theme+";end;"
   }
 
-  def shuffle(playlist: Playlist) = {Random.shuffle(playlist.songs)}
+  def shuffle(playlists: List[Playlist]) = {
+    playlists.map(x => DatabaseFunc.update(x, 2, Random.shuffle(x.songs).mkString(" ")))
+  }
 
   def addFromFilter(f: Function[Song, Boolean], playlist: Playlist): Unit = {
     var lst:List[Song] = DatabaseFunc.observableListToList((Song.loaded)).filter(x => f(x))

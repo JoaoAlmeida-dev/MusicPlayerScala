@@ -78,6 +78,7 @@ class Controller {
   @FXML private var createPlaylistButton: Button = _
   @FXML private var removePlaylistButton: Button = _
   @FXML private var remFromPlayButton: Button = _
+  @FXML private var shufflePlaylistButton: Button = _
   @FXML private var image: ImageView = new ImageView()
   //var volume: Double = 100
   //Queue
@@ -710,11 +711,6 @@ class Controller {
       } else {
         if (repeatButton.isSelected) {
           mediaPlayer.seek(new Duration(0))
-        }
-        else if (shuffleToggleButton.isSelected) {
-          val r = scala.util.Random
-          val pos = r.nextInt(listview.getItems.size())
-          gotoSong(listview)(pos)
         } else {
           val pos = listview.getItems.lastIndexOf(song) - 1
           if (pos < 0) {
@@ -739,11 +735,6 @@ class Controller {
         mediaPlayer.setCycleCount(cycles - 1)
         mediaPlayer.seek(new Duration(0))
 
-      }
-      else if (shuffleToggleButton.isSelected) {
-        val r = scala.util.Random
-        val pos = r.nextInt(listQueue.getItems.size())
-        gotoSong(listview)(pos)
       } else {
         val pos = listview.getItems.lastIndexOf(song) + 1
         if (pos > listview.getItems.size - 1) {
@@ -1156,6 +1147,14 @@ class Controller {
     updateSongListPlaylists()
   }
 
+  def shufflePlaylist(): Unit = {
+    var playlists: List[Playlist] = observableListToList(listPlaylist.getSelectionModel.getSelectedItems)
+    Playlist.shuffle(playlists)
+    listSongsPlaylist.getItems.clear()
+    updateSongListPlaylists()
+    updateListPlaylists()
+  }
+
   def addToPlayFromAlbum(): Unit = {
     val lst: List[Song] = observableListToList[Song](listSongsAlbum.getSelectionModel.getSelectedItems)
     if (lst.nonEmpty) {
@@ -1268,7 +1267,15 @@ class Controller {
       } else {
         listPlaylist.getItems.get(0).songs
       }
-      val songsPlaylist: List[Song] = observableListToList(Song.loaded).filter(x => songs.contains(x.id))
+      //val songsPlaylist: List[Song] = observableListToList(Song.loaded).filter(x => songs.contains(x.id))
+      var songsPlaylist: List[Song] = List()
+      val listSongs: List[Song] = observableListToList(Song.loaded)
+
+      //songsPlaylist=playlist.songs.foreach(x => listSongs.filter(y => y.id == x))
+      def aux(lst: List[Song], x: Int): List[Song] = {
+        lst.appendedAll(listSongs.filter(y => y.id==x))
+      }
+      songsPlaylist=playlist.songs.foldLeft(List[Song]())(aux)
       listSongsPlaylist.getItems.clear()
       songsPlaylist.map(listSongsPlaylist.getItems.add)
     }
