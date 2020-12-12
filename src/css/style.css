@@ -1,9 +1,44 @@
 .root {
     -fx-font-size: 14px;
     -fx-font-family: sans-serif;
-    -fx-background-color: #000000;
+    -fx-background-color: #121212;
+    -fx-text-fill: white;
 }
-Button{
+Button , ToggleButton, ComboBox{
+     -fx-border: none;
+}
 
-     border: none;
+Label{
+    -fx-text-fill: inherit;
+}
+.tab-header-area, .tab-header-background{
+     -fx-border: none;
+     -fx-background-color: #303030;
+     -fx-text-fill: inherit;
+}
+.tab, *tab-label{
+     -fx-background-color: #006C94;
+     -fx-text-fill: inherit;
+}
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-border-style: solid;
+    -fx-border-color: #00445D;
+}
+.split-pane,*.tab-pane,.tab-content-area,.list-view,
+Button,ToggleButton,ComboBox{
+     -fx-background-color: inherit;
+     -fx-text-fill: inherit;
+}
+.list-cell:even{
+    -fx-background-color: #001720;
+     -fx-text-fill: inherit;
+}
+.list-cell:odd{
+    -fx-background-color: #001B25;
+     -fx-text-fill: inherit;
+}
+
+.split-pane:horizontal > .split-pane-divider ,.split-pane:vertical > .split-pane-divider {
+   -fx-background-color: #000000;
+   -fx-padding: 0 0.05em 0 0.05em;
 }
