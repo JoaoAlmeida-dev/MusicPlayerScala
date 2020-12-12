@@ -1001,9 +1001,9 @@ class Controller {
 
   //Albums
   def AlbumListViewClick(mouseEvent: MouseEvent): Unit = {
-    if (mouseEvent.getClickCount == 2 && !listSongsAlbum.getSelectionModel.getSelectedItems.isEmpty) {
-      addToQueue(listSongsAlbum.getSelectionModel.getSelectedItems)
-
+    if (mouseEvent.getClickCount == 2 ) {
+      addToQueue(listSongsAlbum.getItems)
+      println(listSongsAlbum.getItems)
     }
     DisplayAlbums()
   }
@@ -1018,7 +1018,10 @@ class Controller {
 
   def ArtistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
-      addQueueArtist()
+      val artist: Artist = listArtists.getSelectionModel.getSelectedItem
+      //artist.getSongs()
+      //val songs: List[Song] = observableListToList(Song.loaded).filter(x => x.artist == artist.id)
+      addToQueue(artist.getSongs())
     }
     DisplaytArtist()
     chooseListArtist()
@@ -1059,11 +1062,6 @@ class Controller {
     }
   }
 
-  def addQueueArtist(): Unit = {
-    val artist: Artist = listArtists.getSelectionModel.getSelectedItem
-    val songs: List[Song] = observableListToList(Song.loaded).filter(x => x.artist == artist.id)
-    addToQueue(songs)
-  }
 
   //Queue
   def addToQueue(lst: List[Song]): Unit = {
@@ -1094,7 +1092,7 @@ class Controller {
   //Display Song from
   def DisplayAlbums(): Unit = {
     if (!listAlbums.getItems.isEmpty) {
-      val album: Album = listAlbums.getSelectionModel.getSelectedItems.get(0)
+      val album: Album = listAlbums.getSelectionModel.getSelectedItem
       if (album != null) {
         val songsAlbum: List[Song] = observableListToList(Song.loaded).filter(x => album.tracks.contains(x.id))
         listSongsAlbum.getItems.clear()

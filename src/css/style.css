@@ -4,5 +4,6 @@
     -fx-background-color: #000000;
 }
 Button{
-     -fx-background-color: #000000;
+
+     border: none;
 }
