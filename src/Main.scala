@@ -34,6 +34,7 @@ class Main extends Application{
 
     val mainViewRoot: Parent = fxmlLoader.load()
     val scene = new Scene(mainViewRoot)
+    scene.getStylesheets.add(getClass.getResource("css/style.css").toExternalForm)
     primaryStage.setScene(scene)
     primaryStage.show()
 
