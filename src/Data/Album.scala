@@ -1,4 +1,5 @@
 package Data
+import javafx.collections.FXCollections.SynchronizedObservableList
 import javafx.collections.{FXCollections, ObservableList}
 
 import scala.List
@@ -35,7 +36,7 @@ object Album {
   type Artist = Int
 
   val db: String = "DataBases/db_albums"
-  var loaded: ObservableList[Album] = FXCollections.observableArrayList[Album]()
+  var loaded: ObservableList[Album] = FXCollections.synchronizedObservableList[Album](FXCollections.observableArrayList[Album]())
 
   def getLoaded[Album](): List[String] = {
     this.loaded.toArray.toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))

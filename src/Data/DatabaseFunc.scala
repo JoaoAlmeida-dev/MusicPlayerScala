@@ -25,7 +25,8 @@ object DatabaseFunc {
 
   def update[A](a: MusicObject[A], field: Int, newv: String): A = {
       val objectold: MusicObject[A] = a.asInstanceOf[MusicObject[A]]
-      val loadedObject: A = objectold.loaded.toArray().filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0).asInstanceOf[A]
+      val loaded : List[MusicObject[A]] = observableListToList(objectold.loaded).asInstanceOf[List[MusicObject[A]]]
+      val loadedObject: MusicObject[A] = loaded.filter(_.id == objectold.id).head
       val info: List[String] = loadedObject.toString.split(";").toList.updated(field, newv)
       //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
 

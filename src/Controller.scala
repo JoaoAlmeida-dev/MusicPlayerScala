@@ -4,6 +4,7 @@ import Data._
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.transformation.FilteredList
 import javafx.collections.{ListChangeListener, MapChangeListener, ObservableList}
+import javafx.concurrent.Task
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonBar.{ButtonData, setButtonData}
@@ -18,6 +19,7 @@ import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
 import javafx.util.{Callback, Duration}
 
 import java.io.{File, FileInputStream}
+import java.util.concurrent.ExecutorService
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Random, Success, Try}
@@ -28,11 +30,11 @@ class Controller {
   @FXML private var BaseBorderPane: BorderPane = _
   @FXML private var centerGrid: GridPane = _
   @FXML private var bottomGrid: GridPane = _
-  @FXML private var volumeLabel: Label = _
   @FXML private var leftPane: AnchorPane = _
   //play
   @FXML private var playButtonBar: ButtonBar = _
   @FXML private var musicNameLabel: Label = _
+  @FXML private var volumeLabel: Label = _
   @FXML private var volumeSlider: Slider = _
   @FXML private var balanceSlider: Slider = _
   @FXML private var durationSlider: Slider = _
@@ -483,25 +485,18 @@ class Controller {
         }
 
         val songid: Int = DatabaseFunc.getlastidSongs(Song.loaded) + 1
+        val songcheck:List[Song] = observableListToList(Song.loaded).filter(_.name.equals())
 
-        val albumcheck: FilteredList[Album] = Album.loaded.filtered(x => x.name.equals(albumName))
+        val albumcheck: List[Album] = observableListToList(Album.loaded).filter(x => x.name.equals(albumName))
 
-        val artistcheck: FilteredList[Artist] = Artist.loaded.filtered(x => x.name.equals(artistNames.head.trim))
-        /*
-        println()
-        println()
-        println(album + "   " + albumcheck)
-        println(artist + "   " + artistcheck)
-        println()
-        println()
-        */
+        val artistcheck: List[Artist] = observableListToList(Artist.loaded).filter(x => x.name.equals(artistNames.head.trim))
 
         val artistid: Int = {
           if (artistcheck.isEmpty) {
             val newid: Int = DatabaseFunc.getlastidArtists(Artist.loaded) + 1
             newid
           } else {
-            artistcheck.get(0).id
+            artistcheck.head.id
           }
         }
         //album exists? if not creating it
@@ -509,13 +504,11 @@ class Controller {
         val albumid: Int = {
           if (albumcheck.isEmpty) {
             val newid: Int = DatabaseFunc.getlastidAlbums(Album.loaded) + 1
-            Album.loaded.add(Album(List(newid.toString, albumName, songid.toString, artistid.toString)))
+            Album.load(List(newid.toString, albumName, songid.toString, artistid.toString).mkString(";"))
             newid
           } else {
-            val album_temp = albumcheck.get(0).addSong(songid)
-            Album.loaded.remove(albumcheck.get(0))
-            Album.loaded.add(album_temp)
-            albumcheck.get(0).id
+            albumcheck.head.addSong(songid)
+            albumcheck.head.id
           }
         }
 
@@ -524,9 +517,9 @@ class Controller {
         if (artistcheck.isEmpty) {
           Artist.loaded.add(Artist(List(artistid.toString, artistNames.head.trim, albumid.toString, songid.toString)))
         } else {
-          val artist_temp = artistcheck.get(0).addSong(songid)
-          Artist.loaded.remove(artistcheck.get(0))
-          Artist.loaded.add(artist_temp.addAlbum(albumid))
+          val artist_temp = artistcheck.head.addSong(songid)
+          artist_temp.addAlbum(albumid)
+
         }
 
 
@@ -567,11 +560,10 @@ class Controller {
         )
         )
         Song.loaded.add(song)
-
+        metadataMediaPlayer.dispose()
       }
     }
     metadataMediaPlayer.setOnReady(runner)
-
   }
 
   def importFolder(): Unit = {
@@ -590,13 +582,13 @@ class Controller {
     val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
     val directoryChooser = new DirectoryChooser
     val selectedDirectory: File = directoryChooser.showDialog(stage)
-    val runner: Thread = new Thread(new Runnable {
-      override def run(): Unit = {
-        aux(selectedDirectory)
-      }
-    })
-    runner.setDaemon(true)
-    runner.start()
+    val task: Task[Unit] = new Task[Unit]() {
+      override def call(): Unit = aux(selectedDirectory)
+    }
+    val th:Thread = new Thread(task)
+    th.setDaemon(true)
+    th.start()
+
 
   }
 
@@ -1024,7 +1016,7 @@ class Controller {
   def SongAlbumListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2 && !listSongsArtist.getSelectionModel.getSelectedItems.isEmpty) {
       addToQueue(listSongsAlbum.getSelectionModel.getSelectedItems)
-  }
+    }
   }
 
   def ArtistListViewClick(mouseEvent: MouseEvent): Unit = {
@@ -1481,6 +1473,26 @@ class Controller {
     }
     metadataMediaPlayer.setOnReady(runner)
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

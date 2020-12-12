@@ -38,7 +38,7 @@ object Playlist{
   type theme  = String
 
   val db: String = "DataBases/db_playlists"
-  var loaded: ObservableList[Playlist] =FXCollections.observableArrayList[Playlist]()
+  var loaded: ObservableList[Playlist] =FXCollections.synchronizedObservableList[Playlist](FXCollections.observableArrayList[Playlist]())
   def getLoaded[Playlist](): List[String] = {
     this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))
   }

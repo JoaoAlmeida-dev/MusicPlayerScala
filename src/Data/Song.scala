@@ -37,7 +37,7 @@ object Song{
   type TrackN     = Int
 
   val db: String = "DataBases/db_songs"
-  var loaded: ObservableList[Song] = FXCollections.observableArrayList[Song]()
+  var loaded: ObservableList[Song] = FXCollections.synchronizedObservableList[Song](FXCollections.observableArrayList[Song]())
 
   def getLoaded[Song](): List[String] ={
     this.loaded.toArray().toList.map(_.toString.split(";").toList.drop(1).dropRight(1).mkString(";"))

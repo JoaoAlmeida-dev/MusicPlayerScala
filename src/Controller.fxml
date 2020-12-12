@@ -13,7 +13,7 @@
                <items>
                   <TabPane fx:id="TabPane" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab fx:id="PlayTab" text="Play">
+                      <Tab fx:id="PlayTab" styleClass="PlayTab" text="Play">
                            <content>
                               <BorderPane>
                                  <top>
@@ -34,18 +34,18 @@
                                     <center>
                                     <SplitPane dividerPositions="0.5">
                                        <items>
-                                              <ListView fx:id="listAlbums" onMouseClicked="#AlbumListViewClick" />
+                                              <ListView fx:id="listAlbums" onKeyPressed="#AlbumListViewClick" onMouseClicked="#AlbumListViewClick" />
                                           <ListView fx:id="listSongsAlbum" minWidth="90.0" onMouseClicked="#SongAlbumListViewClick" />
                                        </items>
                                     </SplitPane>
                                     </center>
                                  <bottom>
-                                    <ButtonBar maxHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
+                                    <ButtonBar maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" BorderPane.alignment="CENTER">
                                       <buttons>
-                                          <Button fx:id="removeAlbum" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" onAction="#removeAlbum" text="Remove Album" />
-                                          <Button fx:id="removeSongFromAlbum" mnemonicParsing="false" onAction="#removeSongFromAlbum" text="Remove Song" />
-                                          <ComboBox fx:id="addToPlaylistAlbumCombo" prefWidth="125.0" promptText="SelectPlaylist" />
-                                          <Button fx:id="addToPlaylistAlbumButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addToPlayFromAlbum" text="Add" />
+                                          <Button fx:id="removeAlbum" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" onAction="#removeAlbum" prefHeight="20.0" text="Remove Album" />
+                                          <Button fx:id="removeSongFromAlbum" mnemonicParsing="false" onAction="#removeSongFromAlbum" prefHeight="20.0" text="Remove Song" />
+                                          <ComboBox fx:id="addToPlaylistAlbumCombo" prefHeight="20.0" prefWidth="125.0" promptText="SelectPlaylist" />
+                                          <Button fx:id="addToPlaylistAlbumButton" mnemonicParsing="false" onAction="#addToPlayFromAlbum" prefHeight="20.0" text="Add" />
                                       </buttons>
                                        <padding>
                                           <Insets top="5.0" />
@@ -117,7 +117,6 @@
                                         <Button fx:id="createPlaylistButton" mnemonicParsing="false" onAction="#createPlaylist" text="New" />
                                           <Button fx:id="removePlaylistButton" mnemonicParsing="false" onAction="#removePlaylist" text="Remove" />
                                           <Button fx:id="remFromPlayButton" mnemonicParsing="false" onAction="#remFromPlay" text="RemoveSong" />
-                                          <Button fx:id="editPlaylistButton" mnemonicParsing="false" text="Edit" />
                                       </buttons>
                                     </ButtonBar>
                                  </bottom>
@@ -162,15 +161,21 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button fx:id="clearQueueButton" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#clearQueue" text="Clear" />
-                              <Button fx:id="deleteFromQueueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#remFromQueue" text="Delete" textAlignment="CENTER" GridPane.columnIndex="1" />
+                              <Button fx:id="clearQueueButton" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#clearQueue" prefHeight="20.0" text="Clear">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin></Button>
+                              <Button fx:id="deleteFromQueueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#remFromQueue" prefHeight="20.0" text="Delete" textAlignment="CENTER" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin></Button>
                            </children>
                         </GridPane>
                      </bottom>
                   </BorderPane>
                </items>
             </SplitPane>
-            <GridPane fx:id="bottomGrid" alignment="CENTER" minHeight="80.0">
+            <GridPane fx:id="bottomGrid" alignment="CENTER" minHeight="80.0" styleClass="BottomBar">
               <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="73.2" prefWidth="82.2" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="89.8" prefWidth="93.39998474121096" />
@@ -202,11 +207,11 @@
                   <Label fx:id="maxDurationLabel" text="Max dur" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <ButtonBar fx:id="playButtonBar" buttonMinWidth="0.0" buttonOrder="L+HEUFBAIXNCYO+R" prefHeight="37.0" prefWidth="484.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <buttons>
-                        <Button fx:id="slowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
-                        <Button fx:id="beforeButton" mnemonicParsing="false" onAction="#before" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
-                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
-                        <Button fx:id="fastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER" />
+                        <Button fx:id="slowForwardButton" mnemonicParsing="false" onAction="#slowForward" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER" />
+                        <Button fx:id="beforeButton" mnemonicParsing="false" onAction="#before" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER" />
+                        <ToggleButton fx:id="togglePlayPause" accessibleRole="BUTTON" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playpause" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER" />
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER" />
+                        <Button fx:id="fastForwardButton" mnemonicParsing="false" onAction="#fastForward" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER" />
                      </buttons>
                   </ButtonBar>
                   <GridPane alignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -222,8 +227,8 @@
                         <Label fx:id="nowPlaying" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="334.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                     <Button fx:id="ResetForwardButton" mnemonicParsing="false" onAction="#resetForward" prefHeight="64.0" prefWidth="100.0" text="ResetSpeed" GridPane.rowIndex="1" />
-                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefWidth="50.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                     <Button fx:id="ResetForwardButton" minWidth="100.0" mnemonicParsing="false" onAction="#resetForward" prefHeight="40.0" prefWidth="100.0" text="ResetSpeed" GridPane.rowIndex="1" />
+                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeat" prefHeight="40.0" prefWidth="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <GridPane alignment="CENTER" GridPane.columnIndex="6">
                      <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
@@ -238,7 +243,7 @@
                      </children>
                   </GridPane>
                   <Label fx:id="rateLabel" text="Rate" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <ToggleButton fx:id="shuffleToggleButton" mnemonicParsing="false" onAction="#shuffleQueue" prefWidth="50.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ToggleButton fx:id="shuffleToggleButton" mnemonicParsing="false" onAction="#shuffleQueue" prefHeight="40.0" prefWidth="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

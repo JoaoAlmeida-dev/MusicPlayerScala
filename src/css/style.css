@@ -1,44 +1,131 @@
 .root {
     -fx-font-size: 14px;
     -fx-font-family: sans-serif;
-    -fx-background-color: #121212;
+    -fx-background-color: level1;
     -fx-text-fill: white;
-}
-Button , ToggleButton, ComboBox{
-     -fx-border: none;
-}
 
-Label{
-    -fx-text-fill: inherit;
+    background: #222831;
+    level0:#010a18;
+    level1:#222831;
+    level1odd:#2c3440;
+
+    level2:#2a313d;
+    level3:#323b48;
+    level4:#3a4454;
+    level5:#424e5f;
+    level6:#4a576b;
+    level7:#021a3e;
+    level8:#393e46;
+    level9:#00adb5;
+    level10:#00fff5;
+
+    themecolor:#00adb5
 }
-.tab-header-area, .tab-header-background{
-     -fx-border: none;
-     -fx-background-color: #303030;
-     -fx-text-fill: inherit;
+/*Level0*/
+
+.PlayTab{
+    -fx-background-color: level0;
 }
-.tab, *tab-label{
-     -fx-background-color: #006C94;
-     -fx-text-fill: inherit;
+/*Level1*/
+.AnchorPane,.BorderPane,.GridPane,.split-pane,.ButtonBar,.StackPane,.tab-pane, .list-view{
+    -fx-background-color: level1;
 }
-.list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-border-style: solid;
-    -fx-border-color: #00445D;
-}
-.split-pane,*.tab-pane,.tab-content-area,.list-view,
-Button,ToggleButton,ComboBox{
-     -fx-background-color: inherit;
-     -fx-text-fill: inherit;
-}
-.list-cell:even{
-    -fx-background-color: #001720;
-     -fx-text-fill: inherit;
+ .list-cell:even{
+    -fx-background-color: level1;
 }
 .list-cell:odd{
-    -fx-background-color: #001B25;
+    -fx-background-color: level1odd;
+
+}
+
+/*Level2*/
+.BottomBar{
+    -fx-background-color: level2;
+}
+/*Level3*/
+/*Level4*/
+
+/*Tabs*/
+.tab, .tab-label{
+    -fx-background-color: transparent;
+    -fx-alignment:CENTER;
+    -fx-text-fill: white;
+}
+.tab{
+    -fx-background-color:level3;
+    -fx-background-insets: 0.0;
+    -fx-background-radious: 0;
+    -fx-padding:0 30 0 30 ;
+    -fx-border:solid;
+    -fx-border-color:level0;
+    -fx-border-width: 0 0 2 0;
+
+}
+
+.tab:selected{
+
+    -fx-background-radious:0;
+    -fx-background-insets:0;
+    -fx-border-width: 0 0 5 0 ;
+    -fx-border-color:themecolor;
+}
+.tab:focused {
+    -fx-focus-color:transparent;
+
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color : level3;
+    -fx-border:solid;
+    -fx-border-color:level0;
+    -fx-border-width: 0 0 2 0;
+}
+
+.button , .toggle-button, .combo-box{
+    -fx-background-radious:0;
+     -fx-border: none;
+     -fx-background-color: level4;
      -fx-text-fill: inherit;
+}
+
+.button:hover , .toggle-button:hover, .combo-box:hover{
+    -fx-border:solid;
+    -fx-border:2;
+    -fx-border-color:level0;
+}
+
+.toggle-button:selected{
+    -fx-background-color: level3;
+}
+
+.label, .list-cell,.button,{
+    -fx-text-fill: inherit;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-border-style: solid;
+    -fx-border-color: level4;
 }
 
 .split-pane:horizontal > .split-pane-divider ,.split-pane:vertical > .split-pane-divider {
-   -fx-background-color: #000000;
+   -fx-background-color: black;
    -fx-padding: 0 0.05em 0 0.05em;
+}
+
+.slider{
+ -fx-cursor : hand ;
+}
+
+.slider .track {
+     -fx-pref-height:2;
+ }
+.slider .thumb {
+    -fx-pref-height: 10;
+    -fx-pref-width: 10;
+    -fx-color : themecolor;
+    -fx-border: none;
+}.slider .thumb:selected{
+    -fx-border: none;
 }
