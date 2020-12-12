@@ -21,8 +21,12 @@
 
     themecolor:#00adb5
 }
-/*Level0*/
 
+.bold{
+    -fx-font-weight: bold;
+}
+
+/*Level0*/
 .PlayTab{
     -fx-background-color: level0;
 }
@@ -84,7 +88,7 @@
 }
 
 .button , .toggle-button, .combo-box{
-    -fx-background-radious:0;
+    -fx-background-radius:0;
      -fx-border: none;
      -fx-background-color: level4;
      -fx-text-fill: inherit;
@@ -107,6 +111,8 @@
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
     -fx-border-style: solid;
     -fx-border-color: level4;
+    -fx-border-width: 0 0 2 0 ;
+    -fx-border-color: themecolor;
 }
 
 .split-pane:horizontal > .split-pane-divider ,.split-pane:vertical > .split-pane-divider {
@@ -116,8 +122,9 @@
 
 .slider{
  -fx-cursor : hand ;
-}
-
+ -fx-padding:  0 0 15 0;
+ -fx-margin: 15 0 0 0;
+ }
 .slider .track {
      -fx-pref-height:2;
  }
@@ -129,3 +136,5 @@
 }.slider .thumb:selected{
     -fx-border: none;
 }
+
+

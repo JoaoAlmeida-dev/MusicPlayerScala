@@ -34,6 +34,8 @@ class Controller {
   //play
   @FXML private var playButtonBar: ButtonBar = _
   @FXML private var musicNameLabel: Label = _
+  @FXML private var artistNameLabel: Label = _
+  @FXML private var albumNameLabel: Label = _
   @FXML private var volumeLabel: Label = _
   @FXML private var volumeSlider: Slider = _
   @FXML private var balanceSlider: Slider = _
@@ -452,7 +454,6 @@ class Controller {
 
   //Imports
 
-
   private def uploadSong(selectedFile: File): Unit = {
     val media = new Media(selectedFile.toURI.toString)
     val metadataMediaPlayer = new MediaPlayer(media)
@@ -716,8 +717,9 @@ class Controller {
     val album: String = Album.loaded.filtered(x => x.id == song.album).get(0).name
     val artist: String = Artist.loaded.filtered(x => x.id == song.artist).get(0).name
     nowPlaying.setText(song.name)
-    musicNameLabel.setText(song.name + "\nFrom " + album + " by " + artist)
-
+    musicNameLabel.setText(song.name)
+    artistNameLabel.setText(artist)
+    albumNameLabel.setText(album)
 
   }
 
@@ -1003,7 +1005,6 @@ class Controller {
 
   }
 
-
   //Albums
   def AlbumListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2 ) {
@@ -1057,14 +1058,15 @@ class Controller {
     if (listType.equals("Albums")) {
       listAlbumsArtist.setVisible(true)
       listSongsArtist.setVisible(false)
+      updateAlbumListArtists()
 
     } else if (listType.equals("Songs")) {
       listAlbumsArtist.setVisible(false)
       listSongsArtist.setVisible(true)
+      updateSongListArtists()
 
     }
   }
-
 
   //Queue
   def addToQueue(lst: List[Song]): Unit = {
@@ -1297,7 +1299,6 @@ class Controller {
     updateSongListPlaylists()
   }
 
-
   def PlaylistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
       val playlist: Playlist = listPlaylist.getSelectionModel.getSelectedItem
@@ -1358,6 +1359,7 @@ class Controller {
       removeSongsQueue(queueSelected)
     }
   }
+
   def clearQueue(): Unit ={
     if(!listQueue.getItems.isEmpty){
       /*listQueue.getItems.clear()
@@ -1368,13 +1370,16 @@ class Controller {
       removeSongsQueue(observableListToList(listQueue.getItems))
     }
   }
+
   private def removeSongsQueue(song:List[Song]): Unit ={
     val currPlaying:List[Song] = observableListToList(Song.loaded).filter(x=>x.name == nowPlaying.getText)
     if(currPlaying.nonEmpty){
       song.filter(x => x != currPlaying(0)).map(x => listQueue.getItems.remove(x))
     }
   }
+
   //Setters
+
   def setSeekSlider(): Unit = {
     //minDurationLabel.setText(math.round(seektime).toString)
     val time: (Int, Int, Int) = msToMinSec(mediaPlayer.getTotalDuration)
@@ -1473,11 +1478,6 @@ class Controller {
     }
     metadataMediaPlayer.setOnReady(runner)
   }
-
-
-
-
-
 
 
 

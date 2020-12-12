@@ -7,7 +7,7 @@
 
 <BorderPane fx:id="BaseBorderPane" minHeight="200.0" minWidth="200.0" onKeyPressed="#keyboardEvent" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <center>
-      <SplitPane dividerPositions="0.8542024013722127" minHeight="200.0" minWidth="200.0" orientation="VERTICAL" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8458646616541353" minHeight="200.0" minWidth="200.0" orientation="VERTICAL" BorderPane.alignment="CENTER">
         <items>
             <SplitPane dividerPositions="0.8001022494887525">
                <items>
@@ -17,7 +17,21 @@
                            <content>
                               <BorderPane>
                                  <top>
-                                    <Label fx:id="musicNameLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="734.0" BorderPane.alignment="CENTER" />
+                                    <GridPane alignment="CENTER" prefHeight="62.0" prefWidth="732.0" BorderPane.alignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="18.6" minHeight="15.0" prefHeight="15.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="22.999999999999996" minHeight="15.0" prefHeight="15.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="23.4" minHeight="15.0" prefHeight="15.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label fx:id="artistNameLabel" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
+                                          <Label styleClass="bold" fx:id="musicNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                          <Label fx:id="albumNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                       </children>
+                                    </GridPane>
                                  </top>
                                  <center>
                                     <ImageView fx:id="image" fitHeight="350.0" fitWidth="553.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
