@@ -7,7 +7,7 @@
 
 <BorderPane fx:id="BaseBorderPane" minHeight="200.0" minWidth="200.0" onKeyPressed="#keyboardEvent" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <center>
-      <SplitPane dividerPositions="0.8623693379790941" minHeight="200.0" minWidth="200.0" orientation="VERTICAL" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8542024013722127" minHeight="200.0" minWidth="200.0" orientation="VERTICAL" BorderPane.alignment="CENTER">
         <items>
             <SplitPane dividerPositions="0.8001022494887525">
                <items>

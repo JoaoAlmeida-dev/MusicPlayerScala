@@ -1,4 +1,5 @@
 import Data.Album.getSongs
+import Data.DatabaseFunc.observableListToList
 import Data._
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.collections.transformation.FilteredList
@@ -330,6 +331,18 @@ class Controller {
     observableListToList(Album.loaded).map(x => listAlbums.getItems.add(x))
     //println("------------- número de items " + listAlbums.getItems.size)
     //listAlbums.getItems.forEach(println)
+  }
+
+  def updateSongListAlbums(): Unit = {
+    if (listAlbums.getSelectionModel.getSelectedItems.isEmpty) {
+      listAlbums.getSelectionModel.clearAndSelect(0)
+    }
+    val album: Album = listAlbums.getSelectionModel.getSelectedItem
+    if (album != null){
+      listSongsAlbum.getItems.clear()
+      val songsAlbum: List[Song] = album.getSongs()
+      songsAlbum.map(listSongsAlbum.getItems.add)
+    }
   }
 
   def updateListArtists(): Unit = {
@@ -734,7 +747,6 @@ class Controller {
       } else if (cycles > 1) {
         mediaPlayer.setCycleCount(cycles - 1)
         mediaPlayer.seek(new Duration(0))
-
       } else {
         val pos = listview.getItems.lastIndexOf(song) + 1
         if (pos > listview.getItems.size - 1) {
@@ -981,53 +993,6 @@ class Controller {
     addToQueue(observableListToList(lst))
   }
 
-  def removeAlbum(): Unit = {
-    if(!listAlbums.getSelectionModel.getSelectedItems.isEmpty){
-      val toRemove: List[Album] = observableListToList(listAlbums.getSelectionModel.getSelectedItems)
-      val albumsid: List[Int] = toRemove.map(x => x.artist)
-      toRemove.map(x => x.delete())
-      updateSongListAlbums()
-      updateAlbumListArtists()
-    }else{
-      showWarning("Select an album")
-    }
-  }
-
-  def removeSongFromAlbum(): Unit = {
-    val songsToRem: List[Song] = observableListToList(listSongsAlbum.getSelectionModel.getSelectedItems)
-    val album: Album = listAlbums.getSelectionModel.getSelectedItem
-    songsToRem.map(x => if(listQueue.getSelectionModel.getSelectedItem != x){
-      x.delete()
-    })
-    updateSongListAlbums()
-  }
-
-  def updateSongListAlbums(): Unit = {
-    if (listAlbums.getSelectionModel.getSelectedItems.isEmpty) {
-      listAlbums.getSelectionModel.clearAndSelect(0)
-    }
-    val album: Album = listAlbums.getSelectionModel.getSelectedItem
-    if (album != null){
-      listSongsAlbum.getItems.clear()
-      val songsAlbum: List[Song] = album.getSongs()
-      songsAlbum.map(listSongsAlbum.getItems.add)
-    }
-  }
-
-  private def observableListToList[A](oblst: ObservableList[A]): List[A] = {
-    @tailrec
-    def aux(oblst: ObservableList[A], list: List[A], index: Int): List[A] = {
-      if (oblst.size() == index) {
-        list
-      } else {
-        val obj: A = oblst.get(index)
-        aux(oblst, list ::: List(obj), index + 1)
-      }
-    }
-
-    aux(oblst, List[A](), 0)
-  }
-
   def ArtistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
       addQueueArtist()
@@ -1092,9 +1057,11 @@ class Controller {
     if (mouseEvent.getClickCount == 2) {
       val album: Album = listAlbumsArtist.getSelectionModel.getSelectedItem
 
-      TabPane.getSelectionModel.clearAndSelect(TabPane.getTabs.indexOf(AlbumsTab))
-      listAlbums.getSelectionModel.select(album)
-      DisplayAlbums()
+      if(album != null){
+        TabPane.getSelectionModel.clearAndSelect(TabPane.getTabs.indexOf(AlbumsTab))
+        listAlbums.getSelectionModel.select(album)
+        DisplayAlbums()
+      }
     }
   }
 
@@ -1112,20 +1079,84 @@ class Controller {
 
   def SongArtistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
-      addToQueue(listSongsArtist.getSelectionModel.getSelectedItems)
+      if(!listSongsArtist.getSelectionModel.getSelectedItems.isEmpty){
+        addToQueue(listSongsArtist.getSelectionModel.getSelectedItems)
+      }
     }
   }
 
+  //Removes from BD
   def removeArtist(): Unit = {
-    observableListToList(listArtists.getSelectionModel.getSelectedItems).map(x => x.delete())
+    val artists = observableListToList(listArtists.getSelectionModel.getSelectedItems)
+    if(!artists.isEmpty){
+      artists.map(x => x.delete())
+      artists.map(x=>listQueue.getItems.contains(x.getSongs()))
+    }
+
   }
 
   def removeAlbumFromArtist(): Unit = {
-    observableListToList(listAlbumsArtist.getSelectionModel.getSelectedItems).map(x => x.delete())
+    val albums = listAlbumsArtist.getSelectionModel.getSelectedItems
+    if(!albums.isEmpty){
+      observableListToList(albums).map(x => x.delete())
+
+    }
   }
 
   def removeSongFromArtist(): Unit = {
-    observableListToList(listSongsArtist.getSelectionModel.getSelectedItems).map(x => x.delete())
+    val songs = observableListToList(listSongsArtist.getSelectionModel.getSelectedItems)
+
+    if(songs.nonEmpty){
+      val queue:List[Song]=observableListToList(listQueue.getItems)
+      val songsNo= songs.map(x=>if(queue.contains(x)) x)
+      val songsNoString= songs.map(x=>if(queue.contains(x)) {x.name})
+      songs.map(x => if(!queue.contains(x)){x.delete()})
+      if(songsNo.nonEmpty){
+        showWarning("Remove these songs from queue before deleting\n" + songsNoString)
+      }
+
+      updateSongListArtists()
+    }
+  }
+
+  def removeAlbum(): Unit = {
+      val toRemove: List[Album] = observableListToList(listAlbums.getSelectionModel.getSelectedItems)
+    if(toRemove.nonEmpty){
+      val queue:List[Song] = observableListToList(listQueue.getItems)
+      val songs:List[Song] = toRemove.flatMap(x => x.getSongs())
+
+      val songsNo= songs.map(x=>if(queue.contains(x)) x)
+      val albumsNo= songs.map(x=>x.album)
+
+      val songsNoString= songs.map(x=>if(queue.contains(x)) {x.name})
+
+      if(songsNo.nonEmpty){
+        showWarning("Remove these songs from queue before deleting\n" + songsNoString)
+      }
+      toRemove.filter(x=> !albumsNo.contains(x.id)).map(x => x.delete())
+
+
+      updateSongListAlbums()
+      updateAlbumListArtists()
+
+    }else{
+      showWarning("Select an album")
+    }
+  }
+
+  def removeSongFromAlbum(): Unit = {
+    val songs: List[Song] = observableListToList(listSongsAlbum.getSelectionModel.getSelectedItems)
+    if(songs.nonEmpty){
+      val queue:List[Song]=observableListToList(listQueue.getItems)
+
+      val songsNo= songs.map(x=>if(queue.contains(x)) x)
+      val songsNoString= songs.map(x=>if(queue.contains(x)) {x.name})
+      if(songsNo.nonEmpty){
+        showWarning("Remove these songs from queue before deleting\n" + songsNoString)
+      }
+      songs.map(x => if(!queue.contains(x)){x.delete()})
+
+    }
   }
 
   //Playlists

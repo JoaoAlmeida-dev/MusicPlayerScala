@@ -3,7 +3,6 @@ package Data
 import javafx.collections.ObservableList
 
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
-import java.nio.file.{Files,  Paths}
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Try}
@@ -19,16 +18,15 @@ object DatabaseFunc {
   }
 
   def unload[A](a: A): Unit = a match {
-    case a: Data.MusicObject[A] => {
+    case a: Data.MusicObject[A] =>
       //println("Unloaded" + a.toString)
       a.loaded.remove(a.asInstanceOf[A])
-    }
   }
 
   def update[A](a: MusicObject[A], field: Int, newv: String): A = {
       val objectold: MusicObject[A] = a.asInstanceOf[MusicObject[A]]
       val loadedObject: A = objectold.loaded.toArray().filter(_.asInstanceOf[MusicObject[A]].id == objectold.id)(0).asInstanceOf[A]
-      val info: List[String] = loadedObject.toString().split(";").toList.updated(field, newv)
+      val info: List[String] = loadedObject.toString.split(";").toList.updated(field, newv)
       //val objectNew:A = a.getClass.getConstructor(classOf[MusicObject[A]]).newInstance(info).asInstanceOf[A]
 
       a.loaded.remove(a)
@@ -41,7 +39,7 @@ object DatabaseFunc {
   def readFile(load: String => Any, filename: String): Unit = {
     val bufferedFile: Try[BufferedSource] = Try(Source.fromFile(filename))
     bufferedFile match {
-      case Success(v) => {
+      case Success(v) =>
         val lines = v.getLines.toList
         if (lines.isEmpty) {
           v.close()
@@ -49,8 +47,7 @@ object DatabaseFunc {
           readline(load, lines)
           v.close()
         }
-      }
-      case Failure(e) => {
+      case Failure(e) =>
         new File("DataBases").mkdir()
 
         val f: File = new File(filename)
@@ -60,7 +57,6 @@ object DatabaseFunc {
 
         //println("Ficheiro de BD não existe" + e.getMessage)
         //throw e
-      }
     }
   }
 
