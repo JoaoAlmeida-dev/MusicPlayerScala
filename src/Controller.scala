@@ -390,6 +390,31 @@ class Controller {
 
   }
 
+  def updateSongListPlaylists(): Unit = {
+    if (!listPlaylist.getItems.isEmpty) {
+      if (!listPlaylist.getSelectionModel.getSelectedItems.isEmpty) {
+
+      val play: Playlist = listPlaylist.getSelectionModel.getSelectedItem
+      //listSongsPlaylist.getItems.clear()
+      //val songsPlaylist:List[Song] = observableListToList(Song.loaded).filter(x=>play.songs.contains(x.id))
+      //val songsPlaylist: List[Song] = play.getSongs()
+
+      //songsPlaylist.map(listSongsPlaylist.getItems.add)
+      val listSongs: List[Song] = observableListToList(Song.loaded)
+      def aux(lst: List[Song], x: Int): List[Song] = {
+        lst.appendedAll(listSongs.filter(y => y.id == x))
+      }
+
+      val songsPlaylist = play.songs.foldLeft(List[Song]())(aux)
+      listSongsPlaylist.getItems.clear()
+      songsPlaylist.map(listSongsPlaylist.getItems.add)
+
+      }
+    } else {
+      listSongsPlaylist.getItems.clear()
+    }
+  }
+
   def loadButtonImages(): Unit = {
     def aux(img: ImageView, path: String): Unit = {
       //img.setImage(new Image(getClass.getResourceAsStream(path)))
@@ -976,22 +1001,20 @@ class Controller {
 
   //Albums
   def AlbumListViewClick(mouseEvent: MouseEvent): Unit = {
-    if (mouseEvent.getClickCount == 2) {
-      addToQueue(listSongsAlbum.getItems)
+    if (mouseEvent.getClickCount == 2 && !listSongsAlbum.getSelectionModel.getSelectedItems.isEmpty) {
+      addToQueue(listSongsAlbum.getSelectionModel.getSelectedItems)
 
     }
     DisplayAlbums()
   }
 
   def SongAlbumListViewClick(mouseEvent: MouseEvent): Unit = {
-    if (mouseEvent.getClickCount == 2) {
+    if (mouseEvent.getClickCount == 2 && !listSongsArtist.getSelectionModel.getSelectedItems.isEmpty) {
       addToQueue(listSongsAlbum.getSelectionModel.getSelectedItems)
-    }
+  }
   }
 
-  def addToQueue(lst: ObservableList[Song]): Unit = {
-    addToQueue(observableListToList(lst))
-  }
+
 
   def ArtistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
@@ -1048,6 +1071,9 @@ class Controller {
       lst.map(listQueue.getItems.add)
     }
   }
+  def addToQueue(lst: ObservableList[Song]): Unit = {
+    addToQueue(observableListToList(lst))
+  }
 
   def AlbumArtistListViewClick(mouseEvent: MouseEvent): Unit = {
     DisplayAlbumFromArtist(mouseEvent)
@@ -1078,10 +1104,8 @@ class Controller {
   }
 
   def SongArtistListViewClick(mouseEvent: MouseEvent): Unit = {
-    if (mouseEvent.getClickCount == 2) {
-      if(!listSongsArtist.getSelectionModel.getSelectedItems.isEmpty){
+    if (mouseEvent.getClickCount == 2 && !listSongsArtist.getSelectionModel.getSelectedItems.isEmpty) {
         addToQueue(listSongsArtist.getSelectionModel.getSelectedItems)
-      }
     }
   }
 
@@ -1260,31 +1284,31 @@ class Controller {
     updateSongListPlaylists()
   }
 
-  def updateSongListPlaylists(): Unit = {
-    if (!listPlaylist.getItems.isEmpty) {
-      if (listPlaylist.getSelectionModel.getSelectedItems.isEmpty) {
-        listPlaylist.getSelectionModel.clearAndSelect(0)
-      }
-      val play: Playlist = listPlaylist.getSelectionModel.getSelectedItem
-      listSongsPlaylist.getItems.clear()
-      //val songsPlaylist:List[Song] = observableListToList(Song.loaded).filter(x=>play.songs.contains(x.id))
-      val songsPlaylist: List[Song] = play.getSongs()
-
-      songsPlaylist.map(listSongsPlaylist.getItems.add)
-    } else {
-      listSongsPlaylist.getItems.clear()
-    }
-  }
 
   def PlaylistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
-      val pl: Playlist = listPlaylist.getSelectionModel.getSelectedItem
-      if (pl != null) {
+      val playlist: Playlist = listPlaylist.getSelectionModel.getSelectedItem
+      if (playlist != null) {/*
         val loadedSongids: List[Int] = observableListToList(Song.loaded) map (x => x.id)
         val loadedSongs: List[Song] = observableListToList(Song.loaded)
         val songids: List[Int] = pl.songs.filter(x => loadedSongids.contains(x))
         val songs: List[Song] = loadedSongs.filter(x => songids.contains(x.id))
-        addToQueue(songs)
+
+        val listSongs: List[Song] = observableListToList(Song.loaded)*/
+
+        //songsPlaylist=playlist.songs.foreach(x => listSongs.filter(y => y.id == x))
+        val listSongs: List[Song] = observableListToList(Song.loaded)
+
+        def aux(lst: List[Song], x: Int): List[Song] = {
+          lst.appendedAll(listSongs.filter(y => y.id == x))
+        }
+
+        val songsPlaylist = playlist.songs.foldLeft(List[Song]())(aux)
+        listSongsPlaylist.getItems.clear()
+        //songsPlaylist.map(listQueue.getItems.add)
+
+        addToQueue(songsPlaylist)
+        //addToQueue(songs)
       }
     }
     DisplayPlaylist()
@@ -1293,27 +1317,23 @@ class Controller {
   def DisplayPlaylist(): Unit = {
     if (!listPlaylist.getItems.isEmpty) {
       val playlist: Playlist = listPlaylist.getSelectionModel.getSelectedItem
-      val songs: List[Int] = if (playlist != null) {
-        playlist.songs
-      } else {
-        listPlaylist.getItems.get(0).songs
-      }
-      //val songsPlaylist: List[Song] = observableListToList(Song.loaded).filter(x => songs.contains(x.id))
-      var songsPlaylist: List[Song] = List()
-      val listSongs: List[Song] = observableListToList(Song.loaded)
+      if(playlist != null){
+        //val songsPlaylist: List[Song] = observableListToList(Song.loaded).filter(x => songs.contains(x.id))
+        val listSongs: List[Song] = observableListToList(Song.loaded)
 
-      //songsPlaylist=playlist.songs.foreach(x => listSongs.filter(y => y.id == x))
-      def aux(lst: List[Song], x: Int): List[Song] = {
-        lst.appendedAll(listSongs.filter(y => y.id==x))
+        //songsPlaylist=playlist.songs.foreach(x => listSongs.filter(y => y.id == x))
+        def aux(lst: List[Song], x: Int): List[Song] = {
+          lst.appendedAll(listSongs.filter(y => y.id == x))
+        }
+        val songsPlaylist = playlist.songs.foldLeft(List[Song]())(aux)
+        listSongsPlaylist.getItems.clear()
+        songsPlaylist.map(listSongsPlaylist.getItems.add)
       }
-      songsPlaylist=playlist.songs.foldLeft(List[Song]())(aux)
-      listSongsPlaylist.getItems.clear()
-      songsPlaylist.map(listSongsPlaylist.getItems.add)
     }
   }
 
   def PlaylistSongListViewClick(mouseEvent: MouseEvent): Unit = {
-    if (mouseEvent.getClickCount == 2) {
+    if (mouseEvent.getClickCount == 2 && !listSongsPlaylist.getSelectionModel.getSelectedItems.isEmpty) {
       addToQueue(listSongsPlaylist.getSelectionModel.getSelectedItems)
     }
   }
