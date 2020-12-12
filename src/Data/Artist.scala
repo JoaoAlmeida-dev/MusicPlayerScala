@@ -2,13 +2,16 @@ package Data
 
 import javafx.collections.{FXCollections, ObservableList}
 
+import scala.::
+
 case class Artist(id:Int,name:String, albums: List[Int], songs:List[Int] ) extends MusicObject[Artist]{
   def info():Option[(Int,String,List[Int],List[Int])]={ Artist.info(this) }
   def addSong(song: Int): Artist={ Artist.addSong(this, song) }
   def addAlbum(album: Int): Artist={ Artist.addAlbum(this, album) }
   def getSongs():List[Song] = {Artist.getSongs(this)}
   def getAlbums():List[Album] = {Artist.getAlbums(this)}
-
+  def remAlbum(album:Int):Unit={Artist.remAlbum(this,album)}
+  def remSong(song:Int):Unit={Artist.remSong(this,song)}
   override def delete(): Unit = {Artist.delete(this)}
 
 
@@ -78,20 +81,39 @@ object Artist{
 //----------------
 
   def addSong(a: Data.Artist, song: Int): Artist ={
-    Artist(a.id,a.name,a.albums, song::a.songs)
-  }
-
-  def addAlbum(a: Data.Artist, album:Int): Artist ={
-    if(a.albums.filter(x=>x==album).isEmpty){
-      Artist(a.id,a.name,album::a.albums, a.songs)
+    if(!a.songs.contains(song)){
+      DatabaseFunc.update[Artist](a,3,(a.songs.appended(song)).mkString(" "))
     }else{
-      Artist(a.id,a.name,a.albums, a.songs)
+      a
     }
   }
+
+  def addAlbum(a: Data.Artist, album:Int): Artist = {
+    if(!a.albums.contains(album)){
+      DatabaseFunc.update[Artist](a, 2, (a.albums.appended(album)).mkString(" "))
+    }else{
+      a
+    }
+      //Artist(a.id,a.name,album::a.albums, a.songs)
+  }
+   def remAlbum(a: Data.Artist, album:Int): Unit ={
+    if(a.albums.filter(x=>x==album).isEmpty){
+      DatabaseFunc.update[Artist](a,2,(a.albums.filter(_!=album)).mkString(" "))
+      //Artist(a.id,a.name,album::a.albums, a.songs)
+    }
+   }
+   def remSong(a: Data.Artist, song:Int): Unit ={
+    if(a.songs.filter(x=>x==song).isEmpty){
+      DatabaseFunc.update[Artist](a,3,(a.albums.filter(_!=song)).mkString(" "))
+      //Artist(a.id,a.name,album::a.albums, a.songs)
+     }
+   }
+
 
   def delete(a:Artist){
     loaded.remove(a)
     val albumsFiltered:List[Album] = DatabaseFunc.observableListToList(Album.loaded).filter(x=>x.artist == a.id)
+    DatabaseFunc.observableListToList(Playlist.loaded).map(x=>x.removeSongsFromArtist(a.id))
     albumsFiltered.map(x=>x.delete)
   }
 

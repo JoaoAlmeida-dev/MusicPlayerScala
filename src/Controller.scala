@@ -1,4 +1,4 @@
-import Data.Album.getSongs
+import Data.Album.{delete, getSongs}
 import Data.DatabaseFunc.observableListToList
 import Data._
 import javafx.beans.value.{ChangeListener, ObservableValue}
@@ -13,6 +13,7 @@ import javafx.scene.input.{KeyCode, KeyEvent, MouseEvent}
 import javafx.scene.layout.{AnchorPane, BorderPane, GridPane}
 import javafx.scene.media.{Media, MediaPlayer}
 import javafx.scene.{Parent, Scene}
+import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.{DirectoryChooser, FileChooser, Modality, Stage}
 import javafx.util.{Callback, Duration}
 
@@ -448,17 +449,7 @@ class Controller {
   }
 
   //Imports
-  def importMusic(): Unit = {
-    val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
-    val fileChooser = new FileChooser
-    val selectedFile: File = fileChooser.showOpenDialog(stage)
-    if (selectedFile != null) {
-      if (selectedFile.getName.endsWith(".mp3")) {
-        uploadSong(selectedFile)
-      }
-    }
 
-  }
 
   private def uploadSong(selectedFile: File): Unit = {
     val media = new Media(selectedFile.toURI.toString)
@@ -599,10 +590,32 @@ class Controller {
     val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
     val directoryChooser = new DirectoryChooser
     val selectedDirectory: File = directoryChooser.showDialog(stage)
-
-    aux(selectedDirectory)
+    val runner: Thread = new Thread(new Runnable {
+      override def run(): Unit = {
+        aux(selectedDirectory)
+      }
+    })
+    runner.setDaemon(true)
+    runner.start()
 
   }
+
+  def importMusic(): Unit = {
+    val stage: Stage = chooseFileButton.getScene.getWindow.asInstanceOf[Stage]
+    val fileChooser = new FileChooser
+    fileChooser.getExtensionFilters.addAll(
+      new FileChooser.ExtensionFilter("All Files", "*.*"),
+      new FileChooser.ExtensionFilter("MP3", "*.mp3*"))
+
+    val selectedFile: File = fileChooser.showOpenDialog(stage)
+    if (selectedFile != null) {
+      if (selectedFile.getName.endsWith(".mp3")) {
+        uploadSong(selectedFile)
+      }
+    }
+
+  }
+
 
   //Listeners
   def setListeners(): Unit = {
@@ -718,7 +731,7 @@ class Controller {
 
   def playpause(): Unit = {
     if (!listQueue.getItems.isEmpty) {
-      if (mediaPlayer.isInstanceOf[MediaPlayer]) {
+      if (mediaPlayer.isInstanceOf[MediaPlayer] && mediaPlayer.getStatus != MediaPlayer.Status.DISPOSED) {
         if (!mediaPlayer.getStatus.equals(MediaPlayer.Status.PLAYING)) {
           selectPlayButton()
           mediaPlayer.play()
@@ -742,7 +755,7 @@ class Controller {
 
   def before(): Unit = {
     val listview: ListView[Song] = listQueue
-    if (showMediaNullDialogWarning()) {
+    if (showMediaNullDialogWarning() && !listQueue.getItems.isEmpty) {
       val song: Song = listview.getSelectionModel.getSelectedItems.get(0)
       if (mediaPlayer.getCurrentTime.toSeconds > 3) {
         mediaPlayer.seek(new Duration(0))
@@ -764,7 +777,7 @@ class Controller {
   def next(): Unit = {
     val listview: ListView[Song] = listQueue
 
-    if (showMediaNullDialogWarning()) {
+    if (showMediaNullDialogWarning() && !listQueue.getItems.isEmpty) {
       val song: Song = listview.getSelectionModel.getSelectedItems.get(0)
       val cycles: Int = mediaPlayer.getCycleCount
       if (mediaPlayer.getCycleCount.equals(MediaPlayer.INDEFINITE)) {
@@ -1014,8 +1027,6 @@ class Controller {
   }
   }
 
-
-
   def ArtistListViewClick(mouseEvent: MouseEvent): Unit = {
     if (mouseEvent.getClickCount == 2) {
       val artist: Artist = listArtists.getSelectionModel.getSelectedItem
@@ -1069,6 +1080,7 @@ class Controller {
       lst.map(listQueue.getItems.add)
     }
   }
+
   def addToQueue(lst: ObservableList[Song]): Unit = {
     addToQueue(observableListToList(lst))
   }
@@ -1109,19 +1121,34 @@ class Controller {
 
   //Removes from BD
   def removeArtist(): Unit = {
-    val artists = observableListToList(listArtists.getSelectionModel.getSelectedItems)
-    if(!artists.isEmpty){
-      artists.map(x => x.delete())
-      artists.map(x=>listQueue.getItems.contains(x.getSongs()))
+    val artists :List[Artist]= observableListToList(listArtists.getSelectionModel.getSelectedItems)
+    if(artists.nonEmpty){
+      val queue:List[Song] = observableListToList(listQueue.getItems)
+      val queueContains:List[Boolean]=artists.flatMap(x=> x.getSongs).map(queue.contains)
+      val queuebool:Boolean=queueContains.foldRight(false)(_||_)
+
+      if(queuebool){
+        showWarning("Remove songs from the following Artists:\n"+artists.map(_.name).mkString(",")+"\nfrom queue before deleting" )
+      }else{
+        artists.map(x=> x.delete)
+      }
+
     }
 
   }
 
   def removeAlbumFromArtist(): Unit = {
-    val albums = listAlbumsArtist.getSelectionModel.getSelectedItems
-    if(!albums.isEmpty){
-      observableListToList(albums).map(x => x.delete())
+    val albums : List[Album] = observableListToList(listAlbumsArtist.getSelectionModel.getSelectedItems)
+    if(albums.nonEmpty){
+      val queue:List[Song] = observableListToList(listQueue.getItems)
+      val queueContains:List[Boolean]=albums.flatMap(x=> x.getSongs).map(queue.contains)
+      val queuebool:Boolean=queueContains.foldRight(false)(_||_)
 
+      if(queuebool){
+        showWarning("Remove songs from the following Albums:\n"+albums.map(_.name).mkString(",")+"\n from queue before deleting" )
+      }else{
+        albums.map(x=> x.delete)
+      }
     }
   }
 
@@ -1142,21 +1169,17 @@ class Controller {
   }
 
   def removeAlbum(): Unit = {
-      val toRemove: List[Album] = observableListToList(listAlbums.getSelectionModel.getSelectedItems)
-    if(toRemove.nonEmpty){
+      val albums: List[Album] = observableListToList(listAlbums.getSelectionModel.getSelectedItems)
+    if(albums.nonEmpty){
       val queue:List[Song] = observableListToList(listQueue.getItems)
-      val songs:List[Song] = toRemove.flatMap(x => x.getSongs())
+      val queueContains:List[Boolean]=albums.flatMap(x=> x.getSongs).map(queue.contains)
+      val queuebool:Boolean=queueContains.foldRight(false)(_||_)
 
-      val songsNo= songs.map(x=>if(queue.contains(x)) x)
-      val albumsNo= songs.map(x=>x.album)
-
-      val songsNoString= songs.map(x=>if(queue.contains(x)) {x.name})
-
-      if(songsNo.nonEmpty){
-        showWarning("Remove these songs from queue before deleting\n" + songsNoString)
+      if(queuebool){
+        showWarning("Remove songs from the following Albums:\n"+albums.map(x=>x.name).mkString(",")+"\n from queue before deleting" )
+      }else{
+        albums.map(x=> x.delete)
       }
-      toRemove.filter(x=> !albumsNo.contains(x.id)).map(x => x.delete())
-
 
       updateSongListAlbums()
       updateAlbumListArtists()
@@ -1337,12 +1360,28 @@ class Controller {
   }
 
   def remFromQueue(): Unit = {
-    val currPlaying: Song = listQueue.getSelectionModel.getSelectedItem
-    //println(currPlaying)
+    //song.name + "\nFrom " + album + " by " + artist
     val queueSelected: List[Song] = observableListToList(listQueue.getSelectionModel.getSelectedItems)
-    queueSelected.filter(x => x != currPlaying).map(x => listQueue.getItems.remove(x))
+    if(queueSelected.nonEmpty){
+      removeSongsQueue(queueSelected)
+    }
   }
+  def clearQueue(): Unit ={
+    if(!listQueue.getItems.isEmpty){
+      /*listQueue.getItems.clear()
+      if(mediaPlayer.isInstanceOf[MediaPlayer]){
+        mediaPlayer.dispose()
+      }*/
 
+      removeSongsQueue(observableListToList(listQueue.getItems))
+    }
+  }
+  private def removeSongsQueue(song:List[Song]): Unit ={
+    val currPlaying:List[Song] = observableListToList(Song.loaded).filter(x=>x.name == nowPlaying.getText)
+    if(currPlaying.nonEmpty){
+      song.filter(x => x != currPlaying(0)).map(x => listQueue.getItems.remove(x))
+    }
+  }
   //Setters
   def setSeekSlider(): Unit = {
     //minDurationLabel.setText(math.round(seektime).toString)

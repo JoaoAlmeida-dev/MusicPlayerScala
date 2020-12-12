@@ -77,9 +77,20 @@ object Album {
     DatabaseFunc.update[Album](a,2,(a.tracks:::songsid).mkString(" "))
   }
 
+  def remTrack(a: Album, songid: Int): Album = {
+    DatabaseFunc.update[Album](a,2,(a.tracks:::List(songid)).mkString(" "))
+  }
+  def remArtist(a: Album, songsid: List[Int]): Album = {
+    DatabaseFunc.update[Album](a,2,(a.tracks:::songsid).mkString(" "))
+  }
+
   def delete(a:Album): Unit ={
     loaded.remove(a)
     val songsfiltered:List[Song] = DatabaseFunc.observableListToList(Song.loaded).filter(x=>x.album == a.id)
+    val artistsFiltered:List[Data.Artist] = DatabaseFunc.observableListToList(Artist.loaded).filter(x=>x.albums.contains(a))
+    artistsFiltered.map(x=> x.remAlbum(a.id))
+    artistsFiltered.map(x=>songsfiltered.map(y=> x.remSong(y.id)))
+    DatabaseFunc.observableListToList(Playlist.loaded).map(x=>x.removeSongsFromAlbum(a.id))
     songsfiltered.map(x=>x.delete())
   }
 

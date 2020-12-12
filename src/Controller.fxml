@@ -153,7 +153,19 @@
                         <Label text="Queue" BorderPane.alignment="CENTER" />
                      </top>
                      <bottom>
-                        <Button fx:id="deleteFromQueueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#remFromQueue" text="Delete" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                        <GridPane BorderPane.alignment="CENTER">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="99.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="99.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Button fx:id="clearQueueButton" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#clearQueue" text="Clear" />
+                              <Button fx:id="deleteFromQueueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="75.0" mnemonicParsing="false" onAction="#remFromQueue" text="Delete" textAlignment="CENTER" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
                      </bottom>
                   </BorderPane>
                </items>

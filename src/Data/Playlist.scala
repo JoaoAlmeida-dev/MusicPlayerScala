@@ -11,6 +11,10 @@ case class Playlist(id:Int,name:String, songs:List[Int], theme:String) extends M
 
   def removeSong(songid: Int): Playlist={ Playlist.removeSong(this,songid) }
   def removeSong(songsid: List[Int]): Playlist={ Playlist.removeSong(this,songsid) }
+  def removeSongsFromArtist( artistid: Int): Playlist={Playlist.removeSongsFromAlbum(this,artistid)}
+
+  def removeSongsFromAlbum( albumid: Int): Playlist={Playlist.removeSongsFromAlbum(this,albumid)}
+
 
   def getSongs():List[Song] = Playlist.getSongs(this)
 
@@ -94,6 +98,14 @@ object Playlist{
   }
   def removeSong(p: Playlist, songsid: List[Int]): Playlist={
     val songs=p.songs.filter( !songsid.contains(_))
+    DatabaseFunc.update[Playlist](p,2,songs.mkString(" "))
+  }
+  def removeSongsFromArtist(p: Playlist, artistid: Int): Playlist={
+    val songs:List[Int]=p.getSongs().filter( x=>x.artist != artistid).map(_.id)
+    DatabaseFunc.update[Playlist](p,2,songs.mkString(" "))
+  }
+  def removeSongsFromAlbum(p: Playlist, albumid: Int): Playlist={
+    val songs:List[Int]=p.getSongs().filter( x=>x.artist != albumid).map(_.id)
     DatabaseFunc.update[Playlist](p,2,songs.mkString(" "))
   }
 
